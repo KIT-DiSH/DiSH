@@ -1,4 +1,4 @@
-# dish
+# DiSH
 
 SNS specialized for restaurants
 
