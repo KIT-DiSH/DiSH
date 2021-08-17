@@ -29,13 +29,14 @@ class SocialIconButtons extends StatelessWidget {
       height: 48,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(100),
+        borderRadius: BorderRadius.circular(50),
         boxShadow: [
           BoxShadow(
-              color: Colors.black12,
-              blurRadius: 1,
-              spreadRadius: 1.2,
-              offset: Offset(0, 0))
+            color: Colors.black12,
+            blurRadius: 1,
+            spreadRadius: 1.2,
+            offset: Offset(0, 0),
+          ),
         ],
       ),
       child: TextButton(

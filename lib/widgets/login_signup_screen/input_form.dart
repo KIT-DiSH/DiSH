@@ -28,18 +28,28 @@ class _InputFormState extends State<InputForm> {
 
   @override
   Widget build(BuildContext context) {
+    final node = FocusScope.of(context);
+    final VoidCallback onEditingComplete = () => node.nextFocus();
+
     return Column(
       children: [
         Container(
           width: double.infinity,
           child: Column(
             children: [
-              getTextField(false, _hintMailText, widget.setEmail),
+              getTextField(false, _hintMailText, widget.setEmail,
+                  onEditingComplete, false),
               SizedBox(
                 height: 16,
                 width: double.infinity,
               ),
-              getTextField(true, _hintPasswordText, widget.setEmail),
+              getTextField(
+                true,
+                _hintPasswordText,
+                widget.setEmail,
+                onEditingComplete,
+                widget.selectedTab == "login",
+              ),
               widget.selectedTab == "login"
                   ? Container(
                       height: 47,
@@ -63,8 +73,13 @@ class _InputFormState extends State<InputForm> {
                           height: 16,
                           width: double.infinity,
                         ),
-                        getTextField(false, _hintComfirmPasswordText,
-                            widget.setConfirmPassword),
+                        getTextField(
+                          true,
+                          _hintComfirmPasswordText,
+                          widget.setConfirmPassword,
+                          onEditingComplete,
+                          true,
+                        ),
                       ],
                     ),
             ],
@@ -74,7 +89,8 @@ class _InputFormState extends State<InputForm> {
     );
   }
 
-  Container getTextField(obscureText, hintText, onChanged) {
+  Container getTextField(
+      obscureText, hintText, onChanged, onEditingComplete, isLastElem) {
     return Container(
       height: 31,
       child: TextField(
@@ -93,7 +109,10 @@ class _InputFormState extends State<InputForm> {
             color: AppColor.kPrimaryTextColor.withOpacity(0.4),
           ),
         ),
+        textInputAction:
+            isLastElem ? TextInputAction.done : TextInputAction.next,
         onChanged: onChanged,
+        onEditingComplete: onEditingComplete,
       ),
     );
   }

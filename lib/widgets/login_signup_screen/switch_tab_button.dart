@@ -39,10 +39,11 @@ class _SwitchTabButtonState extends State<SwitchTabButton> {
         borderRadius: BorderRadius.circular(50),
         boxShadow: [
           BoxShadow(
-              color: Colors.black12,
-              blurRadius: 0,
-              spreadRadius: 1.2,
-              offset: Offset(0, 0))
+            color: Colors.black12,
+            blurRadius: 0,
+            spreadRadius: 1.2,
+            offset: Offset(0, 0),
+          ),
         ],
       ),
       child: Stack(
