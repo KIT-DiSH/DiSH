@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:dish/screens/post_screen.dart';
+import 'package:dish/configs/constant_colors.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,6 +15,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         visualDensity: VisualDensity.adaptivePlatformDensity,
         primaryColor: Colors.white,
+        textTheme: TextTheme(
+          headline6: TextStyle(color: AppColor.kPrimaryTextColor),
+          bodyText2: TextStyle(color: AppColor.kPrimaryTextColor),
+        ),
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
