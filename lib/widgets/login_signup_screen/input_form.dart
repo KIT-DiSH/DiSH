@@ -37,8 +37,13 @@ class _InputFormState extends State<InputForm> {
           width: double.infinity,
           child: Column(
             children: [
-              getTextField(false, _hintMailText, widget.setEmail,
-                  onEditingComplete, false),
+              getTextField(
+                false,
+                _hintMailText,
+                widget.setEmail,
+                onEditingComplete,
+                false,
+              ),
               SizedBox(
                 height: 16,
                 width: double.infinity,
@@ -90,7 +95,12 @@ class _InputFormState extends State<InputForm> {
   }
 
   Container getTextField(
-      obscureText, hintText, onChanged, onEditingComplete, isLastElem) {
+    obscureText,
+    hintText,
+    onChanged,
+    onEditingComplete,
+    isLastElem,
+  ) {
     return Container(
       height: 31,
       child: TextField(
