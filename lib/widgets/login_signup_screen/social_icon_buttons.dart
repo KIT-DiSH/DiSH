@@ -13,17 +13,17 @@ class SocialIconButtons extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          getSocialIconButton(_facebookIconPath, () {}),
+          buildSocialIconButton(_facebookIconPath, () {}),
           SizedBox(width: 24),
-          getSocialIconButton(_appleIconPath, () {}),
+          buildSocialIconButton(_appleIconPath, () {}),
           SizedBox(width: 24),
-          getSocialIconButton(_googleIconPath, () {}),
+          buildSocialIconButton(_googleIconPath, () {}),
         ],
       ),
     );
   }
 
-  Container getSocialIconButton(iconPath, press) {
+  Container buildSocialIconButton(iconPath, press) {
     return Container(
       width: 48,
       height: 48,

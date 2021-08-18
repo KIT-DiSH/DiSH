@@ -37,7 +37,7 @@ class _InputFormState extends State<InputForm> {
           width: double.infinity,
           child: Column(
             children: [
-              getTextField(
+              buildTextField(
                 false,
                 _hintMailText,
                 widget.setEmail,
@@ -48,7 +48,7 @@ class _InputFormState extends State<InputForm> {
                 height: 16,
                 width: double.infinity,
               ),
-              getTextField(
+              buildTextField(
                 true,
                 _hintPasswordText,
                 widget.setEmail,
@@ -78,7 +78,7 @@ class _InputFormState extends State<InputForm> {
                           height: 16,
                           width: double.infinity,
                         ),
-                        getTextField(
+                        buildTextField(
                           true,
                           _hintComfirmPasswordText,
                           widget.setConfirmPassword,
@@ -94,7 +94,7 @@ class _InputFormState extends State<InputForm> {
     );
   }
 
-  Container getTextField(
+  Container buildTextField(
     obscureText,
     hintText,
     onChanged,
