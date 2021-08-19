@@ -1,7 +1,15 @@
+import 'package:dish/configs/constant_colors.dart';
 import 'package:flutter/material.dart';
 
-class HashtagList extends StatelessWidget {
-  const HashtagList({Key key}) : super(key: key);
+class HashtagList extends StatefulWidget {
+  HashtagList({Key key}) : super(key: key);
+
+  @override
+  _HashtagListState createState() => _HashtagListState();
+}
+
+class _HashtagListState extends State<HashtagList> {
+  int _selectedIndex = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -27,17 +35,28 @@ class HashtagList extends StatelessWidget {
                   itemCount: 10,
                   separatorBuilder: (_, __) => const SizedBox(width: 8),
                   itemBuilder: (BuildContext context, int index) {
-                    return Align(
-                      child: GestureDetector(
-                        onTap: () {},
-                        child: Chip(
-                          label: Text("aaa"),
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          backgroundColor: Colors.white,
-                          elevation: 2,
-                        ),
+                    return GestureDetector(
+                      onTapDown: (_) {
+                        setState(() {
+                          _selectedIndex = index;
+                        });
+                      },
+                      onTapUp: (_) async {
+                        // Why: 離すのが早すぎると色が変わらないので.1秒遅らせる
+                        await new Future.delayed(
+                          new Duration(milliseconds: 100),
+                        );
+                        setState(() {
+                          _selectedIndex = -1;
+                        });
+                      },
+                      child: Chip(
+                        label: Text("ねぎ"),
+                        backgroundColor: _selectedIndex == index
+                            ? AppColor.kPinkColor.withOpacity(0.7)
+                            : Colors.grey.shade300,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
                       ),
-                      alignment: Alignment.topLeft,
                     );
                   },
                   scrollDirection: Axis.horizontal,

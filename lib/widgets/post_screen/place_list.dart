@@ -1,7 +1,15 @@
+import 'package:dish/configs/constant_colors.dart';
 import 'package:flutter/material.dart';
 
-class PlaceList extends StatelessWidget {
-  const PlaceList({Key key}) : super(key: key);
+class PlaceList extends StatefulWidget {
+  PlaceList({Key key}) : super(key: key);
+
+  @override
+  _PlaceListState createState() => _PlaceListState();
+}
+
+class _PlaceListState extends State<PlaceList> {
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -27,17 +35,18 @@ class PlaceList extends StatelessWidget {
                   itemCount: 10,
                   separatorBuilder: (_, __) => const SizedBox(width: 8),
                   itemBuilder: (BuildContext context, int index) {
-                    return Align(
-                      child: GestureDetector(
-                        onTap: () {},
-                        child: Chip(
-                          label: Text("aaa"),
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          backgroundColor: Colors.white,
-                          elevation: 2,
-                        ),
-                      ),
-                      alignment: Alignment.topLeft,
+                    return FilterChip(
+                      label: Text("Aコーヒー"),
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      selected: index == _selectedIndex,
+                      selectedColor: AppColor.kPinkColor.withOpacity(0.7),
+                      showCheckmark: false,
+                      pressElevation: 1,
+                      onSelected: (selected) {
+                        setState(() {
+                          _selectedIndex = selected ? index : -1;
+                        });
+                      },
                     );
                   },
                   scrollDirection: Axis.horizontal,
