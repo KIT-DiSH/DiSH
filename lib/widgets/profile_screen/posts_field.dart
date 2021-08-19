@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:dish/models/User.dart';
 import 'package:dish/models/Post.dart';
-import 'package:dish/widgets/post_screen/post_card.dart';
+import 'package:dish/widgets/profile_screen/post_card.dart';
 
 class PostsField extends StatefulWidget {
   PostsField({

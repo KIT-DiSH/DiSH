@@ -4,8 +4,8 @@ import 'package:dish/models/User.dart';
 import 'package:dish/models/Post.dart';
 import 'package:dish/widgets/common/footer.dart';
 import 'package:dish/configs/constant_colors.dart';
-import 'package:dish/widgets/post_screen/posts_field.dart';
-import 'package:dish/widgets/post_screen/profile_field.dart';
+import 'package:dish/widgets/profile_screen/posts_field.dart';
+import 'package:dish/widgets/profile_screen/profile_field.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key key}) : super(key: key);
