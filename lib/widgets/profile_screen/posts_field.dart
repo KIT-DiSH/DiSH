@@ -1,3 +1,4 @@
+import 'package:dish/configs/constant_colors.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dish/models/User.dart';
@@ -21,13 +22,12 @@ class PostsField extends StatefulWidget {
 class _PostsFieldState extends State<PostsField> {
   @override
   Widget build(BuildContext context) {
+    final _noPostMessage = "投稿がありません";
     final user = widget.user;
     final posts = widget.posts;
 
-    return Container(
-      child: Column(
-        children: [
-          Container(
+    return posts.length != 0
+        ? Container(
             child: Wrap(
               alignment: WrapAlignment.spaceBetween,
               spacing: 8,
@@ -35,9 +35,18 @@ class _PostsFieldState extends State<PostsField> {
                 return PostCard(user: user, post: post);
               }).toList(),
             ),
-          ),
-        ],
-      ),
-    );
+          )
+        : Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(vertical: 120),
+            child: Text(
+              _noPostMessage,
+              style: TextStyle(
+                fontSize: 16,
+                color: AppColor.kPrimaryTextColor,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          );
   }
 }
