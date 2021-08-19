@@ -1,3 +1,4 @@
+import 'package:dish/widgets/profile_screen/action_button.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +21,7 @@ class _ProfileFieldState extends State<ProfileField> {
   final _postLabel = "投稿";
   final _followerLabel = "フォロワー";
   final _followLabel = "フォロー";
+  final _type = "myself"; // or "followed", "stranger"
 
   @override
   Widget build(BuildContext context) {
@@ -110,28 +112,7 @@ class _ProfileFieldState extends State<ProfileField> {
             ),
           ),
           SizedBox(height: 24),
-          Container(
-            height: 36,
-            width: double.infinity,
-            child: TextButton(
-              child: Text(
-                "フォローする",
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1,
-                ),
-              ),
-              style: TextButton.styleFrom(
-                primary: Colors.white,
-                backgroundColor: AppColor.kPinkColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(3),
-                ),
-              ),
-              onPressed: () {},
-            ),
-          ),
+          ActionButton(userType: _type),
         ],
       ),
     );
