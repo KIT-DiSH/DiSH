@@ -1,9 +1,9 @@
-import 'package:dish/widgets/profile_screen/action_button.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dish/models/User.dart';
 import 'package:dish/configs/constant_colors.dart';
+import 'package:dish/widgets/profile_screen/action_button.dart';
 
 class ProfileField extends StatefulWidget {
   ProfileField({
@@ -21,7 +21,13 @@ class _ProfileFieldState extends State<ProfileField> {
   final _postLabel = "投稿";
   final _followerLabel = "フォロワー";
   final _followLabel = "フォロー";
-  final _type = "myself"; // or "followed", "stranger"
+  String _userType = "myself"; // or "followed", "stranger"
+
+  void setUserType(String userType) {
+    setState(() {
+      _userType = userType;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +36,7 @@ class _ProfileFieldState extends State<ProfileField> {
       padding: EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         children: [
+          // アイコン、投稿・フォロワー・アイコン数
           Container(
             child: Row(
               children: [
@@ -102,6 +109,7 @@ class _ProfileFieldState extends State<ProfileField> {
             ),
           ),
           SizedBox(height: 12),
+          // プロフィールテキスト
           Container(
             child: Text(
               user.profileText,
@@ -112,7 +120,8 @@ class _ProfileFieldState extends State<ProfileField> {
             ),
           ),
           SizedBox(height: 24),
-          ActionButton(userType: _type),
+          // ボタン
+          ActionButton(userType: _userType, setUserType: setUserType),
         ],
       ),
     );

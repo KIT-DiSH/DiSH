@@ -29,6 +29,7 @@ class PostCard extends StatelessWidget {
         width: _cardWidth,
         child: Column(
           children: [
+            // 投稿画像
             ClipRRect(
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(12),
@@ -40,6 +41,7 @@ class PostCard extends StatelessWidget {
               ),
             ),
             SizedBox(height: 8),
+            // アイコン、ユーザー名、星
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Row(
@@ -83,6 +85,7 @@ class PostCard extends StatelessWidget {
               ),
             ),
             SizedBox(height: 8),
+            // 投稿テキスト
             Container(
               width: _cardWidth,
               padding: EdgeInsets.symmetric(
@@ -99,6 +102,7 @@ class PostCard extends StatelessWidget {
               ),
             ),
             SizedBox(height: 8),
+            // いいね数、コメント数、投稿日時
             Container(
               padding: EdgeInsets.symmetric(horizontal: 8),
               child: Row(

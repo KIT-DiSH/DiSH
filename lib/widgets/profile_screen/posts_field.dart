@@ -1,8 +1,8 @@
-import 'package:dish/configs/constant_colors.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dish/models/User.dart';
 import 'package:dish/models/Post.dart';
+import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/profile_screen/post_card.dart';
 
 class PostsField extends StatefulWidget {

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:dish/models/User.dart';
 import 'package:dish/models/Post.dart';
-import 'package:dish/widgets/common/footer.dart';
 import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/profile_screen/posts_field.dart';
 import 'package:dish/widgets/profile_screen/profile_field.dart';
@@ -37,7 +36,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: Footer(),
+      bottomNavigationBar: Container(
+        height: 70,
+        decoration: BoxDecoration(color: Colors.black12),
+        child: Center(child: Text("FOOTER")),
+      ),
     );
   }
 
@@ -56,14 +59,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
           testUser.userId,
           style: TextStyle(
             color: AppColor.kPrimaryTextColor,
-            fontSize: 18,
+            fontSize: 16,
           ),
         ),
         actions: [
           GestureDetector(
             onTap: () {},
             child: Icon(
-              Icons.settings_sharp,
+              Icons.more_horiz,
               color: AppColor.kPrimaryTextColor,
             ),
           ),
