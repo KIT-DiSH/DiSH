@@ -2,23 +2,18 @@ import 'package:dish/widgets/common/image_dialog.dart';
 import 'package:flutter/material.dart';
 
 class ImageList extends StatelessWidget {
-  const ImageList({
-    Key key,
-    @required this.imagePath,
-  }) : super(key: key);
-
-  final imagePath;
+  const ImageList({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final _mediaWidth = MediaQuery.of(context).size.width;
-    final _outerPadding = 16;
+    final _itemCount = 6; // のちにimages.length
 
     return SizedBox(
       height: 80,
-      width: _mediaWidth - _outerPadding * 2,
+      width: _mediaWidth,
       child: ListView.separated(
-        itemCount: 6,
+        itemCount: _itemCount,
         separatorBuilder: (_, __) => const SizedBox(width: 8),
         itemBuilder: (BuildContext context, int index) {
           int imageIndex = index % 3 + 1; // dummy用なので削除
@@ -34,12 +29,18 @@ class ImageList extends StatelessWidget {
                 },
               );
             },
-            child: Image(
-              image: AssetImage(
-                "assets/images/sample$imageIndex.png",
-              ),
-              height: 80,
-              width: 80,
+            child: Row(
+              children: [
+                if (index == 0) SizedBox(width: 16),
+                Image(
+                  image: AssetImage(
+                    "assets/images/sample$imageIndex.png",
+                  ),
+                  height: 80,
+                  width: 80,
+                ),
+                if (index == _itemCount - 1) SizedBox(width: 16),
+              ],
             ),
           );
         },
