@@ -24,7 +24,7 @@ class PostCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {},
-      child: Container(
+      child: SizedBox(
         height: _cardHeight,
         width: _cardWidth,
         child: Column(
@@ -40,9 +40,9 @@ class PostCard extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             // アイコン、ユーザー名、星
-            Container(
+            Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Row(
                 children: [
@@ -69,13 +69,11 @@ class PostCard extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        child: Text(
-                          post.userId,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      Text(
+                        post.userId,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                       _buildEvalStars(),
@@ -84,7 +82,7 @@ class PostCard extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             // 投稿テキスト
             Container(
               width: _cardWidth,
@@ -101,17 +99,17 @@ class PostCard extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             // いいね数、コメント数、投稿日時
-            Container(
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _buildIconWithCounter(_favoLabel, post.favoCount),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   _buildIconWithCounter(_commentLabel, post.commentCount),
-                  Spacer(),
+                  const Spacer(),
                   Text(
                     post.postedDate,
                     style: TextStyle(
@@ -129,35 +127,33 @@ class PostCard extends StatelessWidget {
     );
   }
 
-  Container _buildIconWithCounter(String label, int num) {
-    final _labelMap = {
+  Row _buildIconWithCounter(String label, int num) {
+    final _iconMap = {
       "favorite": Icons.favorite,
       "comment": Icons.comment,
     };
 
-    return Container(
-      child: Row(
-        children: [
-          Icon(
-            _labelMap[label],
-            size: 16,
-            color: Colors.black12,
+    return Row(
+      children: [
+        Icon(
+          _iconMap[label],
+          size: 16,
+          color: Colors.black12,
+        ),
+        const SizedBox(width: 2),
+        Text(
+          NumberFormat.compact().format(num),
+          style: TextStyle(
+            color: AppColor.kPrimaryTextColor,
+            fontSize: 11,
           ),
-          SizedBox(width: 2),
-          Text(
-            NumberFormat.compact().format(num),
-            style: TextStyle(
-              color: AppColor.kPrimaryTextColor,
-              fontSize: 11,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   // 星の表示切替方法は後々検討する
-  Container _buildEvalStars() {
+  Row _buildEvalStars() {
     Icon _getStar(bool isFill) {
       return Icon(
         Icons.star,
@@ -166,16 +162,14 @@ class PostCard extends StatelessWidget {
       );
     }
 
-    return Container(
-      child: Row(
-        children: [
-          _getStar(true),
-          _getStar(true),
-          _getStar(true),
-          _getStar(true),
-          _getStar(true),
-        ],
-      ),
+    return Row(
+      children: [
+        _getStar(true),
+        _getStar(true),
+        _getStar(true),
+        _getStar(true),
+        _getStar(true),
+      ],
     );
   }
 }

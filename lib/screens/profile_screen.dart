@@ -6,32 +6,25 @@ import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/profile_screen/posts_field.dart';
 import 'package:dish/widgets/profile_screen/profile_field.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key key}) : super(key: key);
-
-  @override
-  _ProfileScreenState createState() => _ProfileScreenState();
-}
-
-class _ProfileScreenState extends State<ProfileScreen> {
+class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: Container(
+      body: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: 20,
         ),
         child: ListView(
           children: [
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             ProfileField(user: testUser),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             Divider(
               thickness: 1,
               color: AppColor.kDefaultBorderColor.withOpacity(0.75),
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             PostsField(user: testUser, posts: testPosts),
           ],
         ),
@@ -70,7 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               color: AppColor.kPrimaryTextColor,
             ),
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
         ],
       ),
     );

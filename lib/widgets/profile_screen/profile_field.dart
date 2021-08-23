@@ -32,94 +32,91 @@ class _ProfileFieldState extends State<ProfileField> {
   @override
   Widget build(BuildContext context) {
     final User user = widget.user;
-    return Container(
+
+    return Padding(
       padding: EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         children: [
           // アイコン、投稿・フォロワー・アイコン数
-          Container(
-            child: Row(
-              children: [
-                Column(
-                  children: [
-                    Container(
-                      height: 65,
-                      width: 65,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: AppColor.kPinkColor,
-                          width: 2,
-                        ),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(50)),
-                        child: Image.network(
-                          user.iconImageUrl,
-                          fit: BoxFit.cover,
-                        ),
+          Row(
+            children: [
+              Column(
+                children: [
+                  Container(
+                    height: 65,
+                    width: 65,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: AppColor.kPinkColor,
+                        width: 2,
                       ),
                     ),
-                    SizedBox(height: 8),
-                    Text(
-                      user.userName,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: AppColor.kPrimaryTextColor,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(50)),
+                      child: Image.network(
+                        user.iconImageUrl,
+                        fit: BoxFit.cover,
                       ),
                     ),
-                  ],
-                ),
-                Spacer(flex: 1),
-                Row(
-                  children: [
-                    _buildNumWithLabel(
-                      user.postCount,
-                      _postLabel,
-                      () {},
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    user.userName,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColor.kPrimaryTextColor,
                     ),
-                    SizedBox(
-                      height: 55,
-                      child: VerticalDivider(
-                        thickness: 1,
-                        color: AppColor.kDefaultBorderColor.withOpacity(0.75),
-                      ),
-                    ),
-                    _buildNumWithLabel(
-                      user.followerCount,
-                      _followerLabel,
-                      () {},
-                    ),
-                    SizedBox(
-                      height: 55,
-                      child: VerticalDivider(
-                        thickness: 1,
-                        color: AppColor.kDefaultBorderColor.withOpacity(0.75),
-                      ),
-                    ),
-                    _buildNumWithLabel(
-                      user.followCount,
-                      _followLabel,
-                      () {},
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 12),
-          // プロフィールテキスト
-          Container(
-            child: Text(
-              user.profileText,
-              style: TextStyle(
-                fontSize: 12,
-                color: AppColor.kPrimaryTextColor,
+                  ),
+                ],
               ),
+              const Spacer(flex: 1),
+              Row(
+                children: [
+                  _buildNumWithLabel(
+                    user.postCount,
+                    _postLabel,
+                    () {},
+                  ),
+                  SizedBox(
+                    height: 55,
+                    child: VerticalDivider(
+                      thickness: 1,
+                      color: AppColor.kDefaultBorderColor.withOpacity(0.75),
+                    ),
+                  ),
+                  _buildNumWithLabel(
+                    user.followerCount,
+                    _followerLabel,
+                    () {},
+                  ),
+                  SizedBox(
+                    height: 55,
+                    child: VerticalDivider(
+                      thickness: 1,
+                      color: AppColor.kDefaultBorderColor.withOpacity(0.75),
+                    ),
+                  ),
+                  _buildNumWithLabel(
+                    user.followCount,
+                    _followLabel,
+                    () {},
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          // プロフィールテキスト
+          Text(
+            user.profileText,
+            style: TextStyle(
+              fontSize: 12,
+              color: AppColor.kPrimaryTextColor,
             ),
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
           // ボタン
           ActionButton(userType: _userType, setUserType: setUserType),
         ],
@@ -134,7 +131,7 @@ class _ProfileFieldState extends State<ProfileField> {
   ) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: SizedBox(
         width: 70,
         child: Column(
           children: [
@@ -145,7 +142,7 @@ class _ProfileFieldState extends State<ProfileField> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               label,
               style: TextStyle(
