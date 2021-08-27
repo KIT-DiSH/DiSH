@@ -1,7 +1,8 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import 'package:dish/widgets/common/simple_divider.dart';
 import 'package:dish/widgets/post_screen/image_list.dart';
-import 'package:flutter/material.dart';
-
 import 'package:dish/widgets/post_screen/place_list.dart';
 import 'package:dish/widgets/post_screen/hashtag_list.dart';
 import 'package:dish/widgets/post_screen/star_review.dart';
@@ -57,6 +58,9 @@ class PostScreen extends StatelessWidget {
                           style: Theme.of(context).textTheme.bodyText2,
                           keyboardType: TextInputType.multiline,
                           maxLines: null,
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(250),
+                          ],
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: _hintText,
