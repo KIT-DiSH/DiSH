@@ -19,50 +19,46 @@ class _HashtagListState extends State<HashtagList> {
 
     return Padding(
       padding: const EdgeInsets.only(left: 16),
-      child: Column(
+      child: Row(
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              Text(
-                "タグ",
-                style: Theme.of(context).textTheme.headline6,
-              ),
-              SizedBox(width: 8),
-              SizedBox(
-                height: 40,
-                width: _mediaWidth - _chipListPadding,
-                child: ListView.separated(
-                  itemCount: 10,
-                  separatorBuilder: (_, __) => const SizedBox(width: 8),
-                  itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      onTapDown: (_) {
-                        setState(() {
-                          _selectedIndex = index;
-                        });
-                      },
-                      onTapUp: (_) async {
-                        // Why: 離すのが早すぎると色が変わらないので.1秒遅らせる
-                        await new Future.delayed(
-                          new Duration(milliseconds: 100),
-                        );
-                        setState(() {
-                          _selectedIndex = -1;
-                        });
-                      },
-                      child: Chip(
-                        label: Text("ねぎ"),
-                        backgroundColor: _selectedIndex == index
-                            ? AppColor.kPinkColor.withOpacity(0.7)
-                            : Colors.grey.shade300,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                      ),
-                    );
+          Text(
+            "タグ",
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          SizedBox(width: 8),
+          SizedBox(
+            height: 40,
+            width: _mediaWidth - _chipListPadding,
+            child: ListView.separated(
+              itemCount: 10,
+              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              itemBuilder: (BuildContext context, int index) {
+                return GestureDetector(
+                  onTapDown: (_) {
+                    setState(() {
+                      _selectedIndex = index;
+                    });
                   },
-                  scrollDirection: Axis.horizontal,
-                ),
-              ),
-            ],
+                  onTapUp: (_) async {
+                    // Why: 離すのが早すぎると色が変わらないので.1秒遅らせる
+                    await new Future.delayed(
+                      new Duration(milliseconds: 100),
+                    );
+                    setState(() {
+                      _selectedIndex = -1;
+                    });
+                  },
+                  child: Chip(
+                    label: Text("ねぎ"),
+                    backgroundColor: _selectedIndex == index
+                        ? AppColor.kPinkColor.withOpacity(0.7)
+                        : Colors.grey.shade300,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                  ),
+                );
+              },
+              scrollDirection: Axis.horizontal,
+            ),
           ),
         ],
       ),
