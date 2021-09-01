@@ -29,11 +29,6 @@ class ProfileScreen extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: Container(
-        height: 70,
-        decoration: BoxDecoration(color: Colors.black12),
-        child: Center(child: Text("FOOTER")),
-      ),
     );
   }
 
