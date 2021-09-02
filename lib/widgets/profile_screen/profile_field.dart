@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:dish/models/User.dart';
 import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/profile_screen/action_button.dart';
+import 'package:dish/screens/sample_screens/follow_list_screen.dart';
+import 'package:dish/screens/sample_screens/follower_list_screen.dart';
 
 class ProfileField extends StatefulWidget {
   ProfileField({
@@ -89,7 +91,15 @@ class _ProfileFieldState extends State<ProfileField> {
                   _buildNumWithLabel(
                     user.followerCount,
                     _followerLabel,
-                    () {},
+                    () {
+                      print("Navigate to FollowerListScreen");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) {
+                          return FollowerListScreen();
+                        }),
+                      );
+                    },
                   ),
                   SizedBox(
                     height: 55,
@@ -101,7 +111,15 @@ class _ProfileFieldState extends State<ProfileField> {
                   _buildNumWithLabel(
                     user.followCount,
                     _followLabel,
-                    () {},
+                    () {
+                      print("Navigate to FollowListScreen");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) {
+                          return FollowListScreen();
+                        }),
+                      );
+                    },
                   ),
                 ],
               ),

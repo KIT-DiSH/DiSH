@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:dish/configs/constant_colors.dart';
+import 'package:dish/screens/sample_screens/edit_profile_screen.dart';
 
 class ActionButton extends StatefulWidget {
   ActionButton({
@@ -52,7 +53,13 @@ class _ActionButtonState extends State<ActionButton> {
             ),
             onPressed: () {
               // プロフィール編集画面へ遷移
-              print("edit profile");
+              print("Navigate to EditProfileScreen");
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) {
+                  return EditProfileScreen();
+                }),
+              );
             },
           ),
         );

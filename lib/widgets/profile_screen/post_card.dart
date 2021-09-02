@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:dish/models/User.dart';
 import 'package:dish/models/Post.dart';
 import 'package:dish/configs/constant_colors.dart';
+import 'package:dish/screens/sample_screens/display_posts_screen.dart';
 
 class PostCard extends StatelessWidget {
   const PostCard({
@@ -23,7 +24,16 @@ class PostCard extends StatelessWidget {
     final _commentLabel = "comment";
 
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        // タップした投稿（post_idなど）に応じて画面遷移を行う
+        print("Navigate to DisplayPostsScreen");
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) {
+            return DisplayPostsScreen();
+          }),
+        );
+      },
       child: SizedBox(
         height: _cardHeight,
         width: _cardWidth,
