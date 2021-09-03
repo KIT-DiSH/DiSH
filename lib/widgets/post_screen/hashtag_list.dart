@@ -48,6 +48,11 @@ class _HashtagListState extends State<HashtagList> {
                       _selectedIndex = -1;
                     });
                   },
+                  onTapCancel: () {
+                    setState(() {
+                      _selectedIndex = -1;
+                    });
+                  },
                   child: Chip(
                     label: Text("ねぎ"),
                     backgroundColor: _selectedIndex == index
