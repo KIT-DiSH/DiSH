@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:dish/configs/constant_colors.dart';
-import 'package:dish/widgets/common/image_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
@@ -15,12 +14,14 @@ class ImageList extends StatefulWidget {
 }
 
 class _ImageListState extends State<ImageList> {
-  List<AssetEntity> selectedAssets = [];
+  List<AssetEntity> selectedAssets = []; // AssetPickerの重複制御用
+  List<File> selectedImageFiles = []; // 画像の表示用
 
   @override
   Widget build(BuildContext context) {
     final _mediaWidth = MediaQuery.of(context).size.width;
     final _itemCount = selectedAssets.length + 1; // のちにimages.length
+    List<File> _tmpFiles = [];
 
     return SizedBox(
       height: 80,
@@ -29,8 +30,6 @@ class _ImageListState extends State<ImageList> {
         itemCount: _itemCount,
         separatorBuilder: (_, __) => const SizedBox(width: 8),
         itemBuilder: (BuildContext context, int index) {
-          int imageIndex = index % 3 + 1; // dummy用なので削除
-
           return Row(
             children: [
               if (index == 0) ...[
@@ -41,44 +40,24 @@ class _ImageListState extends State<ImageList> {
                       context,
                       maxAssets: 4,
                       selectedAssets: selectedAssets,
-                      // requestType: RequestType.image,
                       textDelegate: JapaneseTextDelegate(),
                       themeColor: AppColor.kPinkColor,
                       requestType: RequestType.image,
-                      specialItemPosition: SpecialItemPosition.prepend,
-                      specialItemBuilder: (BuildContext context) {
-                        return GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () async {
-                            final AssetEntity result =
-                                await CameraPicker.pickFromCamera(
-                              context,
-                              enableRecording: false,
-                              textDelegate: EnglishCameraPickerTextDelegate(),
-                            );
-                            if (result != null) {
-                              // setState(() {
-                              //   selectedAssets = [...selectedAssets, result];
-                              //   print(selectedAssets);
-                              // });
-                              (BuildContext context, AssetEntity result) =>
-                                  Navigator.of(context).pop(
-                                    <AssetEntity>[...selectedAssets, result],
-                                  );
-                            }
-                          },
-                          child: const Center(
-                            child: Icon(Icons.camera_enhance, size: 42.0),
-                          ),
-                        );
-                      },
                     ).then(
-                      (value) => {
-                        if (value != null)
-                          setState(() {
-                            selectedAssets = value;
-                            print(selectedAssets);
-                          })
+                      (assets) async => {
+                        if (assets != null)
+                          {
+                            await Future.forEach(
+                              assets,
+                              (asset) async {
+                                _tmpFiles.add((await asset.file));
+                              },
+                            ),
+                            setState(() {
+                              selectedAssets = assets;
+                              selectedImageFiles = _tmpFiles;
+                            }),
+                          },
                       },
                     );
                   },
@@ -88,7 +67,7 @@ class _ImageListState extends State<ImageList> {
                       height: 80,
                       width: 80,
                       child: Center(
-                        child: Icon(Icons.camera_enhance, size: 42.0),
+                        child: Icon(Icons.add_photo_alternate, size: 42.0),
                       ),
                       color: AppColor.kDefaultBorderColor,
                     ),
@@ -99,9 +78,7 @@ class _ImageListState extends State<ImageList> {
               if (index != 0)
                 GestureDetector(
                   onTap: () {
-                    selectedAssets[index - 1]
-                        .file
-                        .then((file) => _cropImage(file.path));
+                    _cropImage(index - 1);
 
                     // _cropImage(index - 1);
                     // showDialog(
@@ -115,11 +92,8 @@ class _ImageListState extends State<ImageList> {
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8.0),
-                    child: Image(
-                      image: AssetEntityImageProvider(
-                        selectedAssets[index - 1],
-                        isOriginal: false,
-                      ),
+                    child: Image.file(
+                      selectedImageFiles[index - 1],
                       height: 80,
                       width: 80,
                     ),
@@ -134,16 +108,15 @@ class _ImageListState extends State<ImageList> {
     );
   }
 
-  Future<Null> _cropImage(String path) async {
+  Future<Null> _cropImage(int index) async {
     File croppedFile = await ImageCropper.cropImage(
-      sourcePath: path,
+      sourcePath: (await selectedAssets[index].file).path,
+      aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
     );
     if (croppedFile != null) {
-      // setState(() {
-      //   selectedAssets[0].file.then();
-      // });
-      print(path);
-      print(croppedFile.path);
+      setState(() {
+        selectedImageFiles[index] = croppedFile;
+      });
     }
   }
 }
