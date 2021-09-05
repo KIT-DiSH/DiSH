@@ -1,10 +1,19 @@
 import 'package:dish/configs/constant_colors.dart';
+import 'package:dish/widgets/timeline_screen/expansion_panel.dart';
 import 'package:dish/widgets/timeline_screen/insta_stories.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:readmore/readmore.dart';
+import 'package:dish/widgets/timeline_screen/expansion_panel.dart';
 
-class InstaList extends StatelessWidget {
+class InstaList extends StatefulWidget {
+  @override
+  _InstaListState createState() => _InstaListState();
+}
+
+class _InstaListState extends State<InstaList> {
+  bool _isTextDisplay = false;
+
   @override
   Widget build(BuildContext context) {
     // var devicesize = MediaQuery.of(context).size;
@@ -172,24 +181,43 @@ class InstaList extends StatelessWidget {
                 ),
 
                 // 5th row
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  // child: Text(
-                  //   'テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト',
-                  //   style: TextStyle(
-                  //     fontWeight: FontWeight.bold,
-                  //     fontSize: 10,
-                  //   ),
-                  // ),
-                  child: ReadMoreText(
-                    'Flutter is Google’s mobile UI open source framework to build high-quality native (super fast) interfaces for iOS and Android apps with the unified codebase.',
-                    trimLines: 2,
-                    colorClickableText: Colors.pink,
-                    trimMode: TrimMode.Line,
-                    trimCollapsedText: 'Show more',
-                    trimExpandedText: 'Show less',
-                    moreStyle:
-                        TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                // Padding(
+                //   padding: const EdgeInsets.all(16),
+                //   child: ReadMoreText(
+                //     'テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト',
+                //     trimLines: 2,
+                //     colorClickableText: Colors.blue,
+                //     trimMode: TrimMode.Line,
+                //     trimCollapsedText: 'もっと見る',
+                //     trimExpandedText: '少なく表示',
+                //     moreStyle: TextStyle(
+                //       fontSize: 12,
+                //       color: Colors.black,
+                //     ),
+                //     style: TextStyle(
+                //       color: Colors.black,
+                //       fontSize: 12,
+                //     ),
+                //   ),
+                // ),
+
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _isTextDisplay = !_isTextDisplay;
+                    });
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    child: Text(
+                      'テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト',
+                      maxLines: _isTextDisplay ? 1000 : 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColor.kPrimaryTextColor,
+                      ),
+                    ),
                   ),
                 ),
 
@@ -218,6 +246,82 @@ class InstaList extends StatelessWidget {
                     ],
                   ),
                 ),
+
+                // 7th row
+                // ExpansionPanelDemo(),
+                Container(
+                  child: ExpansionPanelList(
+                    animationDuration: Duration(
+                      milliseconds: 500,
+                    ),
+                    elevation: 1,
+                    expandedHeaderPadding: EdgeInsets.all(8),
+                    children: [
+                      ExpansionPanel(
+                        body: Container(
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 16),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              // コメントの中→このRowをコメント数分だけ
+                              Row(
+                                children: [
+                                  new Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: new BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      image: new DecorationImage(
+                                        fit: BoxFit.fill,
+                                        image: new NetworkImage(
+                                          'https://picsum.photos/40',
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  new SizedBox(
+                                    width: 12,
+                                  ),
+                                  Flexible(
+                                    child: Text(
+                                      'テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト',
+                                      overflow: TextOverflow.visible,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: AppColor.kPrimaryTextColor,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        headerBuilder: (BuildContext context, bool isExpanded) {
+                          return Container(
+                            padding: EdgeInsets.all(12),
+                            child: Text(
+                              'コメント',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 12,
+                              ),
+                            ),
+                          );
+                        },
+                        isExpanded: _isTextDisplay,
+                      ),
+                    ],
+                    expansionCallback: (int item, bool status) {
+                      setState(
+                        () {
+                          _isTextDisplay = !_isTextDisplay;
+                        },
+                      );
+                    },
+                  ),
+                )
               ],
             ),
     );
