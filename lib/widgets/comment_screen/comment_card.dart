@@ -39,7 +39,7 @@ class CommentCard extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Flexible(
             child: Container(
               child: Column(
@@ -53,7 +53,7 @@ class CommentCard extends StatelessWidget {
                       fontSize: 12,
                     ),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
                     _commentText,
                     style: TextStyle(
@@ -61,12 +61,15 @@ class CommentCard extends StatelessWidget {
                       color: AppColor.kPrimaryTextColor,
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       GestureDetector(
                         onTap: () {
+                          // 返信処理を実装する
+                          // コメント入力フォームにメンションを付けるだけにするかも
+                          // 返信の必要性が怪しければ除去する可能性もあり
                           print("Tap reply button");
                         },
                         child: Row(
@@ -77,7 +80,7 @@ class CommentCard extends StatelessWidget {
                               size: 18,
                               color: Colors.black26,
                             ),
-                            SizedBox(width: 2),
+                            const SizedBox(width: 2),
                             Text(
                               _replyText,
                               style: TextStyle(
@@ -89,7 +92,7 @@ class CommentCard extends StatelessWidget {
                           ],
                         ),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       Text(
                         _dateTime,
                         style: TextStyle(

@@ -13,6 +13,11 @@ class _CommentScreenState extends State<CommentScreen> {
   final _postButtonText = "投稿する";
   final _hintText = "コメントを追加";
   final _commentController = TextEditingController();
+  List _commentCards = [
+    CommentCard(),
+    CommentCard(),
+  ];
+  final _isMyComment = true;
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +29,34 @@ class _CommentScreenState extends State<CommentScreen> {
           child: Column(
             children: [
               Expanded(
-                child: ListView(
-                  children: [
-                    CommentCard(),
-                    CommentCard(),
-                  ],
+                child: ListView.builder(
+                  itemCount: _commentCards.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    // 便宜上 _isMyComment という変数を用いている
+                    // データ構造に基づいて後々変更する
+                    return _isMyComment
+                        ? Dismissible(
+                            child: _commentCards[index],
+                            background: Container(
+                              alignment: Alignment.centerRight,
+                              padding: EdgeInsets.symmetric(horizontal: 30),
+                              color: Colors.redAccent,
+                              child: Icon(
+                                Icons.delete,
+                                color: Colors.white,
+                              ),
+                            ),
+                            direction: DismissDirection.endToStart,
+                            key: ValueKey<CommentCard>(_commentCards[index]),
+                            onDismissed: (DismissDirection direction) {
+                              setState(() {
+                                _commentCards.removeAt(index);
+                              });
+                            },
+                            confirmDismiss: _confirmDelete,
+                          )
+                        : _commentCards[index];
+                  },
                 ),
               ),
               Divider(
@@ -60,12 +88,9 @@ class _CommentScreenState extends State<CommentScreen> {
                           counterText: "",
                         ),
                         style: TextStyle(fontSize: 12),
-                        onChanged: (String value) {
-                          setState(() {});
-                        },
                       ),
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     SizedBox(
                       height: 35,
                       width: 70,
@@ -79,14 +104,24 @@ class _CommentScreenState extends State<CommentScreen> {
                         ),
                         style: TextButton.styleFrom(
                           primary: Colors.white,
-                          backgroundColor: AppColor.kPinkColor,
+                          backgroundColor: _commentController.text != ""
+                              ? AppColor.kPinkColor
+                              : AppColor.kPinkColor.withOpacity(0.6),
                           padding: EdgeInsets.all(0),
                         ),
-                        onPressed: () {
-                          // コメント投稿処理を記述
-                          _commentController.text = "";
-                          FocusScope.of(context).unfocus();
-                        },
+                        onPressed: _commentController.text != ""
+                            ? () {
+                                // コメント投稿処理を記述
+                                setState(() {
+                                  // 仮のコード
+                                  _commentCards.add(CommentCard());
+                                });
+                                print("Add new comment: " +
+                                    _commentController.text);
+                                _commentController.text = "";
+                                FocusScope.of(context).unfocus();
+                              }
+                            : null,
                       ),
                     ),
                   ],
@@ -96,6 +131,32 @@ class _CommentScreenState extends State<CommentScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<bool> _confirmDelete(DismissDirection direction) async {
+    const _alertTitle = "確認";
+    const _alertContent = "コメントを削除しますか？";
+    const _deleteText = "削除";
+    const _cancelText = "キャンセル";
+
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(_alertTitle),
+          content: const Text(_alertContent),
+          actions: <Widget>[
+            TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text(_deleteText)),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text(_cancelText),
+            ),
+          ],
+        );
+      },
     );
   }
 
