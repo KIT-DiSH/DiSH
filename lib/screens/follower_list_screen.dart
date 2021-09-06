@@ -27,11 +27,6 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: Container(
-        height: 70,
-        decoration: BoxDecoration(color: Colors.black12),
-        child: Center(child: Text("footer")),
-      ),
     );
   }
 
