@@ -5,6 +5,52 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:readmore/readmore.dart';
 import 'package:dish/widgets/timeline_screen/expansion_panel.dart';
+import 'package:dish/configs/constant_colors.dart';
+
+class User {
+  String id;
+  String name;
+  String imageUrl;
+
+  User({
+    this.id,
+    this.name,
+    this.imageUrl,
+  });
+}
+
+class Comment {
+  User user;
+  String text;
+
+  Comment({
+    this.user,
+    this.text,
+  });
+}
+
+class PostModel {
+  bool isTextExpanded;
+  bool isCommentExpanded;
+  int star;
+  // ここは本当はユーザーモデル
+  User user;
+  String shop;
+  String discription;
+  String tags;
+  String map;
+
+  PostModel({
+    this.isTextExpanded: false,
+    this.isCommentExpanded: false,
+    this.star,
+    this.user,
+    this.shop,
+    this.discription,
+    this.tags,
+    this.map,
+  });
+}
 
 class InstaList extends StatefulWidget {
   @override
@@ -34,43 +80,6 @@ class _InstaListState extends State<InstaList> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // 1st row
-                // Padding(
-                //   padding: const EdgeInsets.fromLTRB(16, 16, 8, 16),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     children: [
-                //       Row(
-                //         children: [
-                //           new Container(
-                //             height: 40,
-                //             width: 40,
-                //             decoration: new BoxDecoration(
-                //               shape: BoxShape.circle,
-                //               image: new DecorationImage(
-                //                 fit: BoxFit.fill,
-                //                 image: new NetworkImage(
-                //                     'https://picsum.photos/60'),
-                //               ),
-                //             ),
-                //           ),
-                //           new SizedBox(
-                //             width: 10,
-                //           ),
-                //           new Text(
-                //             "kaito",
-                //             style: TextStyle(fontWeight: FontWeight.bold),
-                //           )
-                //         ],
-                //       ),
-                //       new IconButton(
-                //         icon: Icon(Icons.more_vert),
-                //         onPressed: () {},
-                //       )
-                //     ],
-                //   ),
-                // ),
-
-                // 2nd row
                 Flexible(
                   fit: FlexFit.loose,
                   child: new Image.network(
@@ -79,7 +88,7 @@ class _InstaListState extends State<InstaList> {
                   ),
                 ),
 
-                // 3rd row
+                // 2nd row
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                   child: Row(
@@ -154,7 +163,7 @@ class _InstaListState extends State<InstaList> {
                   ),
                 ),
 
-                // 4th row
+                // 3rd row
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                   child: Row(
@@ -181,27 +190,7 @@ class _InstaListState extends State<InstaList> {
                   ),
                 ),
 
-                // 5th row
-                // Padding(
-                //   padding: const EdgeInsets.all(16),
-                //   child: ReadMoreText(
-                //     'テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト',
-                //     trimLines: 2,
-                //     colorClickableText: Colors.blue,
-                //     trimMode: TrimMode.Line,
-                //     trimCollapsedText: 'もっと見る',
-                //     trimExpandedText: '少なく表示',
-                //     moreStyle: TextStyle(
-                //       fontSize: 12,
-                //       color: Colors.black,
-                //     ),
-                //     style: TextStyle(
-                //       color: Colors.black,
-                //       fontSize: 12,
-                //     ),
-                //   ),
-                // ),
-
+                // 4th row
                 GestureDetector(
                   onTap: () {
                     setState(() {
@@ -222,7 +211,7 @@ class _InstaListState extends State<InstaList> {
                   ),
                 ),
 
-                // 6th row
+                // 5th row
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
                   child: Row(
@@ -248,17 +237,18 @@ class _InstaListState extends State<InstaList> {
                   ),
                 ),
 
-                // 7th row
-                // ExpansionPanelDemo(),
+                // 6th row
                 Container(
                   child: ExpansionPanelList(
                     animationDuration: Duration(
                       milliseconds: 500,
                     ),
                     elevation: 1,
+                    dividerColor: Color(0xFFF8FAF8),
                     expandedHeaderPadding: EdgeInsets.all(8),
                     children: [
                       ExpansionPanel(
+                        backgroundColor: Color(0xFFF8FAF8),
                         body: Container(
                           padding: EdgeInsets.fromLTRB(16, 8, 16, 16),
                           child: Column(
@@ -364,7 +354,7 @@ class _InstaListState extends State<InstaList> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  // 下からコメントを生やす
+                                  // コメントページに遷移
                                 },
                                 child: const Text(
                                   'コメントを全て見る',
@@ -399,7 +389,7 @@ class _InstaListState extends State<InstaList> {
                                     ),
                                   ),
                                   onPressed: () {
-                                    // 下からコメントを生やす
+                                    // コメントページに遷移
                                   },
                                 ),
                               ),
