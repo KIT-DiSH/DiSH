@@ -64,7 +64,9 @@ class _PostScreenState extends State<PostScreen> {
                 Icons.check,
                 color: AppColor.kPinkColor,
               ),
-              onPressed: () {},
+              onPressed: () {
+                // ここで投稿作成の処理
+              },
             ),
           ],
         ),
