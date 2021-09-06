@@ -13,6 +13,7 @@ class InstaList extends StatefulWidget {
 
 class _InstaListState extends State<InstaList> {
   bool _isTextDisplay = false;
+  bool _isCommentDisplay = false;
 
   @override
   Widget build(BuildContext context) {
@@ -266,6 +267,7 @@ class _InstaListState extends State<InstaList> {
                             children: <Widget>[
                               // コメントの中→このRowをコメント数分だけ
                               Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   new Container(
                                     height: 40,
@@ -284,16 +286,122 @@ class _InstaListState extends State<InstaList> {
                                     width: 12,
                                   ),
                                   Flexible(
-                                    child: Text(
-                                      'テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト',
-                                      overflow: TextOverflow.visible,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: AppColor.kPrimaryTextColor,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _isCommentDisplay =
+                                              !_isCommentDisplay;
+                                        });
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            16, 8, 16, 8),
+                                        child: Text(
+                                          'テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト',
+                                          maxLines:
+                                              _isCommentDisplay ? 1000 : 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: AppColor.kPrimaryTextColor,
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  new Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: new BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      image: new DecorationImage(
+                                        fit: BoxFit.fill,
+                                        image: new NetworkImage(
+                                          'https://picsum.photos/40',
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  new SizedBox(
+                                    width: 12,
+                                  ),
+                                  Flexible(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _isCommentDisplay =
+                                              !_isCommentDisplay;
+                                        });
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            16, 8, 16, 8),
+                                        child: Text(
+                                          'テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト',
+                                          maxLines:
+                                              _isCommentDisplay ? 1000 : 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: AppColor.kPrimaryTextColor,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  textStyle: const TextStyle(
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  // 下からコメントを生やす
+                                },
+                                child: const Text(
+                                  'コメントを全て見る',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+
+                              // Flutter1.22以降のみ
+                              SizedBox(
+                                width: double.infinity,
+                                child: OutlinedButton(
+                                  child: const Text(
+                                    'コメントをしてみましょう',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  style: ButtonStyle(
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          18.0,
+                                        ),
+                                        side: BorderSide(
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    // 下からコメントを生やす
+                                  },
+                                ),
                               ),
                             ],
                           ),
