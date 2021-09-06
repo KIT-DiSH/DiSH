@@ -4,8 +4,8 @@ import 'package:dish/configs/constant_colors.dart';
 
 class SwitchTabButton extends StatefulWidget {
   const SwitchTabButton({
-    Key key,
-    @required this.switchTab,
+    Key? key,
+    required this.switchTab,
   }) : super(key: key);
 
   final ValueChanged<String> switchTab;
