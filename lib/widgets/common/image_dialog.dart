@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ImageDialog extends StatelessWidget {
   const ImageDialog({
-    Key key,
+    Key? key,
     @required this.imagePath,
   }) : super(key: key);
 

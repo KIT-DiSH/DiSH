@@ -1,3 +1,4 @@
+import 'package:dish/plugins/rich_text_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -8,14 +9,46 @@ import 'package:dish/widgets/post_screen/hashtag_list.dart';
 import 'package:dish/widgets/post_screen/star_review.dart';
 import 'package:dish/configs/constant_colors.dart';
 
-class PostScreen extends StatelessWidget {
-  const PostScreen({Key key}) : super(key: key);
+class PostScreen extends StatefulWidget {
+  const PostScreen({Key? key}) : super(key: key);
+
+  @override
+  _PostScreenState createState() => _PostScreenState();
+}
+
+class _PostScreenState extends State<PostScreen> {
+  late RichTextController _postTextController;
+
+  String restaurantName = "";
+
+  @override
+  void initState() {
+    _postTextController = RichTextController(
+      patternMap: {
+        RegExp(r"#\S*"): TextStyle(color: AppColor.kPinkColor),
+      },
+      // onMatch: () {print("#だよ");},
+    );
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final _titleText = "新規投稿";
     final _hintText = "投稿文を書く";
-    final _restaurantName = "";
+
+    void changeResName(String name) {
+      setState(() {
+        restaurantName = name;
+      });
+    }
+
+    void addHashtag(String name) {
+      setState(() {
+        //if (_postTextController.text.length)
+        _postTextController.text += (name + " ");
+      });
+    }
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -47,17 +80,19 @@ class PostScreen extends StatelessWidget {
                       Container(
                         width: double.infinity,
                         child: Text(
-                          _restaurantName != "" ? _restaurantName : "店名",
+                          restaurantName != "" ? restaurantName : "店名",
                           textAlign: TextAlign.left,
                           style: Theme.of(context).textTheme.headline6,
                         ),
                       ),
+                      const SizedBox(height: 8),
                       Container(
                         height: 200,
                         child: TextField(
                           style: Theme.of(context).textTheme.bodyText2,
                           keyboardType: TextInputType.multiline,
-                          maxLines: null,
+                          maxLines: 100,
+                          controller: _postTextController,
                           inputFormatters: [
                             LengthLimitingTextInputFormatter(250),
                           ],
@@ -75,9 +110,9 @@ class PostScreen extends StatelessWidget {
                 ImageList(),
                 const SizedBox(height: 8),
                 SimpleDivider(),
-                HashtagList(),
+                HashtagList(emitHashtag: addHashtag),
                 SimpleDivider(),
-                PlaceList(),
+                PlaceList(emitRestaurantName: changeResName),
                 SimpleDivider(),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),

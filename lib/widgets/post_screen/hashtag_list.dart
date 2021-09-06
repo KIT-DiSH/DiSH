@@ -1,8 +1,11 @@
-import 'package:dish/configs/constant_colors.dart';
+import 'package:dish/dummy/dummy_hashtags.dart';
 import 'package:flutter/material.dart';
 
+import 'package:dish/configs/constant_colors.dart';
+
 class HashtagList extends StatefulWidget {
-  HashtagList({Key key}) : super(key: key);
+  final emitHashtag;
+  HashtagList({Key? key, this.emitHashtag}) : super(key: key);
 
   @override
   _HashtagListState createState() => _HashtagListState();
@@ -30,7 +33,7 @@ class _HashtagListState extends State<HashtagList> {
             height: 40,
             width: _mediaWidth - _chipListPadding,
             child: ListView.separated(
-              itemCount: 10,
+              itemCount: dummyHashtags.length,
               separatorBuilder: (_, __) => const SizedBox(width: 8),
               itemBuilder: (BuildContext context, int index) {
                 return GestureDetector(
@@ -38,6 +41,7 @@ class _HashtagListState extends State<HashtagList> {
                     setState(() {
                       _selectedIndex = index;
                     });
+                    widget.emitHashtag(dummyHashtags[index]);
                   },
                   onTapUp: (_) async {
                     // Why: 離すのが早すぎると色が変わらないので.1秒遅らせる
@@ -54,7 +58,7 @@ class _HashtagListState extends State<HashtagList> {
                     });
                   },
                   child: Chip(
-                    label: Text("ねぎ"),
+                    label: Text(dummyHashtags[index]),
                     backgroundColor: _selectedIndex == index
                         ? AppColor.kPinkColor.withOpacity(0.7)
                         : Colors.grey.shade300,

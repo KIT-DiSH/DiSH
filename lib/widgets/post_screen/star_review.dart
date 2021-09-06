@@ -4,7 +4,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class StarReview extends StatefulWidget {
   StarReview({
-    Key key,
+    Key? key,
     @required this.sectionName,
   }) : super(key: key);
   final sectionName;
@@ -14,7 +14,7 @@ class StarReview extends StatefulWidget {
 }
 
 class _StarReviewState extends State<StarReview> {
-  double _rating;
+  late double _rating;
   double _initialRating = 2.0;
 
   @override

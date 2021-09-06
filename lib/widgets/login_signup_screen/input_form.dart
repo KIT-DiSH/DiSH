@@ -4,11 +4,11 @@ import 'package:dish/configs/constant_colors.dart';
 
 class InputForm extends StatefulWidget {
   InputForm({
-    Key key,
-    @required this.selectedTab,
-    @required this.setEmail,
-    @required this.setPassword,
-    @required this.setConfirmPassword,
+    Key? key,
+    required this.selectedTab,
+    required this.setEmail,
+    required this.setPassword,
+    required this.setConfirmPassword,
   }) : super(key: key);
 
   final String selectedTab;

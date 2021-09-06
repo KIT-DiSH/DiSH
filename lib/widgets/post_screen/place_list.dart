@@ -1,15 +1,18 @@
 import 'package:dish/configs/constant_colors.dart';
+import 'package:dish/dummy/dummy_places.dart';
 import 'package:flutter/material.dart';
 
 class PlaceList extends StatefulWidget {
-  PlaceList({Key key}) : super(key: key);
+  final emitRestaurantName;
+  PlaceList({Key? key, required Function this.emitRestaurantName})
+      : super(key: key);
 
   @override
   _PlaceListState createState() => _PlaceListState();
 }
 
 class _PlaceListState extends State<PlaceList> {
-  int _selectedIndex = 0;
+  int _selectedIndex = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +35,11 @@ class _PlaceListState extends State<PlaceList> {
                 height: 40,
                 width: _mediaWidth - _chipListPadding,
                 child: ListView.separated(
-                  itemCount: 10,
+                  itemCount: dummyPlaces.length,
                   separatorBuilder: (_, __) => const SizedBox(width: 8),
                   itemBuilder: (BuildContext context, int index) {
                     return FilterChip(
-                      label: Text("Aコーヒー"),
+                      label: Text(dummyPlaces[index]),
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       selected: index == _selectedIndex,
                       selectedColor: AppColor.kPinkColor.withOpacity(0.7),
@@ -46,6 +49,7 @@ class _PlaceListState extends State<PlaceList> {
                         setState(() {
                           _selectedIndex = selected ? index : -1;
                         });
+                        widget.emitRestaurantName(dummyPlaces[index]);
                       },
                     );
                   },

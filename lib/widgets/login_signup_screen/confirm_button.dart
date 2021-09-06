@@ -4,9 +4,9 @@ import 'package:dish/configs/constant_colors.dart';
 
 class ConfirmButton extends StatelessWidget {
   const ConfirmButton({
-    Key key,
-    @required this.selectedTab,
-    @required this.press,
+    Key? key,
+    required this.selectedTab,
+    required this.press,
   }) : super(key: key);
 
   final String selectedTab;

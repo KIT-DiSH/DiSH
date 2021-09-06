@@ -7,7 +7,7 @@ import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 
 class ImageList extends StatefulWidget {
-  ImageList({Key key}) : super(key: key);
+  ImageList({Key? key}) : super(key: key);
 
   @override
   _ImageListState createState() => _ImageListState();
@@ -49,8 +49,8 @@ class _ImageListState extends State<ImageList> {
                           {
                             await Future.forEach(
                               assets,
-                              (asset) async {
-                                _tmpFiles.add((await asset.file));
+                              (AssetEntity asset) async {
+                                _tmpFiles.add((await asset.file)!);
                               },
                             ),
                             setState(() {
@@ -109,8 +109,8 @@ class _ImageListState extends State<ImageList> {
   }
 
   Future<Null> _cropImage(int index) async {
-    File croppedFile = await ImageCropper.cropImage(
-      sourcePath: (await selectedAssets[index].file).path,
+    File? croppedFile = await ImageCropper.cropImage(
+      sourcePath: (await selectedAssets[index].file)!.path,
       aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
     );
     if (croppedFile != null) {
