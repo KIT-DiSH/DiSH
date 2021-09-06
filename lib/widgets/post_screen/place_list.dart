@@ -49,7 +49,8 @@ class _PlaceListState extends State<PlaceList> {
                         setState(() {
                           _selectedIndex = selected ? index : -1;
                         });
-                        widget.emitRestaurantName(dummyPlaces[index]);
+                        var _resName = selected ? dummyPlaces[index] : "";
+                        widget.emitRestaurantName(_resName);
                       },
                     );
                   },
