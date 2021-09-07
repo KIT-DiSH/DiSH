@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:dish/configs/constant_colors.dart';
 
 class UserCard extends StatefulWidget {
+  const UserCard({Key? key}) : super(key: key);
+
   @override
   _UserCardState createState() => _UserCardState();
 }
@@ -42,7 +44,7 @@ class _UserCardState extends State<UserCard> {
               ),
             ),
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,

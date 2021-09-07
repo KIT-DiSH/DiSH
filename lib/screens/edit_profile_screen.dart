@@ -3,18 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:dish/configs/constant_colors.dart';
 
 class EditProfileScreen extends StatefulWidget {
+  const EditProfileScreen({Key? key}) : super(key: key);
+
   @override
   _EditProfileScreenState createState() => _EditProfileScreenState();
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  String _userName;
-  String _userId;
-  String _biography;
+  final _userNameController = TextEditingController(text: "苗字名前");
+  final _userIdController = TextEditingController(text: "sample_id");
+  final _biographyController = TextEditingController(text: "GG Guys.");
 
   @override
   Widget build(BuildContext context) {
     final _width = MediaQuery.of(context).size.width;
+    final _changeIconLabel = "アイコンを変更する";
+    final _userNameLabel = "名前";
+    final _userIdLabel = "ユーザーID";
+    final _biographyLabel = "自己紹介";
 
     return Scaffold(
       appBar: _buildAppBar(),
@@ -56,7 +62,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         // 画像を選択する処理
                       },
                       child: Text(
-                        "アイコンを変更する",
+                        _changeIconLabel,
                         style: TextStyle(
                           color: AppColor.kPrimaryTextColor.withOpacity(0.75),
                           fontSize: 13,
@@ -73,22 +79,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 color: AppColor.kDefaultBorderColor.withOpacity(0.75),
               ),
               // 名前変更エリア
-              _buildLabelWithTextField("名前", _width, (String value) {
-                setState(() {
-                  _userName = value;
-                });
-              }),
+              _buildLabelWithTextField(
+                  _userNameLabel, _width, _userNameController),
               Divider(
                 height: 1,
                 thickness: 1,
                 color: AppColor.kDefaultBorderColor.withOpacity(0.75),
               ),
               // ユーザーID変更エリア
-              _buildLabelWithTextField("ユーザーID", _width, (String value) {
-                setState(() {
-                  _userId = value;
-                });
-              }),
+              _buildLabelWithTextField(_userIdLabel, _width, _userIdController),
               Divider(
                 height: 1,
                 thickness: 1,
@@ -106,7 +105,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: Text(
-                        "自己紹介",
+                        _biographyLabel,
                         style: TextStyle(
                           fontSize: 14,
                         ),
@@ -123,11 +122,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           maxLength: 200,
                           decoration: InputDecoration.collapsed(hintText: ""),
                           style: TextStyle(fontSize: 14),
-                          onChanged: (String value) {
-                            setState(() {
-                              _biography = value;
-                            });
-                          },
+                          controller: _biographyController,
                         ),
                       ),
                     ),
@@ -149,7 +144,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Container _buildLabelWithTextField(
     String _label,
     double _width,
-    void Function(String) _onChanged,
+    TextEditingController _controller,
   ) {
     return Container(
       height: 56,
@@ -172,9 +167,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           SizedBox(
             width: _width * 0.65 - 25,
             child: TextField(
-              decoration: InputDecoration.collapsed(hintText: _label),
+              decoration: InputDecoration.collapsed(
+                hintText: _label,
+                hintStyle: TextStyle(
+                  color: AppColor.kPrimaryTextColor.withOpacity(0.6),
+                ),
+              ),
               style: TextStyle(fontSize: 14),
-              onChanged: _onChanged,
+              controller: _controller,
             ),
           ),
         ],
@@ -183,6 +183,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   PreferredSize _buildAppBar() {
+    const _preserveText = "保存";
+
     return PreferredSize(
       preferredSize: Size.fromHeight(50.0),
       child: AppBar(
@@ -198,7 +200,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             margin: EdgeInsets.symmetric(vertical: 9),
             child: TextButton(
               child: Text(
-                "保存",
+                _preserveText,
                 style: TextStyle(
                   fontSize: 14,
                 ),
@@ -208,7 +210,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 backgroundColor: AppColor.kPinkColor,
                 padding: EdgeInsets.all(0),
               ),
-              onPressed: () {},
+              onPressed: () {
+                // プロフィール編集処理
+                print(_userNameController.text);
+                print(_userIdController.text);
+                print(_biographyController.text);
+              },
             ),
           ),
           const SizedBox(width: 12),

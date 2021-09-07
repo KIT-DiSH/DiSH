@@ -43,7 +43,7 @@ class SettingScreen extends StatelessWidget {
               color: AppColor.kPrimaryTextColor,
             ),
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
         ],
       ),
     );

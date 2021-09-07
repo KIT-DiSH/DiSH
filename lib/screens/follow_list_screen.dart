@@ -4,6 +4,8 @@ import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/follow_follower_list_screen/user_card.dart';
 
 class FollowListScreen extends StatefulWidget {
+  const FollowListScreen({Key? key}) : super(key: key);
+
   @override
   _FollowListScreenState createState() => _FollowListScreenState();
 }
@@ -56,7 +58,7 @@ class _FollowListScreenState extends State<FollowListScreen> {
               color: AppColor.kPrimaryTextColor,
             ),
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
         ],
       ),
     );
