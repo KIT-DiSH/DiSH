@@ -1,6 +1,4 @@
 import 'package:dish/configs/constant_colors.dart';
-import 'package:dish/widgets/timeline_screen/expansion_panel.dart';
-import 'package:dish/widgets/timeline_screen/insta_stories.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dish/configs/constant_colors.dart';
@@ -12,9 +10,9 @@ class User {
   String imageUrl;
 
   User({
-    this.id,
-    this.name,
-    this.imageUrl,
+    required this.id,
+    required this.name,
+    required this.imageUrl,
   });
 }
 
@@ -23,8 +21,8 @@ class Comment {
   String text;
 
   Comment({
-    this.user,
-    this.text,
+    required this.user,
+    required this.text,
   });
 }
 
@@ -43,14 +41,14 @@ class PostModel {
   PostModel({
     this.isTextExpanded: false,
     this.isCommentExpanded: false,
-    this.star,
-    this.image,
-    this.user,
-    this.shop,
-    this.discription,
-    this.tags,
-    this.map,
-    this.comments,
+    required this.star,
+    required this.image,
+    required this.user,
+    required this.shop,
+    required this.discription,
+    required this.tags,
+    required this.map,
+    required this.comments,
   });
 }
 
