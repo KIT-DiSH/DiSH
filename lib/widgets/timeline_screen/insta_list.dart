@@ -32,7 +32,6 @@ class PostModel {
   bool isCommentExpanded;
   int star;
   String image;
-  // ここは本当はユーザーモデル
   User user;
   String shop;
   String discription;
@@ -270,7 +269,7 @@ class _InstaListState extends State<InstaList> {
 
           // 5th row
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             child: Row(
               children: [
                 Text(
@@ -288,146 +287,165 @@ class _InstaListState extends State<InstaList> {
           ),
 
           // 6th row
-          Container(
-            child: ExpansionPanelList(
-              animationDuration: Duration(
-                milliseconds: 500,
-              ),
-              elevation: 1,
-              dividerColor: Color(0xFFF8FAF8),
-              expandedHeaderPadding: EdgeInsets.all(8),
-              children: [
-                ExpansionPanel(
-                  backgroundColor: Color(0xFFF8FAF8),
-                  body: Container(
-                    padding: EdgeInsets.fromLTRB(16, 8, 16, 16),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        // コメントの中→このRowをコメント数分だけ
-                        for (int i = 0; i < 2; i++)
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              new Container(
-                                height: 40,
-                                width: 40,
-                                decoration: new BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: new DecorationImage(
-                                    fit: BoxFit.fill,
-                                    image: new NetworkImage(
-                                      posts[index].comments[i].user.imageUrl,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              new SizedBox(
-                                width: 12,
-                              ),
-                              Flexible(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      posts[index].isCommentExpanded =
-                                          !posts[index].isCommentExpanded;
-                                    });
-                                  },
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                                    child: Text(
-                                      posts[index].comments[i].text,
-                                      maxLines: posts[index].isCommentExpanded
-                                          ? 1000
-                                          : 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: AppColor.kPrimaryTextColor,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            textStyle: const TextStyle(
-                              fontSize: 12,
-                            ),
-                          ),
-                          onPressed: () {
-                            // コメントページに遷移
-                          },
-                          child: const Text(
-                            'コメントを全て見る',
-                            style: TextStyle(
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
-
-                        // Flutter1.22以降のみ
-                        SizedBox(
-                          width: double.infinity,
-                          child: OutlinedButton(
-                            child: const Text(
-                              'コメントをしてみましょう',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 12,
-                              ),
-                            ),
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    18.0,
-                                  ),
-                                  side: BorderSide(
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            onPressed: () {
-                              // コメントページに遷移
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  headerBuilder: (BuildContext context, bool isExpanded) {
-                    return Container(
-                      padding: EdgeInsets.all(12),
-                      child: Text(
-                        'コメント',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 12,
-                        ),
-                      ),
-                    );
-                  },
-                  isExpanded: posts[index].isCommentExpanded,
+          GestureDetector(
+            onTap: () {
+              // コメント画面に遷移
+              print('コメント画面に遷移');
+            },
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+              child: Text(
+                'コメントを全て見る',
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
                 ),
-              ],
-              expansionCallback: (int item, bool status) {
-                setState(
-                  () {
-                    posts[index].isCommentExpanded =
-                        !posts[index].isCommentExpanded;
-                  },
-                );
-              },
+              ),
             ),
-          )
+          ),
+
+          // 7th row
+          // Container(
+          //   child: ExpansionPanelList(
+          //     animationDuration: Duration(
+          //       milliseconds: 500,
+          //     ),
+          //     elevation: 1,
+          //     dividerColor: Color(0xFFF8FAF8),
+          //     expandedHeaderPadding: EdgeInsets.all(8),
+          //     children: [
+          //       ExpansionPanel(
+          //         backgroundColor: Color(0xFFF8FAF8),
+          //         body: Container(
+          //           padding: EdgeInsets.fromLTRB(16, 8, 16, 16),
+          //           child: Column(
+          //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //             crossAxisAlignment: CrossAxisAlignment.start,
+          //             children: <Widget>[
+          //               // コメントの中→このRowをコメント数分だけ
+          //               for (int i = 0; i < 2; i++)
+          //                 Row(
+          //                   mainAxisAlignment: MainAxisAlignment.start,
+          //                   children: [
+          //                     new Container(
+          //                       height: 40,
+          //                       width: 40,
+          //                       decoration: new BoxDecoration(
+          //                         shape: BoxShape.circle,
+          //                         image: new DecorationImage(
+          //                           fit: BoxFit.fill,
+          //                           image: new NetworkImage(
+          //                             posts[index].comments[i].user.imageUrl,
+          //                           ),
+          //                         ),
+          //                       ),
+          //                     ),
+          //                     new SizedBox(
+          //                       width: 12,
+          //                     ),
+          //                     Flexible(
+          //                       child: GestureDetector(
+          //                         onTap: () {
+          //                           setState(() {
+          //                             posts[index].isCommentExpanded =
+          //                                 !posts[index].isCommentExpanded;
+          //                           });
+          //                         },
+          //                         child: Padding(
+          //                           padding:
+          //                               const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          //                           child: Text(
+          //                             posts[index].comments[i].text,
+          //                             maxLines: posts[index].isCommentExpanded
+          //                                 ? 1000
+          //                                 : 2,
+          //                             overflow: TextOverflow.ellipsis,
+          //                             style: TextStyle(
+          //                               fontSize: 12,
+          //                               color: AppColor.kPrimaryTextColor,
+          //                             ),
+          //                           ),
+          //                         ),
+          //                       ),
+          //                     ),
+          //                   ],
+          //                 ),
+
+          //               TextButton(
+          //                 style: TextButton.styleFrom(
+          //                   textStyle: const TextStyle(
+          //                     fontSize: 12,
+          //                   ),
+          //                 ),
+          //                 onPressed: () {
+          //                   // コメントページに遷移
+          //                 },
+          //                 child: const Text(
+          //                   'コメントを全て見る',
+          //                   style: TextStyle(
+          //                     color: Colors.grey,
+          //                   ),
+          //                 ),
+          //               ),
+
+          //               // Flutter1.22以降のみ
+          //               SizedBox(
+          //                 width: double.infinity,
+          //                 child: OutlinedButton(
+          //                   child: const Text(
+          //                     'コメントをしてみましょう',
+          //                     style: TextStyle(
+          //                       color: Colors.grey,
+          //                       fontSize: 12,
+          //                     ),
+          //                   ),
+          //                   style: ButtonStyle(
+          //                     shape: MaterialStateProperty.all<
+          //                         RoundedRectangleBorder>(
+          //                       RoundedRectangleBorder(
+          //                         borderRadius: BorderRadius.circular(
+          //                           18.0,
+          //                         ),
+          //                         side: BorderSide(
+          //                           color: Colors.red,
+          //                         ),
+          //                       ),
+          //                     ),
+          //                   ),
+          //                   onPressed: () {
+          //                     // コメントページに遷移
+          //                   },
+          //                 ),
+          //               ),
+          //             ],
+          //           ),
+          //         ),
+          //         headerBuilder: (BuildContext context, bool isExpanded) {
+          //           return Container(
+          //             padding: EdgeInsets.all(12),
+          //             child: Text(
+          //               'コメント',
+          //               style: TextStyle(
+          //                 color: Colors.black,
+          //                 fontSize: 12,
+          //               ),
+          //             ),
+          //           );
+          //         },
+          //         isExpanded: posts[index].isCommentExpanded,
+          //       ),
+          //     ],
+          //     expansionCallback: (int item, bool status) {
+          //       setState(
+          //         () {
+          //           posts[index].isCommentExpanded =
+          //               !posts[index].isCommentExpanded;
+          //         },
+          //       );
+          //     },
+          //   ),
+          // ),
         ],
       ),
     );
