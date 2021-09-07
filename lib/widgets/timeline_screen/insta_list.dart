@@ -4,6 +4,7 @@ import 'package:dish/widgets/timeline_screen/insta_stories.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dish/configs/constant_colors.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 
 class User {
   String id;
@@ -215,9 +216,9 @@ class _InstaListState extends State<InstaList> {
                           primary: AppColor.kPinkColor,
                           onPrimary: Colors.white,
                         ),
-                        onPressed: () {
-                          print('マップで開く');
-                        },
+                        onPressed: () => MapsLauncher.launchQuery(
+                          '1600 Amphitheatre Pkwy, Mountain View, CA 94043, USA',
+                        ),
                       ),
                     ),
                   ],
