@@ -5,13 +5,13 @@ class Post {
   final int favoCount, commentCount;
 
   Post({
-    this.postImageUrls,
-    this.postId,
-    this.userId,
-    this.postText,
-    this.postedDate,
-    this.favoCount,
-    this.commentCount,
+    required this.postImageUrls,
+    required this.postId,
+    required this.userId,
+    required this.postText,
+    required this.postedDate,
+    required this.favoCount,
+    required this.commentCount,
   });
 }
 

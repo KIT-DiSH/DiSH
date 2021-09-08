@@ -5,9 +5,9 @@ import 'package:dish/screens/sample_screens/edit_profile_screen.dart';
 
 class ActionButton extends StatefulWidget {
   ActionButton({
-    Key key,
-    @required this.userType,
-    @required this.setUserType,
+    Key? key,
+    required this.userType,
+    required this.setUserType,
   });
 
   final String userType;

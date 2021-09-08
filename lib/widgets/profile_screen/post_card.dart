@@ -8,9 +8,9 @@ import 'package:dish/screens/sample_screens/display_posts_screen.dart';
 
 class PostCard extends StatelessWidget {
   const PostCard({
-    Key key,
-    @required this.user,
-    @required this.post,
+    Key? key,
+    required this.user,
+    required this.post,
   }) : super(key: key);
 
   final User user;

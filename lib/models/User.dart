@@ -4,13 +4,13 @@ class User {
   final int followCount, followerCount, postCount;
 
   User({
-    this.userId,
-    this.userName,
-    this.profileText,
-    this.iconImageUrl,
-    this.followCount,
-    this.followerCount,
-    this.postCount,
+    required this.userId,
+    required this.userName,
+    required this.profileText,
+    required this.iconImageUrl,
+    required this.followCount,
+    required this.followerCount,
+    required this.postCount,
   });
 }
 

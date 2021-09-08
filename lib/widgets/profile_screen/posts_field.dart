@@ -7,9 +7,9 @@ import 'package:dish/widgets/profile_screen/post_card.dart';
 
 class PostsField extends StatelessWidget {
   PostsField({
-    Key key,
-    @required this.user,
-    @required this.posts,
+    Key? key,
+    required this.user,
+    required this.posts,
   });
 
   final List<Post> posts;

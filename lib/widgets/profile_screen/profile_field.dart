@@ -9,8 +9,8 @@ import 'package:dish/screens/sample_screens/follower_list_screen.dart';
 
 class ProfileField extends StatefulWidget {
   ProfileField({
-    Key key,
-    @required this.user,
+    Key? key,
+    required this.user,
   });
 
   final User user;
