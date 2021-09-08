@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  intl: ^0.17.0
   flutter_svg: ^0.22.0
   font_awesome_flutter: ^9.0.0
 
