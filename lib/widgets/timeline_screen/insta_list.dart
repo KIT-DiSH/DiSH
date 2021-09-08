@@ -1,7 +1,6 @@
 import 'package:dish/configs/constant_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:dish/configs/constant_colors.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 
 class User {
@@ -253,7 +252,7 @@ class _InstaListState extends State<InstaList> {
               });
             },
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Text(
                 posts[index].discription,
                 maxLines: posts[index].isTextExpanded ? 1000 : 2,
