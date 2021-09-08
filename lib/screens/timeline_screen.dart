@@ -34,45 +34,6 @@ class Timeline extends StatelessWidget {
     return new Scaffold(
       appBar: topBar,
       body: InstaBody(),
-      bottomNavigationBar: new Container(
-        color: Colors.white,
-        height: 100.0,
-        child: new Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            new IconButton(
-              icon: Icon(
-                Icons.home,
-              ),
-              onPressed: () {},
-            ),
-            new IconButton(
-              icon: Icon(
-                Icons.search,
-              ),
-              onPressed: () {},
-            ),
-            new IconButton(
-              icon: Icon(
-                Icons.add_box,
-              ),
-              onPressed: () {},
-            ),
-            new IconButton(
-              icon: Icon(
-                Icons.favorite,
-              ),
-              onPressed: () {},
-            ),
-            new IconButton(
-              icon: Icon(
-                Icons.account_box,
-              ),
-              onPressed: () {},
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
