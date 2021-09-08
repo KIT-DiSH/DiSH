@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:dish/screens/post_screen.dart';
-import 'package:dish/configs/constant_colors.dart';
-
 void main() {
   runApp(MyApp());
 }
@@ -13,14 +10,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+        primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        primaryColor: Colors.white,
-        textTheme: TextTheme(
-          headline6: TextStyle(color: AppColor.kPrimaryTextColor),
-          bodyText2: TextStyle(color: AppColor.kPrimaryTextColor),
-        ),
       ),
-      home: PostScreen(),
+      home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
@@ -35,6 +28,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,14 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PostScreen(),
-            ),
-          );
-        },
+        onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ),
