@@ -5,7 +5,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 class StarReview extends StatefulWidget {
   StarReview({
     Key? key,
-    @required this.sectionName,
+    required this.sectionName,
   }) : super(key: key);
   final sectionName;
 
