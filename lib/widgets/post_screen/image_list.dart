@@ -1,10 +1,10 @@
+import 'package:flutter/material.dart';
 import 'dart:io';
 
-import 'package:dish/configs/constant_colors.dart';
-import 'package:flutter/material.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:dish/configs/constant_colors.dart';
 
 class ImageList extends StatefulWidget {
   ImageList({Key? key}) : super(key: key);
@@ -20,7 +20,7 @@ class _ImageListState extends State<ImageList> {
   @override
   Widget build(BuildContext context) {
     final _mediaWidth = MediaQuery.of(context).size.width;
-    final _itemCount = selectedAssets.length + 1; // のちにimages.length
+    final _itemCount = selectedAssets.length + 1;
     List<File> _tmpFiles = [];
 
     return SizedBox(

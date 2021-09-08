@@ -36,6 +36,7 @@ class _PostScreenState extends State<PostScreen> {
   Widget build(BuildContext context) {
     final _titleText = "新規投稿";
     final _hintText = "投稿文を書く";
+    final _maxLength = 250;
 
     void changeResName(String name) {
       setState(() {
@@ -45,8 +46,8 @@ class _PostScreenState extends State<PostScreen> {
 
     void addHashtag(String name) {
       setState(() {
-        //if (_postTextController.text.length)
-        _postTextController.text += (name + " ");
+        if (_postTextController.text.length + name.length <= _maxLength)
+          _postTextController.text += (name + " ");
       });
     }
 
@@ -95,9 +96,7 @@ class _PostScreenState extends State<PostScreen> {
                           keyboardType: TextInputType.multiline,
                           maxLines: 100,
                           controller: _postTextController,
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(250),
-                          ],
+                          maxLength: _maxLength,
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: _hintText,

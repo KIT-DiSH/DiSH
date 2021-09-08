@@ -30,7 +30,7 @@ class _HashtagListState extends State<HashtagList> {
           ),
           SizedBox(width: 8),
           SizedBox(
-            height: 40,
+            height: 35,
             width: _mediaWidth - _chipListPadding,
             child: ListView.separated(
               itemCount: dummyHashtags.length,
