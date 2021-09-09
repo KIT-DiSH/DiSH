@@ -1,4 +1,5 @@
 import 'package:dish/configs/constant_colors.dart';
+import 'package:dish/widgets/timeline_screen/image_slider.dart';
 import 'package:dish/widgets/timeline_screen/start.dart';
 import 'package:flutter/material.dart';
 import 'package:dish/models/PostModel.dart';
@@ -19,13 +20,7 @@ class _InstaListState extends State<InstaList> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // 1st row
-          Flexible(
-            fit: FlexFit.loose,
-            child: new Image.network(
-              posts[index].image,
-              fit: BoxFit.cover,
-            ),
-          ),
+          ImageSlider(),
 
           // 2nd row
           Padding(
