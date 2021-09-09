@@ -1,6 +1,6 @@
 import 'package:dish/configs/constant_colors.dart';
+import 'package:dish/widgets/timeline_screen/start.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dish/models/PostModel.dart';
 
 class InstaList extends StatefulWidget {
@@ -11,8 +11,6 @@ class InstaList extends StatefulWidget {
 class _InstaListState extends State<InstaList> {
   @override
   Widget build(BuildContext context) {
-    const IconData star = IconData(0xe5f9, fontFamily: 'MaterialIcons');
-
     return new ListView.builder(
       itemCount: posts.length,
       itemBuilder: (context, index) => Column(
@@ -57,26 +55,11 @@ class _InstaListState extends State<InstaList> {
                       style: TextStyle(fontWeight: FontWeight.bold),
                       textAlign: TextAlign.start,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        for (int i = 0; i < posts[index].star; i++)
-                          new Icon(
-                            star,
-                          ),
-                        for (int i = 0; i < 5 - posts[index].star; i++)
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              right: 4.0,
-                            ),
-                            child: SizedBox(
-                              child: new Icon(
-                                FontAwesomeIcons.star,
-                                size: 16,
-                              ),
-                            ),
-                          ),
-                      ],
+                    Container(
+                      width: 100,
+                      child: StarReview(
+                        rate: posts[index].star + .0,
+                      ),
                     ),
                   ],
                 ),
