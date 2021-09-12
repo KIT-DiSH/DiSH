@@ -18,6 +18,7 @@ dependencies:
   wechat_camera_picker: ^2.4.0
   wechat_assets_picker: ^6.0.6
   image_cropper: ^1.4.1
+  google_maps_flutter: ^2.0.8
 
 dev_dependencies:
   flutter_test:
