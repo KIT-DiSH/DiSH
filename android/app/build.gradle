@@ -50,7 +50,7 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         // マニフェストにビルド変数を追加する
-        manifestPlaceholders = ["ANDROID_GCP_API_KEY":envProps.ANDROID_GCP_API_KEY]
+        manifestPlaceholders = ["ANDROID_MAPS_API_KEY":envProps.ANDROID_MAPS_API_KEY]
     }
 
     buildTypes {
