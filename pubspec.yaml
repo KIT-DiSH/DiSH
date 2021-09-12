@@ -19,6 +19,7 @@ dependencies:
   wechat_assets_picker: ^6.0.6
   image_cropper: ^1.4.1
   google_maps_flutter: ^2.0.8
+  geolocator: ^7.6.0
 
 dev_dependencies:
   flutter_test:
