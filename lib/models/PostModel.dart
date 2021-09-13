@@ -1,3 +1,4 @@
+import 'package:dish/models/LatLng.dart';
 import 'package:dish/models/TimelineUser.dart';
 
 class PostModel {
@@ -7,7 +8,7 @@ class PostModel {
   String shop;
   String discription;
   String tags;
-  String map;
+  LatLng map;
 
   PostModel({
     required this.star,
@@ -32,7 +33,7 @@ List<PostModel> posts = [
     shop: '馬肉専門店　うまうま王国',
     discription: 'おいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそう',
     tags: '#馬うますぎて草 #有馬記念',
-    map: 'https://amazom.com',
+    map: LatLng(lat: 3.14, lng: 3.14),
   ),
   PostModel(
     star: 4,
@@ -45,6 +46,6 @@ List<PostModel> posts = [
     shop: '羊肉専門店　メーメー王国',
     discription: 'おいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそう',
     tags: '#羊うますぎて草 #有馬記念',
-    map: 'https://amazom.com',
+    map: LatLng(lat: 3.14, lng: 3.14),
   ),
 ];
