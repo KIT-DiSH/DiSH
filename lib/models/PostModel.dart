@@ -1,8 +1,6 @@
 import 'package:dish/models/TimelineUser.dart';
 
 class PostModel {
-  bool isTextExpanded;
-  bool isCommentExpanded;
   int star;
   String image;
   User user;
@@ -12,8 +10,6 @@ class PostModel {
   String map;
 
   PostModel({
-    this.isTextExpanded: false,
-    this.isCommentExpanded: false,
     required this.star,
     required this.image,
     required this.user,

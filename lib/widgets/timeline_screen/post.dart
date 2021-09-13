@@ -2,24 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
+import 'package:dish/models/PostModel.dart';
 import 'package:dish/widgets/timeline_screen/start.dart';
 import 'package:dish/configs/constant_colors.dart';
 
 class DishPost extends StatefulWidget {
-  final String imageUrl;
-  final String userName;
-  final int star;
-  final String shopName;
-  final String description;
-  final String tags;
+  final PostModel postInfo;
 
   DishPost({
-    required this.imageUrl,
-    required this.userName,
-    required this.star,
-    required this.shopName,
-    required this.description,
-    required this.tags,
+    required this.postInfo,
   });
 
   @override
@@ -127,7 +118,7 @@ class _DishPostState extends State<DishPost> {
                   image: new DecorationImage(
                     fit: BoxFit.fill,
                     image: new NetworkImage(
-                      widget.imageUrl,
+                      widget.postInfo.user.imageUrl,
                     ),
                   ),
                 ),
@@ -137,14 +128,14 @@ class _DishPostState extends State<DishPost> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   new Text(
-                    widget.userName,
+                    widget.postInfo.user.name,
                     style: TextStyle(fontWeight: FontWeight.bold),
                     textAlign: TextAlign.start,
                   ),
                   Container(
                     width: 100,
                     child: StarReview(
-                      rate: widget.star + .0,
+                      rate: widget.postInfo.star + .0,
                     ),
                   ),
                 ],
@@ -176,7 +167,7 @@ class _DishPostState extends State<DishPost> {
             vertical: 8,
           ),
           child: Text(
-            widget.shopName,
+            widget.postInfo.shop,
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 12,
@@ -197,7 +188,7 @@ class _DishPostState extends State<DishPost> {
               vertical: 8,
             ),
             child: Text(
-              widget.description,
+              widget.postInfo.discription,
               maxLines: isTextExpanded ? 1000 : 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -215,7 +206,7 @@ class _DishPostState extends State<DishPost> {
             vertical: 8,
           ),
           child: Text(
-            widget.tags,
+            widget.postInfo.tags,
             style: TextStyle(
               fontSize: 10,
               color: Colors.orange,

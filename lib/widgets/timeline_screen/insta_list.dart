@@ -13,20 +13,8 @@ class _InstaListState extends State<InstaList> {
   Widget build(BuildContext context) {
     return new ListView.builder(
       itemCount: posts.length,
-      itemBuilder: (context, index) => Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          DishPost(
-            imageUrl: posts[index].image,
-            userName: posts[index].user.name,
-            star: posts[index].star,
-            shopName: posts[index].shop,
-            description: posts[index].discription,
-            tags: posts[index].tags,
-          ),
-        ],
+      itemBuilder: (context, index) => DishPost(
+        postInfo: posts[index],
       ),
     );
   }
