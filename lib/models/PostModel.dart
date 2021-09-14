@@ -1,4 +1,5 @@
-import 'package:dish/models/LatLng.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:dish/models/TimelineUser.dart';
 
 class PostModel {
@@ -33,7 +34,7 @@ List<PostModel> posts = [
     shop: '馬肉専門店　うまうま王国',
     discription: 'おいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそう',
     tags: '#馬うますぎて草 #有馬記念',
-    map: LatLng(lat: 3.14, lng: 3.14),
+    map: LatLng(3.14, 3.14),
   ),
   PostModel(
     star: 4,
@@ -46,6 +47,6 @@ List<PostModel> posts = [
     shop: '羊肉専門店　メーメー王国',
     discription: 'おいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそうおいしそう',
     tags: '#羊うますぎて草 #有馬記念',
-    map: LatLng(lat: 3.14, lng: 3.14),
+    map: LatLng(3.14, 3.14),
   ),
 ];
