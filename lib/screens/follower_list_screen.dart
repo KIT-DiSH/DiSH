@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:dish/configs/constant_colors.dart';
+import 'package:dish/widgets/common/simple_divider.dart';
 import 'package:dish/widgets/follow_follower_list_screen/user_card.dart';
 
 class FollowerListScreen extends StatefulWidget {
@@ -21,11 +22,7 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
         child: ListView(
           children: [
             UserCard(),
-            Divider(
-              height: 1,
-              thickness: 1,
-              color: AppColor.kDefaultBorderColor.withOpacity(0.75),
-            ),
+            SimpleDivider(height: 1.0),
           ],
         ),
       ),
