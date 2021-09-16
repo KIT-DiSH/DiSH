@@ -126,7 +126,9 @@ class _PostScreenState extends State<PostScreen> {
           color: Colors.black,
         ),
         onPressed: () {
-          Navigator.pop(context);
+          // 動作確認用として if で切り分けてる
+          // フッターを非表示にする場合は if を削除する
+          if (Navigator.of(context).canPop()) Navigator.pop(context);
         },
       ),
       title: Text(_titleText),

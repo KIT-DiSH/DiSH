@@ -73,18 +73,22 @@ class _RoutingTestState extends State<RouteWidget> {
         return isFirstRouteInCurrentTab;
       },
       child: Scaffold(
-        body: Stack(
-          children: [
-            _buildOffstageNavigator("Home"),
-            _buildOffstageNavigator("Search"),
-            _buildOffstageNavigator("NewPost"),
-            _buildOffstageNavigator("Map"),
-            _buildOffstageNavigator("Profile"),
-          ],
+        body: IndexedStack(
+          index: _pageKeys.indexOf(_currentPage),
+          children: _pageKeys
+              .map(
+                (key) => TabNavigator(
+                  navigatorKey: _navigatorKeys[key]!,
+                  tabItem: key,
+                ),
+              )
+              .toList(),
         ),
         bottomNavigationBar: BottomNavigationBar(
           unselectedItemColor: Colors.black45,
           selectedItemColor: Colors.black87,
+          showUnselectedLabels: false,
+          showSelectedLabels: false,
           onTap: (index) {
             _selectTab(_pageKeys[index], index);
           },
@@ -94,21 +98,12 @@ class _RoutingTestState extends State<RouteWidget> {
                 (key) => BottomNavigationBarItem(
                   icon: Icon(_bottomNaviItems[key]),
                   label: "",
+                  tooltip: "",
                 ),
               )
               .toList(),
           type: BottomNavigationBarType.fixed,
         ),
-      ),
-    );
-  }
-
-  Widget _buildOffstageNavigator(String tabItem) {
-    return Offstage(
-      offstage: _currentPage != tabItem,
-      child: TabNavigator(
-        navigatorKey: _navigatorKeys[tabItem]!,
-        tabItem: tabItem,
       ),
     );
   }
