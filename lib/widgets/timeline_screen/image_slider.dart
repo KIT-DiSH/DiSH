@@ -67,10 +67,7 @@ class _ImageSlideerState extends State<ImageSlider> {
                     ),
                     onPressed: () {
                       setState(() {
-                        if (!favorite)
-                          favorite = true;
-                        else
-                          favorite = false;
+                        favorite = !favorite;
                       });
                     },
                   ),
