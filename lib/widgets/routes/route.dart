@@ -7,10 +7,10 @@ class RouteWidget extends StatefulWidget {
   const RouteWidget({Key? key}) : super(key: key);
 
   @override
-  _RoutingTestState createState() => _RoutingTestState();
+  _RouteWidgetState createState() => _RouteWidgetState();
 }
 
-class _RoutingTestState extends State<RouteWidget> {
+class _RouteWidgetState extends State<RouteWidget> {
   final List<String> _pageKeys = [
     "Home",
     "Search",
