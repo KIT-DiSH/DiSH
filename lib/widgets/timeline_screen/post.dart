@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:dish/models/PostModel.dart';
 import 'package:dish/widgets/timeline_screen/start.dart';
+import 'package:dish/widgets/timeline_screen/chek_places_map.dart';
 import 'package:dish/configs/constant_colors.dart';
 
 class DishPost extends StatefulWidget {
@@ -153,7 +154,14 @@ class _DishPostState extends State<DishPost> {
                     primary: AppColor.kPinkColor,
                     onPrimary: Colors.white,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) {
+                        return CheckPlacesMap(latLng: widget.postInfo.map);
+                      }),
+                    );
+                  },
                 ),
               ),
             ],
