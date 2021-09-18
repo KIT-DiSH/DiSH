@@ -75,6 +75,7 @@ class MapSpecifyPinState extends State<MapSpecifyPin> {
             },
           ),
         ].toSet(),
+        myLocationEnabled: true,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
