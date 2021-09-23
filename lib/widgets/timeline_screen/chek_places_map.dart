@@ -18,7 +18,7 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
   Completer<GoogleMapController> _controller = Completer();
   late CameraPosition currentPosition = CameraPosition(
     target: widget.latLng,
-    // zoom: 17.0,
+    zoom: 15,
   );
 
   @override
