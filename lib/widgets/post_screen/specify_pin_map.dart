@@ -16,18 +16,6 @@ class SpecifyPinMapState extends State<SpecifyPinMap> {
     zoom: 14.4746,
   );
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
-
-  static final CameraPosition _kLake = CameraPosition(
-    bearing: 192.8334901395799,
-    target: LatLng(37.43296265331129, -122.08832357078792),
-    tilt: 59.440717697143555,
-    zoom: 19.151926040649414,
-  );
-
   LatLng pinLatLng = LatLng(37.42796133580664, -122.085749655962);
 
   @override
@@ -54,28 +42,38 @@ class SpecifyPinMapState extends State<SpecifyPinMap> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      body: GoogleMap(
-        mapType: MapType.hybrid,
-        initialCameraPosition: currentPosition,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-        onTap: (LatLng latLng) {
-          setState(() {
-            pinLatLng = latLng;
-          });
-        },
-        markers: <Marker>[
-          Marker(
-            markerId: MarkerId("0"),
-            position: pinLatLng,
-            draggable: true,
-            onDragEnd: (LatLng latLng) {
-              pinLatLng = latLng;
+      body: Stack(
+        children: [
+          GoogleMap(
+            mapType: MapType.hybrid,
+            initialCameraPosition: currentPosition,
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+            },
+            onTap: (LatLng latLng) {
+              setState(() {
+                pinLatLng = latLng;
+              });
+            },
+            markers: <Marker>[
+              Marker(
+                markerId: MarkerId("0"),
+                position: pinLatLng,
+                draggable: true,
+                onDragEnd: (LatLng latLng) {
+                  pinLatLng = latLng;
+                },
+              ),
+            ].toSet(),
+            myLocationEnabled: true,
+          ),
+          IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.pop(context);
             },
           ),
-        ].toSet(),
-        myLocationEnabled: true,
+        ],
       ),
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 16),

@@ -24,28 +24,30 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      body: GoogleMap(
-        mapType: MapType.hybrid,
-        initialCameraPosition: currentPosition,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-        markers: <Marker>[
-          Marker(
-            markerId: MarkerId("0"),
-            position: widget.latLng,
+      body: Stack(
+        children: [
+          GoogleMap(
+            mapType: MapType.hybrid,
+            initialCameraPosition: currentPosition,
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+            },
+            markers: <Marker>[
+              Marker(
+                markerId: MarkerId("0"),
+                position: widget.latLng,
+              ),
+            ].toSet(),
+            myLocationEnabled: true,
           ),
-          // Marker(
-          //   markerId: MarkerId("1"),
-          //   position: widget.latLng,
-          // ),
-        ].toSet(),
-        myLocationEnabled: true,
+          IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () => Navigator.pop(context),
-      //   child: Icon(Icons.check),
-      // ),
     );
   }
 }
