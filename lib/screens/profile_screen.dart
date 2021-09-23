@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:dish/models/User.dart';
 import 'package:dish/models/Post.dart';
 import 'package:dish/configs/constant_colors.dart';
+import 'package:dish/widgets/common/simple_divider.dart';
 import 'package:dish/widgets/profile_screen/posts_field.dart';
 import 'package:dish/widgets/profile_screen/profile_field.dart';
 
@@ -21,10 +22,7 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: 24),
               ProfileField(user: testUser),
               const SizedBox(height: 24),
-              Divider(
-                thickness: 1,
-                color: AppColor.kDefaultBorderColor.withOpacity(0.75),
-              ),
+              SimpleDivider(),
               const SizedBox(height: 4),
               PostsField(user: testUser, posts: testPosts),
             ],

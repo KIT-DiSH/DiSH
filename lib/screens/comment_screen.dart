@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:dish/configs/constant_colors.dart';
+import 'package:dish/widgets/common/simple_divider.dart';
 import 'package:dish/widgets/comment_screen/comment_card.dart';
 
 class CommentScreen extends StatefulWidget {
@@ -59,11 +60,7 @@ class _CommentScreenState extends State<CommentScreen> {
                   },
                 ),
               ),
-              Divider(
-                height: 1,
-                thickness: 1,
-                color: AppColor.kDefaultBorderColor.withOpacity(0.75),
-              ),
+              SimpleDivider(height: 1.0),
               Container(
                 padding: EdgeInsets.symmetric(
                   vertical: 8,
