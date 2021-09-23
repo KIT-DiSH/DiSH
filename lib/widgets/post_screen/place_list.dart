@@ -1,5 +1,6 @@
 import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/dummy/dummy_places.dart';
+import 'package:dish/widgets/post_screen/specify_pin_map.dart';
 import 'package:flutter/material.dart';
 
 class PlaceList extends StatefulWidget {
@@ -35,22 +36,35 @@ class _PlaceListState extends State<PlaceList> {
                 height: 40,
                 width: _mediaWidth - _chipListPadding,
                 child: ListView.separated(
-                  itemCount: dummyPlaces.length,
+                  itemCount: dummyPlaces.length + 1,
                   separatorBuilder: (_, __) => const SizedBox(width: 8),
                   itemBuilder: (BuildContext context, int index) {
                     return FilterChip(
-                      label: Text(dummyPlaces[index]),
+                      label: Text(
+                        index == dummyPlaces.length
+                            ? "場所を指定"
+                            : dummyPlaces[index],
+                      ),
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       selected: index == _selectedIndex,
                       selectedColor: AppColor.kPinkColor.withOpacity(0.7),
                       showCheckmark: false,
                       pressElevation: 1,
                       onSelected: (selected) {
-                        setState(() {
-                          _selectedIndex = selected ? index : -1;
-                        });
-                        var _resName = selected ? dummyPlaces[index] : "";
-                        widget.emitRestaurantName(_resName);
+                        if (index == dummyPlaces.length) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) {
+                              return SpecifyPinMap();
+                            }),
+                          );
+                        } else {
+                          setState(() {
+                            _selectedIndex = selected ? index : -1;
+                          });
+                          var _resName = selected ? dummyPlaces[index] : "";
+                          widget.emitRestaurantName(_resName);
+                        }
                       },
                     );
                   },
