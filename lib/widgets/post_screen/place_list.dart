@@ -1,6 +1,6 @@
 import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/dummy/dummy_places.dart';
-import 'package:dish/widgets/post_screen/map_specify_pin.dart';
+import 'package:dish/widgets/post_screen/specify_pin_map.dart';
 import 'package:flutter/material.dart';
 
 class PlaceList extends StatefulWidget {
@@ -55,7 +55,7 @@ class _PlaceListState extends State<PlaceList> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (_) {
-                              return MapSpecifyPin();
+                              return SpecifyPinMap();
                             }),
                           );
                         } else {

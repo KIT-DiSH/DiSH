@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
-class MapSpecifyPin extends StatefulWidget {
+class SpecifyPinMap extends StatefulWidget {
   @override
-  State<MapSpecifyPin> createState() => MapSpecifyPinState();
+  State<SpecifyPinMap> createState() => SpecifyPinMapState();
 }
 
-class MapSpecifyPinState extends State<MapSpecifyPin> {
+class SpecifyPinMapState extends State<SpecifyPinMap> {
   Completer<GoogleMapController> _controller = Completer();
   late CameraPosition currentPosition = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
@@ -77,18 +77,17 @@ class MapSpecifyPinState extends State<MapSpecifyPin> {
         ].toSet(),
         myLocationEnabled: true,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // ピンの座標からお店を取得する処理
-          Navigator.pop(context);
-        },
-        child: Icon(Icons.check),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 16),
+        child: FloatingActionButton(
+          onPressed: () {
+            // ピンの座標からお店を取得する処理
+            Navigator.pop(context);
+          },
+          child: Icon(Icons.check),
+        ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
-  }
-
-  Future<void> _goToTheLake() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
   }
 }
