@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:dish/configs/constant_colors.dart';
+import 'package:dish/widgets/common/simple_divider.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({Key? key}) : super(key: key);
@@ -73,26 +74,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ],
                 ),
               ),
-              Divider(
-                height: 1,
-                thickness: 1,
-                color: AppColor.kDefaultBorderColor.withOpacity(0.75),
-              ),
+              SimpleDivider(height: 1.0),
               // 名前変更エリア
               _buildLabelWithTextField(
                   _userNameLabel, _width, _userNameController),
-              Divider(
-                height: 1,
-                thickness: 1,
-                color: AppColor.kDefaultBorderColor.withOpacity(0.75),
-              ),
+              SimpleDivider(height: 1.0),
               // ユーザーID変更エリア
               _buildLabelWithTextField(_userIdLabel, _width, _userIdController),
-              Divider(
-                height: 1,
-                thickness: 1,
-                color: AppColor.kDefaultBorderColor.withOpacity(0.75),
-              ),
+              SimpleDivider(height: 1.0),
               // 自己紹介変更エリア
               Padding(
                 padding: EdgeInsets.symmetric(
@@ -129,11 +118,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ],
                 ),
               ),
-              Divider(
-                height: 1,
-                thickness: 1,
-                color: AppColor.kDefaultBorderColor.withOpacity(0.75),
-              ),
+              SimpleDivider(height: 1.0),
             ],
           ),
         ),
