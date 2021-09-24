@@ -6,6 +6,10 @@
 	<string>アプリでカメラを使用してもよろしいですか</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>use photo library</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs access to location when open.</string>
+	<key>MapAPIKey</key>
+	<string></string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
