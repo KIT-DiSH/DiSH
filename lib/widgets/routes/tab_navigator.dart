@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:dish/screens/map_screen.dart';
 import 'package:dish/screens/post_screen.dart';
 import 'package:dish/screens/profile_screen.dart';
 import 'package:dish/screens/timeline_screen.dart';
-import 'package:dish/screens/sample_screens/map_screen.dart';
 import 'package:dish/screens/sample_screens/search_screen.dart';
 
 class TabNavigator extends StatelessWidget {
@@ -25,12 +25,12 @@ class TabNavigator extends StatelessWidget {
       case "Search":
         child = SearchScreen();
         break;
-      case "NewPost":
-        child = PostScreen();
-        break;
-      case "Map":
-        child = MapScreen();
-        break;
+      // case "NewPost":
+      //   child = PostScreen();
+      //   break;
+      // case "Map":
+      //   child = MapScreen();
+      //   break;
       case "Profile":
         child = ProfileScreen();
         break;

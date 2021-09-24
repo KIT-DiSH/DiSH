@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:dish/screens/map_screen.dart';
 import 'package:dish/screens/post_screen.dart';
 import 'package:dish/widgets/routes/tab_navigator.dart';
 
@@ -36,14 +37,20 @@ class _RouteWidgetState extends State<RouteWidget> {
 
   void _selectTab(String tabItem, int index) {
     /* フッターを隠したいページは、bodyを切り替えずに直接pushする */
-    // if (tabItem == "NewPost") {
-    //   Navigator.push(
-    //     context,
-    //     MaterialPageRoute(builder: (_) => PostScreen()),
-    //   );
-    //   print("Hey");
-    //   return;
-    // }
+    if (tabItem == "NewPost") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => PostScreen()),
+      );
+      print("Hey");
+      return;
+    } else if (tabItem == "Map") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => MapScreen()),
+      );
+      return;
+    }
 
     if (tabItem == _currentPage) {
       _navigatorKeys[tabItem]?.currentState?.popUntil((route) => route.isFirst);

@@ -128,7 +128,8 @@ class _PostScreenState extends State<PostScreen> {
         onPressed: () {
           // 動作確認用として if で切り分けてる
           // フッターを非表示にする場合は if を削除する
-          if (Navigator.of(context).canPop()) Navigator.pop(context);
+          // if (Navigator.of(context).canPop()) Navigator.pop(context);
+          Navigator.pop(context);
         },
       ),
       title: Text(_titleText),
