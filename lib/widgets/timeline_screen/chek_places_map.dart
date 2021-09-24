@@ -40,11 +40,20 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
             ].toSet(),
             myLocationEnabled: true,
           ),
-          IconButton(
-            icon: const Icon(Icons.arrow_back_ios),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: FloatingActionButton(
+                backgroundColor: Colors.white,
+                child: Icon(
+                  Icons.arrow_back_ios_new,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
           ),
         ],
       ),
