@@ -17,10 +17,11 @@ dependencies:
   flutter_svg: ^0.22.0
   carousel_slider: ^4.0.0
   smooth_page_indicator: ^1.0.0+2
-  google_maps_flutter: ^2.0.8
   wechat_camera_picker: ^2.4.0
   wechat_assets_picker: ^6.0.6
   image_cropper: ^1.4.1
+  google_maps_flutter: ^2.0.8
+  geolocator: ^7.6.0
 
 dev_dependencies:
   flutter_test:
