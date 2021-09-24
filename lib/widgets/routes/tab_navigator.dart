@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:dish/screens/post_screen.dart';
 import 'package:dish/screens/profile_screen.dart';
+import 'package:dish/screens/timeline_screen.dart';
 import 'package:dish/screens/sample_screens/map_screen.dart';
 import 'package:dish/screens/sample_screens/search_screen.dart';
-import 'package:dish/screens/sample_screens/time_line_screen.dart';
 
 class TabNavigator extends StatelessWidget {
   TabNavigator({
@@ -20,7 +20,7 @@ class TabNavigator extends StatelessWidget {
 
     switch (tabItem) {
       case "Home":
-        child = TimeLineScreen();
+        child = Timeline();
         break;
       case "Search":
         child = SearchScreen();
