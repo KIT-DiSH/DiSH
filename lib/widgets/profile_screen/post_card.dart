@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:dish/models/User.dart';
 import 'package:dish/models/Post.dart';
 import 'package:dish/configs/constant_colors.dart';
-import 'package:dish/screens/sample_screens/display_posts_screen.dart';
+import 'package:dish/screens/display_posts_screen.dart';
 
 class PostCard extends StatelessWidget {
   const PostCard({

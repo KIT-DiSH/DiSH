@@ -1,11 +1,13 @@
+import 'package:dish/screens/comment_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:dish/models/PostModel.dart';
-import 'package:dish/widgets/timeline_screen/start.dart';
+import 'package:dish/screens/profile_screen.dart';
 import 'package:dish/widgets/timeline_screen/chek_places_map.dart';
 import 'package:dish/configs/constant_colors.dart';
+import 'package:dish/widgets/timeline_screen/start.dart';
 
 class DishPost extends StatefulWidget {
   final PostModel postInfo;
@@ -111,15 +113,25 @@ class _DishPostState extends State<DishPost> {
           child: Row(
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                height: 40,
-                width: 40,
-                decoration: new BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: new DecorationImage(
-                    fit: BoxFit.fill,
-                    image: new NetworkImage(
-                      widget.postInfo.user.imageUrl,
+              GestureDetector(
+                onTap: () {
+                  // 実際には ProfileScreen に UserID を渡すなどして
+                  // プロフィールページの中身を決定する
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => ProfileScreen()),
+                  );
+                },
+                child: Container(
+                  height: 40,
+                  width: 40,
+                  decoration: new BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: new DecorationImage(
+                      fit: BoxFit.fill,
+                      image: new NetworkImage(
+                        widget.postInfo.user.imageUrl,
+                      ),
                     ),
                   ),
                 ),
@@ -226,7 +238,12 @@ class _DishPostState extends State<DishPost> {
         GestureDetector(
           onTap: () {
             // コメント画面に遷移
+            // 実際はコメントの情報を引数として渡す
             print('コメント画面に遷移');
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => CommentScreen()),
+            );
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),

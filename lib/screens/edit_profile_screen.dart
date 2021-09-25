@@ -23,103 +23,106 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final _userIdLabel = "ユーザーID";
     final _biographyLabel = "自己紹介";
 
-    return Scaffold(
-      appBar: _buildAppBar(),
-      body: SingleChildScrollView(
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Column(
-            children: [
-              // アイコン変更エリア
-              Container(
-                width: double.infinity,
-                height: 168,
-                decoration: BoxDecoration(color: Color(0xFFFBFBFB)),
-                child: Column(
-                  children: [
-                    Spacer(),
-                    Container(
-                      height: 75,
-                      width: 75,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: AppColor.kPinkColor,
-                          width: 2,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: _buildAppBar(context),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                // アイコン変更エリア
+                Container(
+                  width: double.infinity,
+                  height: 168,
+                  decoration: BoxDecoration(color: Color(0xFFFBFBFB)),
+                  child: Column(
+                    children: [
+                      Spacer(),
+                      Container(
+                        height: 75,
+                        width: 75,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: AppColor.kPinkColor,
+                            width: 2,
+                          ),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(50)),
+                          child: Image.network(
+                            "https://i.pinimg.com/474x/9b/47/a0/9b47a023caf29f113237d61170f34ad9.jpg",
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(50)),
-                        child: Image.network(
-                          "https://i.pinimg.com/474x/9b/47/a0/9b47a023caf29f113237d61170f34ad9.jpg",
-                          fit: BoxFit.cover,
+                      Spacer(),
+                      GestureDetector(
+                        onTap: () {
+                          // 画像を選択する処理
+                        },
+                        child: Text(
+                          _changeIconLabel,
+                          style: TextStyle(
+                            color: AppColor.kPrimaryTextColor.withOpacity(0.75),
+                            fontSize: 13,
+                          ),
                         ),
                       ),
-                    ),
-                    Spacer(),
-                    GestureDetector(
-                      onTap: () {
-                        // 画像を選択する処理
-                      },
-                      child: Text(
-                        _changeIconLabel,
-                        style: TextStyle(
-                          color: AppColor.kPrimaryTextColor.withOpacity(0.75),
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                    Spacer(),
-                  ],
+                      Spacer(),
+                    ],
+                  ),
                 ),
-              ),
-              SimpleDivider(height: 1.0),
-              // 名前変更エリア
-              _buildLabelWithTextField(
-                  _userNameLabel, _width, _userNameController),
-              SimpleDivider(height: 1.0),
-              // ユーザーID変更エリア
-              _buildLabelWithTextField(_userIdLabel, _width, _userIdController),
-              SimpleDivider(height: 1.0),
-              // 自己紹介変更エリア
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 25,
-                  vertical: 20,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: Text(
-                        _biographyLabel,
-                        style: TextStyle(
-                          fontSize: 14,
-                        ),
-                        textAlign: TextAlign.start,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
-                      child: Container(
-                        child: TextField(
-                          keyboardType: TextInputType.multiline,
-                          maxLines: null,
-                          maxLength: 200,
-                          decoration: InputDecoration.collapsed(hintText: ""),
-                          style: TextStyle(fontSize: 14),
-                          controller: _biographyController,
+                SimpleDivider(height: 1.0),
+                // 名前変更エリア
+                _buildLabelWithTextField(
+                    _userNameLabel, _width, _userNameController),
+                SimpleDivider(height: 1.0),
+                // ユーザーID変更エリア
+                _buildLabelWithTextField(
+                    _userIdLabel, _width, _userIdController),
+                SimpleDivider(height: 1.0),
+                // 自己紹介変更エリア
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 25,
+                    vertical: 20,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: Text(
+                          _biographyLabel,
+                          style: TextStyle(
+                            fontSize: 14,
+                          ),
+                          textAlign: TextAlign.start,
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        width: double.infinity,
+                        child: Container(
+                          child: TextField(
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
+                            maxLength: 200,
+                            decoration: InputDecoration.collapsed(hintText: ""),
+                            style: TextStyle(fontSize: 14),
+                            controller: _biographyController,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SimpleDivider(height: 1.0),
-            ],
+                SimpleDivider(height: 1.0),
+              ],
+            ),
           ),
         ),
       ),
@@ -167,18 +170,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  PreferredSize _buildAppBar() {
+  PreferredSize _buildAppBar(BuildContext context) {
     const _preserveText = "保存";
 
     return PreferredSize(
       preferredSize: Size.fromHeight(50.0),
       child: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.white,
+        // backgroundColor: Colors.white,
         elevation: 1.0,
-        leading: Icon(
-          Icons.arrow_back_ios,
-          color: Colors.black,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
         actions: [
           Container(
@@ -200,6 +208,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 print(_userNameController.text);
                 print(_userIdController.text);
                 print(_biographyController.text);
+                Navigator.pop(context);
               },
             ),
           ),

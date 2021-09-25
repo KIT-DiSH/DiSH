@@ -34,7 +34,6 @@ class _PostScreenState extends State<PostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final _titleText = "新規投稿";
     final _hintText = "投稿文を書く";
     final _maxLength = 250;
 
@@ -54,23 +53,7 @@ class _PostScreenState extends State<PostScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: AppBar(
-          leading: Icon(Icons.arrow_back_ios),
-          title: Text(_titleText),
-          centerTitle: true,
-          elevation: 0,
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.check,
-                color: AppColor.kPinkColor,
-              ),
-              onPressed: () {
-                // ここで投稿作成の処理
-              },
-            ),
-          ],
-        ),
+        appBar: _buildAppBar(context),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Column(
@@ -130,6 +113,39 @@ class _PostScreenState extends State<PostScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  AppBar _buildAppBar(BuildContext context) {
+    final _titleText = "新規投稿";
+
+    return AppBar(
+      leading: IconButton(
+        icon: const Icon(
+          Icons.arrow_back_ios,
+          color: Colors.black,
+        ),
+        onPressed: () {
+          // 動作確認用として if で切り分けてる
+          // フッターを非表示にする場合は if を削除する
+          // if (Navigator.of(context).canPop()) Navigator.pop(context);
+          Navigator.pop(context);
+        },
+      ),
+      title: Text(_titleText),
+      centerTitle: true,
+      elevation: 0,
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(
+            Icons.check,
+            color: AppColor.kPinkColor,
+          ),
+          onPressed: () {
+            // ここで投稿作成の処理
+          },
+        ),
+      ],
     );
   }
 }

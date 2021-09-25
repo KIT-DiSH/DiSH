@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:dish/configs/constant_colors.dart';
-import 'package:dish/screens/sample_screens/edit_profile_screen.dart';
+import 'package:dish/screens/edit_profile_screen.dart';
 
 class ActionButton extends StatefulWidget {
   ActionButton({
@@ -63,7 +63,6 @@ class _ActionButtonState extends State<ActionButton> {
             },
           ),
         );
-        break;
       case "followed":
         {
           return Container(
@@ -98,7 +97,6 @@ class _ActionButtonState extends State<ActionButton> {
             ),
           );
         }
-        break;
       case "stranger":
         {
           return Container(
@@ -129,7 +127,6 @@ class _ActionButtonState extends State<ActionButton> {
             ),
           );
         }
-        break;
       default:
         return Container();
     }

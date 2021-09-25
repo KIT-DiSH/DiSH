@@ -11,36 +11,46 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
-      body: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: 20,
-        ),
-        child: ListView(
-          children: [
-            const SizedBox(height: 24),
-            ProfileField(user: testUser),
-            const SizedBox(height: 24),
-            SimpleDivider(),
-            const SizedBox(height: 4),
-            PostsField(user: testUser, posts: testPosts),
-          ],
+      appBar: _buildAppBar(context),
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: 20,
+          ),
+          child: ListView(
+            children: [
+              const SizedBox(height: 24),
+              ProfileField(user: testUser),
+              const SizedBox(height: 24),
+              SimpleDivider(),
+              const SizedBox(height: 4),
+              PostsField(user: testUser, posts: testPosts),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  PreferredSize _buildAppBar() {
+  PreferredSize _buildAppBar(BuildContext context) {
     return PreferredSize(
       preferredSize: Size.fromHeight(50.0),
       child: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.white,
+        // backgroundColor: Colors.white,
         elevation: 1.0,
-        leading: Icon(
-          Icons.arrow_back_ios,
-          color: Colors.black,
-        ),
+        // popが存在するときだけ表示する
+        leading: Navigator.canPop(context)
+            ? IconButton(
+                icon: const Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            : null,
         title: Text(
           testUser.userId,
           style: TextStyle(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:dish/widgets/common/route.dart';
+import 'package:dish/widgets/routes/route.dart';
 
 void main() {
   runApp(MyApp());

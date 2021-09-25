@@ -7,8 +7,10 @@ class TimeLineScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("sample screen"),
       ),
-      body: Center(
-        child: Text("Time Line"),
+      body: SafeArea(
+        child: Center(
+          child: Text("Time Line"),
+        ),
       ),
     );
   }

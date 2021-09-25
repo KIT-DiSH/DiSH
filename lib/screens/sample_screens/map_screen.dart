@@ -7,8 +7,10 @@ class MapScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("sample screen"),
       ),
-      body: Center(
-        child: Text("Search With Map"),
+      body: SafeArea(
+        child: Center(
+          child: Text("Search With Map"),
+        ),
       ),
     );
   }

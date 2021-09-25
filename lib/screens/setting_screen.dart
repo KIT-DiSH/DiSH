@@ -8,25 +8,32 @@ class SettingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
-      body: Container(
-        child: ListView(
-          children: [],
+      appBar: _buildAppBar(context),
+      body: SafeArea(
+        child: Container(
+          child: ListView(
+            children: [],
+          ),
         ),
       ),
     );
   }
 
-  PreferredSize _buildAppBar() {
+  PreferredSize _buildAppBar(BuildContext context) {
     return PreferredSize(
       preferredSize: Size.fromHeight(50.0),
       child: AppBar(
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 1.0,
-        leading: Icon(
-          Icons.arrow_back_ios,
-          color: Colors.black,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
         title: Text(
           _title,

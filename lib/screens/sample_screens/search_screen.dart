@@ -7,8 +7,10 @@ class SearchScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("sample screen"),
       ),
-      body: Center(
-        child: Text("Search"),
+      body: SafeArea(
+        child: Center(
+          child: Text("Search"),
+        ),
       ),
     );
   }
