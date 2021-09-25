@@ -5,6 +5,15 @@ class SocialIconButtons extends StatelessWidget {
   final String _facebookIconPath = "assets/images/facebook_logo.svg";
   final String _appleIconPath = "assets/images/apple_logo.svg";
   final String _googleIconPath = "assets/images/google_logo.svg";
+  final Function() facebookSignIn;
+  final Function() appleSignIn;
+  final Function() googleSignIn;
+
+  SocialIconButtons({
+    required this.facebookSignIn,
+    required this.appleSignIn,
+    required this.googleSignIn,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,11 +22,17 @@ class SocialIconButtons extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          buildSocialIconButton(_facebookIconPath, () {}),
+          buildSocialIconButton(_facebookIconPath, () {
+            facebookSignIn();
+          }),
           SizedBox(width: 24),
-          buildSocialIconButton(_appleIconPath, () {}),
+          buildSocialIconButton(_appleIconPath, () {
+            appleSignIn();
+          }),
           SizedBox(width: 24),
-          buildSocialIconButton(_googleIconPath, () {}),
+          buildSocialIconButton(_googleIconPath, () {
+            googleSignIn();
+          }),
         ],
       ),
     );

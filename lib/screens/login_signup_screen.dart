@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:dish/widgets/login_signup_screen/social_icon_buttons.dart';
 import 'package:dish/widgets/login_signup_screen/switch_tab_button.dart';
@@ -16,6 +18,35 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   String email = "";
   String password = "";
   String confirmPassword = "";
+
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<User> handleSignIn() async {
+    try {
+      GoogleSignInAccount? googleCurrentUser = await _googleSignIn.signIn();
+      print(googleCurrentUser);
+      if (googleCurrentUser == null) {
+        return {} as User;
+      }
+
+      // auth情報を得る
+      GoogleSignInAuthentication googleAuth =
+          await googleCurrentUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      final User user = (await _auth.signInWithCredential(credential)).user!;
+      print("signed in " + user.displayName.toString());
+
+      return user;
+    } catch (e) {
+      print('ログインエラーです');
+      print(e);
+      return {} as User;
+    }
+  }
 
   void setEmail(String email) {
     setState(() {
@@ -54,6 +85,23 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     } catch (e) {
       print(e.toString());
     }
+  }
+
+  void checkLoginAuth() {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('ログアウト中');
+      } else {
+        print(user.displayName.toString() + 'でログインしています');
+        // TODO: ページ遷移
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    checkLoginAuth();
+    super.initState();
   }
 
   @override
@@ -113,7 +161,11 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                     ),
                   ),
                   Spacer(flex: 1),
-                  SocialIconButtons(),
+                  SocialIconButtons(
+                    facebookSignIn: handleSignIn,
+                    appleSignIn: handleSignIn,
+                    googleSignIn: handleSignIn,
+                  ),
                 ],
               ),
             ),
