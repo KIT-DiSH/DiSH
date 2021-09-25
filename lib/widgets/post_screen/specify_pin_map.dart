@@ -66,17 +66,28 @@ class SpecifyPinMapState extends State<SpecifyPinMap> {
             ].toSet(),
             myLocationEnabled: true,
           ),
-          IconButton(
-            icon: const Icon(Icons.arrow_back_ios),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: FloatingActionButton(
+                heroTag: "hero2",
+                backgroundColor: Colors.white,
+                child: Icon(
+                  Icons.arrow_back_ios_new,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
           ),
         ],
       ),
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 16),
         child: FloatingActionButton(
+          heroTag: "hero1",
           onPressed: () {
             // ピンの座標からお店を取得する処理
             Navigator.pop(context);
