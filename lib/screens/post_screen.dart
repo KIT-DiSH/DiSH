@@ -177,7 +177,7 @@ class _PostScreenState extends State<PostScreen> {
             builder: (_) {
               return SimpleAlertDialog(
                 title: "警告",
-                content: "投稿文が削除されますがよろしいですか",
+                content: "編集中の内容が削除されますがよろしいですか",
               );
             },
           );
