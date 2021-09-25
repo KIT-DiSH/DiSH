@@ -2,6 +2,7 @@ import 'package:dish/plugins/rich_text_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:dish/widgets/common/simple_alert_dialog.dart';
 import 'package:dish/widgets/common/simple_divider.dart';
 import 'package:dish/widgets/post_screen/image_list.dart';
 import 'package:dish/widgets/post_screen/place_list.dart';
@@ -167,11 +168,23 @@ class _PostScreenState extends State<PostScreen> {
           Icons.arrow_back_ios,
           color: Colors.black,
         ),
-        onPressed: () {
+        onPressed: () async {
           // 動作確認用として if で切り分けてる
           // フッターを非表示にする場合は if を削除する
           // if (Navigator.of(context).canPop()) Navigator.pop(context);
-          Navigator.pop(context);
+          final result = await showDialog(
+            context: context,
+            builder: (_) {
+              return SimpleAlertDialog(
+                title: "警告",
+                content: "投稿文が削除されますがよろしいですか",
+              );
+            },
+          );
+          if (result) {
+            // 途中の投稿を保存する処理
+            Navigator.pop(context);
+          }
         },
       ),
       title: Text(_titleText),
