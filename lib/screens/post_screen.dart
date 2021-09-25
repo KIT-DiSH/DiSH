@@ -21,7 +21,6 @@ class _PostScreenState extends State<PostScreen> {
   late RichTextController _postTextController;
   late TextEditingController _restaurantNameController =
       TextEditingController();
-  Color checkIconColor = Colors.blueGrey;
   static final _formKey = GlobalKey<FormState>();
   final _initRestaurantName = "場所";
 
@@ -42,16 +41,6 @@ class _PostScreenState extends State<PostScreen> {
     final _hintText = "投稿文を書く";
     final _maxLength = 250;
 
-    void updateCheckIconColor() {
-      setState(() {
-        if (_formKey.currentState!.validate()) {
-          checkIconColor = AppColor.kPinkColor;
-        } else {
-          checkIconColor = Colors.blueGrey;
-        }
-      });
-    }
-
     void changeResName(String name) {
       setState(() {
         if (name == "") {
@@ -60,7 +49,6 @@ class _PostScreenState extends State<PostScreen> {
           _restaurantNameController.text = name;
         }
       });
-      updateCheckIconColor();
     }
 
     void addHashtag(String name) {
@@ -73,7 +61,7 @@ class _PostScreenState extends State<PostScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: _buildAppBar(context, _formKey, checkIconColor),
+        appBar: _buildAppBar(context, _formKey),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Form(
@@ -95,6 +83,8 @@ class _PostScreenState extends State<PostScreen> {
                             decoration: InputDecoration(
                               border: InputBorder.none,
                             ),
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             validator: (value) {
                               if (value == _initRestaurantName) {
                                 return "場所を選択してください";
@@ -117,9 +107,8 @@ class _PostScreenState extends State<PostScreen> {
                               hintText: _hintText,
                               contentPadding: EdgeInsets.zero,
                             ),
-                            onChanged: (_) {
-                              updateCheckIconColor();
-                            },
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             validator: (value) {
                               if (value?.length == 0) {
                                 return "投稿文を記入してください";
@@ -158,8 +147,7 @@ class _PostScreenState extends State<PostScreen> {
     );
   }
 
-  AppBar _buildAppBar(BuildContext context, GlobalKey<FormState> _formKye,
-      Color checkIconColor) {
+  AppBar _buildAppBar(BuildContext context, GlobalKey<FormState> _formKye) {
     final _titleText = "新規投稿";
 
     return AppBar(
@@ -194,7 +182,7 @@ class _PostScreenState extends State<PostScreen> {
         IconButton(
           icon: Icon(
             Icons.check,
-            color: checkIconColor,
+            color: AppColor.kPinkColor,
           ),
           onPressed: () {
             if (_formKye.currentState!.validate()) {
