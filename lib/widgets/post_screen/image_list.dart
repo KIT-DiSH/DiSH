@@ -7,7 +7,13 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:dish/configs/constant_colors.dart';
 
 class ImageList extends StatefulWidget {
-  ImageList({Key? key}) : super(key: key);
+  ImageList({
+    Key? key,
+    required this.selectedImageFiles,
+    required this.emitImageFiles,
+  }) : super(key: key);
+  final List<File> selectedImageFiles;
+  final Function emitImageFiles;
 
   @override
   _ImageListState createState() => _ImageListState();
@@ -15,7 +21,6 @@ class ImageList extends StatefulWidget {
 
 class _ImageListState extends State<ImageList> {
   List<AssetEntity> selectedAssets = []; // AssetPickerの重複制御用
-  List<File> selectedImageFiles = []; // 画像の表示用
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +60,8 @@ class _ImageListState extends State<ImageList> {
                             ),
                             setState(() {
                               selectedAssets = assets;
-                              selectedImageFiles = _tmpFiles;
                             }),
+                            widget.emitImageFiles(_tmpFiles),
                           },
                       },
                     );
@@ -79,21 +84,11 @@ class _ImageListState extends State<ImageList> {
                 GestureDetector(
                   onTap: () {
                     _cropImage(index - 1);
-
-                    // _cropImage(index - 1);
-                    // showDialog(
-                    //   context: context,
-                    //   builder: (context) {
-                    //     return ImageDialog(
-                    //       imagePath: "assets/images/sample$imageIndex.png",
-                    //     );
-                    //   },
-                    // );
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8.0),
                     child: Image.file(
-                      selectedImageFiles[index - 1],
+                      widget.selectedImageFiles[index - 1],
                       height: 80,
                       width: 80,
                     ),
@@ -114,9 +109,7 @@ class _ImageListState extends State<ImageList> {
       aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
     );
     if (croppedFile != null) {
-      setState(() {
-        selectedImageFiles[index] = croppedFile;
-      });
+      widget.emitImageFiles(croppedFile);
     }
   }
 }

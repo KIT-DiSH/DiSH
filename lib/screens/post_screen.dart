@@ -1,7 +1,8 @@
-import 'package:dish/plugins/rich_text_controller.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:dish/plugins/rich_text_controller.dart';
 import 'package:dish/widgets/common/simple_alert_dialog.dart';
 import 'package:dish/widgets/common/simple_divider.dart';
 import 'package:dish/widgets/post_screen/image_list.dart';
@@ -23,6 +24,7 @@ class _PostScreenState extends State<PostScreen> {
       TextEditingController();
   static final _formKey = GlobalKey<FormState>();
   final _initRestaurantName = "場所";
+  List<File> selectedImageFiles = [];
 
   @override
   void initState() {
@@ -55,6 +57,12 @@ class _PostScreenState extends State<PostScreen> {
       setState(() {
         if (_postTextController.text.length + name.length <= _maxLength)
           _postTextController.text += (name + " ");
+      });
+    }
+
+    void updateSelectedImageFiles(List<File> files) {
+      setState(() {
+        selectedImageFiles = files;
       });
     }
 
@@ -121,7 +129,10 @@ class _PostScreenState extends State<PostScreen> {
                       ],
                     ),
                   ),
-                  ImageList(),
+                  ImageList(
+                    selectedImageFiles: selectedImageFiles,
+                    emitImageFiles: updateSelectedImageFiles,
+                  ),
                   const SizedBox(height: 8),
                   SimpleDivider(),
                   HashtagList(emitHashtag: addHashtag),
