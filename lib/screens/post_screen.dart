@@ -61,7 +61,7 @@ class _PostScreenState extends State<PostScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: _buildAppBar(context, _formKey),
+        appBar: _buildAppBar(context),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Form(
@@ -147,7 +147,7 @@ class _PostScreenState extends State<PostScreen> {
     );
   }
 
-  AppBar _buildAppBar(BuildContext context, GlobalKey<FormState> _formKye) {
+  AppBar _buildAppBar(BuildContext context) {
     final _titleText = "新規投稿";
 
     return AppBar(
@@ -185,7 +185,7 @@ class _PostScreenState extends State<PostScreen> {
             color: AppColor.kPinkColor,
           ),
           onPressed: () {
-            if (_formKye.currentState!.validate()) {
+            if (_formKey.currentState!.validate()) {
               Navigator.pop(context);
             }
             // ここで投稿作成の処理
