@@ -7,8 +7,8 @@ class SimpleAlertDialog extends StatelessWidget {
     required this.content,
   }) : super(key: key);
 
-  final title;
-  final content;
+  final String title;
+  final String content;
 
   @override
   Widget build(BuildContext context) {
