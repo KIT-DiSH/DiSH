@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'package:dish/screens/signup_screen.dart';
+import 'package:dish/screens/signin_screen.dart';
 import 'package:dish/configs/constant_colors.dart';
+import 'package:dish/widgets/common/divider_with_label.dart';
+import 'package:dish/widgets/signin_signup_screen/icon_with_label_button.dart';
 
 class SelectSigninSginupScreen extends StatelessWidget {
   final _backgroundImagePath = "assets/images/background.png";
@@ -12,6 +16,16 @@ class SelectSigninSginupScreen extends StatelessWidget {
   final _googleLabel = "Googleでログイン";
   final _appleLabel = "Appleでログイン";
   final _mailLabel = "メールアドレスで登録";
+
+  VoidCallback? _onPressFacebook() {
+    // Facebookのログイン処理
+  }
+  VoidCallback? _onPressGoogle() {
+    // Googleのログイン処理
+  }
+  VoidCallback? _onPressApple() {
+    // Appleのログイン処理
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,54 +47,30 @@ class SelectSigninSginupScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: 40),
+                const SizedBox(height: 40),
                 IconWithLabelButton(
                   icon: SvgPicture.asset(_facebookIconPath),
                   buttonText: _facebookLabel,
-                  press: () {},
+                  press: _onPressFacebook,
                   borderColor: Color(0xFF3C5A9A),
                   textColor: Colors.white,
                   backgroundColor: Color(0xFF3C5A9A),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 IconWithLabelButton(
                   icon: SvgPicture.asset(_googleIconPath),
                   buttonText: _googleLabel,
-                  press: () {},
+                  press: _onPressGoogle,
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 IconWithLabelButton(
                   icon: SvgPicture.asset(_appleIconPath),
                   buttonText: _appleLabel,
-                  press: () {},
+                  press: _onPressApple,
                 ),
-                SizedBox(height: 40),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Divider(
-                        color: Colors.black12,
-                        thickness: 2,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text(
-                        "または",
-                        style: TextStyle(
-                          color: AppColor.kPrimaryTextColor.withOpacity(0.65),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Divider(
-                        color: Colors.black12,
-                        thickness: 2,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 40),
+                const SizedBox(height: 40),
+                DividerWithLabel(label: "または"),
+                const SizedBox(height: 40),
                 IconWithLabelButton(
                   icon: Icon(
                     Icons.mail_outline,
@@ -88,9 +78,16 @@ class SelectSigninSginupScreen extends StatelessWidget {
                     size: 28,
                   ),
                   buttonText: _mailLabel,
-                  press: () {},
+                  press: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => SignupScreen(),
+                      ),
+                    ),
+                  },
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -102,7 +99,14 @@ class SelectSigninSginupScreen extends StatelessWidget {
                     ),
                     TextButton(
                       child: Text("ログイン"),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => SigninScreen(),
+                          ),
+                        );
+                      },
                     )
                   ],
                 )
@@ -111,68 +115,6 @@ class SelectSigninSginupScreen extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class IconWithLabelButton extends StatelessWidget {
-  const IconWithLabelButton({
-    Key? key,
-    required this.icon,
-    required this.buttonText,
-    required this.press,
-    this.borderColor = AppColor.kDefaultBorderColor,
-    this.textColor = const Color(0xFF6F6F6F),
-    this.backgroundColor = Colors.white,
-  }) : super(key: key);
-
-  final Widget icon;
-  final String buttonText;
-  final VoidCallback press;
-  final Color borderColor;
-  final Color textColor;
-  final Color backgroundColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: press,
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 10,
-        ),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: borderColor,
-            width: 3.0,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(
-              width: 28,
-              height: 28,
-              child: icon,
-            ),
-            Text(
-              buttonText,
-              style: TextStyle(color: textColor),
-            ),
-            SizedBox(
-              width: 28,
-              height: 28,
-            ),
-          ],
-        ),
-      ),
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(backgroundColor),
-        padding: MaterialStateProperty.all(EdgeInsets.zero),
-        minimumSize: MaterialStateProperty.all(Size.zero),
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      ),
     );
   }
 }
