@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/signin_signup_screen/text_field_with_hint.dart';
@@ -8,6 +9,31 @@ class SignupScreen extends StatelessWidget {
   final _backgroundImagePath = "assets/images/background.png";
   final _mailController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  Future signUpWithEmail() async {
+    print(_mailController.text);
+    print(_passwordController.text);
+    try {
+      final FirebaseAuth auth = FirebaseAuth.instance;
+      final UserCredential result = await auth.createUserWithEmailAndPassword(
+        email: _mailController.text,
+        password: _passwordController.text,
+      );
+      final User user = result.user!;
+      print("登録OK：${user.email}");
+      return 'success';
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+      }
+      return 'firebase error';
+    } catch (e) {
+      print("登録NG：${e.toString()}");
+      return 'error';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +117,13 @@ class SignupScreen extends StatelessWidget {
                         backgroundColor:
                             MaterialStateProperty.all(AppColor.kPinkColor),
                       ),
-                      onPressed: () {},
+                      onPressed: () async {
+                        String res = await signUpWithEmail();
+                        if (res == 'suceess')
+                          print('ログイン成功');
+                        else
+                          print('ログイン失敗');
+                      },
                     ),
                   ),
                   SizedBox(height: 100),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/signin_signup_screen/text_field_with_hint.dart';
@@ -8,6 +9,31 @@ class SigninScreen extends StatelessWidget {
   final _backgroundImagePath = "assets/images/background.png";
   final _mailController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  Future signInWithEmail() async {
+    print(_mailController.text);
+    print(_passwordController.text);
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: _mailController.text, password: _passwordController.text);
+      final User user = userCredential.user!;
+      if (!user.emailVerified) {
+        await user.sendEmailVerification();
+      }
+      return 'success';
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
+      return 'firebase error';
+    } catch (e) {
+      print(e);
+      return 'error';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +116,13 @@ class SigninScreen extends StatelessWidget {
                         backgroundColor:
                             MaterialStateProperty.all(AppColor.kPinkColor),
                       ),
-                      onPressed: () {},
+                      onPressed: () async {
+                        String res = await signInWithEmail();
+                        if (res == 'success')
+                          print('サインイン成功');
+                        else
+                          print('サインイン失敗');
+                      },
                     ),
                   ),
                   SizedBox(height: 100),
