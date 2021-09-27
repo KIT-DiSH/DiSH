@@ -51,7 +51,7 @@ class _InputFormState extends State<InputForm> {
               buildTextField(
                 true,
                 _hintPasswordText,
-                widget.setEmail,
+                widget.setPassword,
                 onEditingComplete,
                 widget.selectedTab == "login",
               ),
