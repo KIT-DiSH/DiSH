@@ -4,16 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:dish/configs/constant_colors.dart';
 
 class HashtagList extends StatefulWidget {
-  final emitHashtag;
-  HashtagList({Key? key, this.emitHashtag}) : super(key: key);
+  final addHashtag;
+  HashtagList({Key? key, this.addHashtag}) : super(key: key);
 
   @override
   _HashtagListState createState() => _HashtagListState();
 }
 
 class _HashtagListState extends State<HashtagList> {
-  int _selectedIndex = -1;
-
   @override
   Widget build(BuildContext context) {
     final _mediaWidth = MediaQuery.of(context).size.width;
@@ -38,7 +36,7 @@ class _HashtagListState extends State<HashtagList> {
               itemBuilder: (BuildContext context, int index) {
                 return TextButton(
                   onPressed: () {
-                    widget.emitHashtag(dummyHashtags[index]);
+                    widget.addHashtag(dummyHashtags[index]);
                   },
                   style: ElevatedButton.styleFrom(
                     primary: AppColor.kMaterialGrayColor,
@@ -54,35 +52,6 @@ class _HashtagListState extends State<HashtagList> {
                     ),
                   ),
                 );
-                // return GestureDetector(
-                //   onTapDown: (_) {
-                //     setState(() {
-                //       _selectedIndex = index;
-                //     });
-                //     widget.emitHashtag(dummyHashtags[index]);
-                //   },
-                //   onTapUp: (_) async {
-                //     // Why: 離すのが早すぎると色が変わらないので.1秒遅らせる
-                //     await new Future.delayed(
-                //       new Duration(milliseconds: 100),
-                //     );
-                //     setState(() {
-                //       _selectedIndex = -1;
-                //     });
-                //   },
-                //   onTapCancel: () {
-                //     setState(() {
-                //       _selectedIndex = -1;
-                //     });
-                //   },
-                //   child: Chip(
-                //     label: Text(dummyHashtags[index]),
-                //     backgroundColor: _selectedIndex == index
-                //         ? AppColor.kPinkColor.withOpacity(0.7)
-                //         : Colors.grey.shade300,
-                //     padding: const EdgeInsets.symmetric(horizontal: 12),
-                //   ),
-                // );
               },
               scrollDirection: Axis.horizontal,
             ),

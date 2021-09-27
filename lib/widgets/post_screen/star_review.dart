@@ -7,11 +7,11 @@ class StarReview extends StatefulWidget {
     Key? key,
     required this.sectionName,
     required this.rating,
-    required this.emitRating,
+    required this.updateRating,
   }) : super(key: key);
   final String sectionName;
   final double rating;
-  final Function emitRating;
+  final Function updateRating;
 
   @override
   _StarReviewState createState() => _StarReviewState();
@@ -46,7 +46,7 @@ class _StarReviewState extends State<StarReview> {
                 color: Colors.amber,
               ),
               onRatingUpdate: (rating) {
-                widget.emitRating(rating, widget.sectionName);
+                widget.updateRating(rating, widget.sectionName);
               },
               updateOnDrag: true,
             ),

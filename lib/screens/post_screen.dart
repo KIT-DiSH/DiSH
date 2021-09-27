@@ -46,7 +46,7 @@ class _PostScreenState extends State<PostScreen> {
     final _hintText = "投稿文を書く";
     final _maxLength = 250;
 
-    void changeResName(String name) {
+    void updateResName(String name) {
       setState(() {
         if (name == "") {
           _restaurantNameController.text = _initRestaurantName;
@@ -150,13 +150,13 @@ class _PostScreenState extends State<PostScreen> {
                   ),
                   ImageList(
                     selectedImageFiles: selectedImageFiles,
-                    emitImageFiles: updateSelectedImageFiles,
+                    updateImageFiles: updateSelectedImageFiles,
                   ),
                   const SizedBox(height: 8),
                   SimpleDivider(),
-                  HashtagList(emitHashtag: addHashtag),
+                  HashtagList(addHashtag: addHashtag),
                   SimpleDivider(),
-                  PlaceList(emitRestaurantName: changeResName),
+                  PlaceList(updateResName: updateResName),
                   SimpleDivider(),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -165,17 +165,17 @@ class _PostScreenState extends State<PostScreen> {
                         StarReview(
                           sectionName: "料理",
                           rating: foodRate,
-                          emitRating: updateRating,
+                          updateRating: updateRating,
                         ),
                         StarReview(
                           sectionName: "雰囲気",
                           rating: atmRate,
-                          emitRating: updateRating,
+                          updateRating: updateRating,
                         ),
                         StarReview(
                           sectionName: "コスパ",
                           rating: costRate,
-                          emitRating: updateRating,
+                          updateRating: updateRating,
                         ),
                       ],
                     ),
@@ -192,7 +192,7 @@ class _PostScreenState extends State<PostScreen> {
   AppBar _buildAppBar(BuildContext context) {
     final _titleText = "新規投稿";
 
-    bool checkIsEditing() {
+    bool checkIsEdited() {
       if (selectedImageFiles.isEmpty &&
           _restaurantNameController.text == _initRestaurantName &&
           _postTextController.text.isEmpty &&
@@ -214,7 +214,7 @@ class _PostScreenState extends State<PostScreen> {
           // 動作確認用として if で切り分けてる
           // フッターを非表示にする場合は if を削除する
           // if (Navigator.of(context).canPop()) Navigator.pop(context);
-          if (checkIsEditing()) {
+          if (checkIsEdited()) {
             final result = await showDialog(
               context: context,
               builder: (_) {

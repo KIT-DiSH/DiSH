@@ -10,10 +10,10 @@ class ImageList extends StatefulWidget {
   ImageList({
     Key? key,
     required this.selectedImageFiles,
-    required this.emitImageFiles,
+    required this.updateImageFiles,
   }) : super(key: key);
   final List<File> selectedImageFiles;
-  final Function emitImageFiles;
+  final Function updateImageFiles;
 
   @override
   _ImageListState createState() => _ImageListState();
@@ -61,7 +61,7 @@ class _ImageListState extends State<ImageList> {
                             setState(() {
                               selectedAssets = assets;
                             }),
-                            widget.emitImageFiles(_tmpFiles),
+                            widget.updateImageFiles(_tmpFiles),
                           },
                       },
                     );
@@ -109,7 +109,7 @@ class _ImageListState extends State<ImageList> {
       aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
     );
     if (croppedFile != null) {
-      widget.emitImageFiles(croppedFile);
+      widget.updateImageFiles(croppedFile);
     }
   }
 }
