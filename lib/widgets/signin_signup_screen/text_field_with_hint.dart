@@ -56,6 +56,13 @@ class _TextFieldWithHintState extends State<TextFieldWithHint> {
                   )
                 : null,
           ),
+          validator: (value) {
+            if (value!.isEmpty) {
+              return "このフィールドに入力してください";
+            } else {
+              return null;
+            }
+          },
           style: TextStyle(fontSize: 14),
           controller: widget.controller,
           obscureText: widget.isPassword ? _isObscure : false,
