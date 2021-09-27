@@ -66,10 +66,19 @@ class _PostScreenState extends State<PostScreen> {
       });
     }
 
+    bool checkIsEditing() {
+      if (selectedImageFiles.isEmpty &&
+          _restaurantNameController.text == _initRestaurantName &&
+          _postTextController.text.isEmpty) {
+        return false;
+      }
+      return true;
+    }
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: _buildAppBar(context),
+        appBar: _buildAppBar(context, checkIsEditing),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Form(
@@ -158,7 +167,7 @@ class _PostScreenState extends State<PostScreen> {
     );
   }
 
-  AppBar _buildAppBar(BuildContext context) {
+  AppBar _buildAppBar(BuildContext context, Function isEditing) {
     final _titleText = "新規投稿";
 
     return AppBar(
@@ -171,17 +180,21 @@ class _PostScreenState extends State<PostScreen> {
           // 動作確認用として if で切り分けてる
           // フッターを非表示にする場合は if を削除する
           // if (Navigator.of(context).canPop()) Navigator.pop(context);
-          final result = await showDialog(
-            context: context,
-            builder: (_) {
-              return SimpleAlertDialog(
-                title: "警告",
-                content: "編集中の内容が削除されますがよろしいですか",
-              );
-            },
-          );
-          if (result) {
-            // 途中の投稿を保存する処理
+          if (isEditing()) {
+            final result = await showDialog(
+              context: context,
+              builder: (_) {
+                return SimpleAlertDialog(
+                  title: "警告",
+                  content: "編集中の内容が削除されますがよろしいですか",
+                );
+              },
+            );
+            if (result) {
+              // 途中の投稿を保存する処理
+              Navigator.pop(context);
+            }
+          } else {
             Navigator.pop(context);
           }
         },
