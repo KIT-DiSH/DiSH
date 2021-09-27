@@ -1,3 +1,4 @@
+import 'package:dish/screens/signin_signup_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dish/widgets/routes/route.dart';
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: RouteWidget(),
+      home: SigninSginupScreen(),
       // home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
