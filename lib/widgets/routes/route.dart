@@ -42,7 +42,6 @@ class _RouteWidgetState extends State<RouteWidget> {
         context,
         MaterialPageRoute(builder: (_) => PostScreen()),
       );
-      print("Hey");
       return;
     } else if (tabItem == "Map") {
       Navigator.push(
