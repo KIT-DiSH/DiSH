@@ -85,22 +85,10 @@ class _PostScreenState extends State<PostScreen> {
       });
     }
 
-    bool checkIsEditing() {
-      if (selectedImageFiles.isEmpty &&
-          _restaurantNameController.text == _initRestaurantName &&
-          _postTextController.text.isEmpty &&
-          foodRate == _initRating &&
-          atmRate == _initRating &&
-          costRate == _initRating) {
-        return false;
-      }
-      return true;
-    }
-
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: _buildAppBar(context, checkIsEditing),
+        appBar: _buildAppBar(context),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Form(
@@ -201,8 +189,20 @@ class _PostScreenState extends State<PostScreen> {
     );
   }
 
-  AppBar _buildAppBar(BuildContext context, Function isEditing) {
+  AppBar _buildAppBar(BuildContext context) {
     final _titleText = "新規投稿";
+
+    bool checkIsEditing() {
+      if (selectedImageFiles.isEmpty &&
+          _restaurantNameController.text == _initRestaurantName &&
+          _postTextController.text.isEmpty &&
+          foodRate == _initRating &&
+          atmRate == _initRating &&
+          costRate == _initRating) {
+        return false;
+      }
+      return true;
+    }
 
     return AppBar(
       leading: IconButton(
@@ -214,7 +214,7 @@ class _PostScreenState extends State<PostScreen> {
           // 動作確認用として if で切り分けてる
           // フッターを非表示にする場合は if を削除する
           // if (Navigator.of(context).canPop()) Navigator.pop(context);
-          if (isEditing()) {
+          if (checkIsEditing()) {
             final result = await showDialog(
               context: context,
               builder: (_) {
