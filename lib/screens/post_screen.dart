@@ -20,11 +20,14 @@ class PostScreen extends StatefulWidget {
 
 class _PostScreenState extends State<PostScreen> {
   late RichTextController _postTextController;
-  late TextEditingController _restaurantNameController =
-      TextEditingController();
+  TextEditingController _restaurantNameController = TextEditingController();
   static final _formKey = GlobalKey<FormState>();
   final _initRestaurantName = "場所";
+  final _initRating = 3.0;
   List<File> selectedImageFiles = [];
+  late double foodRate = _initRating;
+  late double atmRate = _initRating;
+  late double costRate = _initRating;
 
   @override
   void initState() {
@@ -66,10 +69,29 @@ class _PostScreenState extends State<PostScreen> {
       });
     }
 
+    void updateRating(double rating, String section) {
+      setState(() {
+        switch (section) {
+          case "料理":
+            foodRate = rating;
+            break;
+          case "雰囲気":
+            atmRate = rating;
+            break;
+          case "コスパ":
+            costRate = rating;
+            break;
+        }
+      });
+    }
+
     bool checkIsEditing() {
       if (selectedImageFiles.isEmpty &&
           _restaurantNameController.text == _initRestaurantName &&
-          _postTextController.text.isEmpty) {
+          _postTextController.text.isEmpty &&
+          foodRate == _initRating &&
+          atmRate == _initRating &&
+          costRate == _initRating) {
         return false;
       }
       return true;
@@ -152,9 +174,21 @@ class _PostScreenState extends State<PostScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Column(
                       children: <Widget>[
-                        StarReview(sectionName: "料理"),
-                        StarReview(sectionName: "雰囲気"),
-                        StarReview(sectionName: "コスパ"),
+                        StarReview(
+                          sectionName: "料理",
+                          rating: foodRate,
+                          emitRating: updateRating,
+                        ),
+                        StarReview(
+                          sectionName: "雰囲気",
+                          rating: atmRate,
+                          emitRating: updateRating,
+                        ),
+                        StarReview(
+                          sectionName: "コスパ",
+                          rating: costRate,
+                          emitRating: updateRating,
+                        ),
                       ],
                     ),
                   ),
