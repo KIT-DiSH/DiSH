@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:dish/widgets/login_signup_screen/social_icon_buttons.dart';
@@ -22,7 +23,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<User> handleSignIn() async {
+  Future<User> signInWithGoogle() async {
     try {
       GoogleSignInAccount? googleCurrentUser = await _googleSignIn.signIn();
       print(googleCurrentUser);
@@ -45,6 +46,89 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       print('ログインエラーです');
       print(e);
       return {} as User;
+    }
+  }
+
+  Future<User> signInWithFacebook() async {
+    try {
+      // 未完成SDKのエラーが起きる
+      // Trigger the sign-in flow
+      final LoginResult loginResult = await FacebookAuth.instance.login();
+
+      // Create a credential from the access token
+      final OAuthCredential facebookAuthCredential =
+          FacebookAuthProvider.credential(loginResult.accessToken!.token);
+
+      // Once signed in, return the UserCredential
+      // return _auth.signInWithCredential(facebookAuthCredential);
+      final User user =
+          (await _auth.signInWithCredential(facebookAuthCredential)).user!;
+      return user;
+    } catch (e) {
+      print('facebookログインエラー');
+      print(e);
+      return {} as User;
+    }
+  }
+
+  Future signUpWithEmail() async {
+    print('値確認');
+    print(email);
+    print(password);
+    try {
+      // メール/パスワードでユーザー登録
+      final FirebaseAuth auth = FirebaseAuth.instance;
+      final UserCredential result = await auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // 登録したユーザー情報
+      final User user = result.user!;
+      print("登録OK：${user.email}");
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+      }
+    } catch (e) {
+      // 登録に失敗した場合
+      print("登録NG：${e.toString()}");
+    }
+  }
+
+  Future signInWithEmail() async {
+    print('値確認');
+    print(email);
+    print(password);
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+      final User? user = userCredential.user;
+      print('ユーザー情報');
+      print(user);
+      if (user != null && !user.emailVerified) {
+        await user.sendEmailVerification();
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future signOut() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      print('ログアウト成功');
+    } catch (e) {
+      print('ログアウトエラー');
+      print(e);
     }
   }
 
@@ -78,9 +162,11 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       if (selectedTab == "login") {
         // ログイン処理を書く
         print(selectedTab);
+        signInWithEmail();
       } else if (selectedTab == "signup") {
         // 新規登録処理を書く
         print(selectedTab);
+        signUpWithEmail();
       }
     } catch (e) {
       print(e.toString());
@@ -92,6 +178,8 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       if (user == null) {
         print('ログアウト中');
       } else {
+        print('ログイン中');
+        print(user);
         print(user.displayName.toString() + 'でログインしています');
         // TODO: ページ遷移
       }
@@ -162,9 +250,19 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                   ),
                   Spacer(flex: 1),
                   SocialIconButtons(
-                    facebookSignIn: handleSignIn,
-                    appleSignIn: handleSignIn,
-                    googleSignIn: handleSignIn,
+                    facebookSignIn: signInWithFacebook,
+                    appleSignIn: signInWithGoogle,
+                    googleSignIn: signInWithGoogle,
+                  ),
+                  ElevatedButton(
+                    child: const Text('ログアウト'),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.grey,
+                      onPrimary: Colors.white,
+                    ),
+                    onPressed: () {
+                      signOut();
+                    },
                   ),
                 ],
               ),
