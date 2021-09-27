@@ -8,7 +8,6 @@ class SignupScreen extends StatelessWidget {
   final _backgroundImagePath = "assets/images/background.png";
   final _mailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +31,6 @@ class SignupScreen extends StatelessWidget {
             body: Padding(
               padding: EdgeInsets.symmetric(horizontal: 40),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(height: 100),
@@ -76,12 +74,6 @@ class SignupScreen extends StatelessWidget {
                     isPassword: true,
                     controller: _passwordController,
                     hintText: "パスワード",
-                  ),
-                  SizedBox(height: 20),
-                  TextFieldWithHint(
-                    isPassword: true,
-                    controller: _confirmPasswordController,
-                    hintText: "パスワード（再入力）",
                   ),
                   SizedBox(height: 20),
                   Spacer(),
