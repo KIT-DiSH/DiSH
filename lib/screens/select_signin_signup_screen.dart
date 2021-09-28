@@ -13,6 +13,7 @@ import 'package:dish/screens/signin_screen.dart';
 import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/common/divider_with_label.dart';
 import 'package:dish/widgets/signin_signup_screen/icon_with_label_button.dart';
+import 'package:dish/widgets/routes/route.dart';
 
 class SelectSigninSignupScreen extends StatefulWidget {
   @override
@@ -98,16 +99,6 @@ class _SelectSigninSignupScreenState extends State<SelectSigninSignupScreen> {
     }
   }
 
-  Future signOut() async {
-    try {
-      await FirebaseAuth.instance.signOut();
-      print('ログアウト成功');
-    } catch (e) {
-      print('ログアウトエラー');
-      print(e);
-    }
-  }
-
   void checkLoginAuth() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
@@ -115,8 +106,12 @@ class _SelectSigninSignupScreenState extends State<SelectSigninSignupScreen> {
       } else {
         print('ログイン中');
         print(user);
-        print(user.displayName.toString() + 'でログインしています');
-        // TODO: ページ遷移
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => RouteWidget(),
+          ),
+        );
       }
     });
   }
@@ -223,16 +218,6 @@ class _SelectSigninSignupScreenState extends State<SelectSigninSignupScreen> {
                       },
                     )
                   ],
-                ),
-                ElevatedButton(
-                  child: const Text('ログアウト'),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.grey,
-                    onPrimary: Colors.white,
-                  ),
-                  onPressed: () {
-                    signOut();
-                  },
                 ),
               ],
             ),
