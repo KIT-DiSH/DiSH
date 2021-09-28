@@ -3,6 +3,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:crypto/crypto.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'dart:convert';
+import 'dart:math';
 
 import 'package:dish/screens/signup_screen.dart';
 import 'package:dish/screens/signin_screen.dart';
@@ -31,15 +35,12 @@ class _SelectSigninSignupScreenState extends State<SelectSigninSignupScreen> {
 
   Future _onPressFacebook() async {
     try {
-      // Trigger the sign-in flow
       final LoginResult loginResult = await FacebookAuth.instance.login();
-
-      // Create a credential from the access token
       final OAuthCredential facebookAuthCredential =
           FacebookAuthProvider.credential(loginResult.accessToken!.token);
-
       final User user =
           (await _auth.signInWithCredential(facebookAuthCredential)).user!;
+
       return user;
     } catch (e) {
       print('facebookログインエラー');
@@ -54,7 +55,6 @@ class _SelectSigninSignupScreenState extends State<SelectSigninSignupScreen> {
       print(googleCurrentUser);
       if (googleCurrentUser == null) return null;
 
-      // auth情報を得る
       GoogleSignInAuthentication googleAuth =
           await googleCurrentUser.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
@@ -62,20 +62,40 @@ class _SelectSigninSignupScreenState extends State<SelectSigninSignupScreen> {
         idToken: googleAuth.idToken,
       );
       final User user = (await _auth.signInWithCredential(credential)).user!;
-      print("signed in " + user.displayName.toString());
 
       return user;
     } catch (e) {
-      print('ログインエラーです');
+      print('googleログインエラー');
       print(e);
       return null;
     }
   }
 
   Future _onPressApple() async {
-    // Appleのログイン処理
-    print('apple');
-    return null;
+    try {
+      final rawNonce = generateNonce();
+      final nonce = sha256ofString(rawNonce);
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+        nonce: nonce,
+      );
+      final oauthCredential = OAuthProvider("apple.com").credential(
+        idToken: appleCredential.identityToken,
+        rawNonce: rawNonce,
+      );
+      final User user =
+          (await FirebaseAuth.instance.signInWithCredential(oauthCredential))
+              .user!;
+
+      return user;
+    } catch (e) {
+      print('appleログインエラー');
+      print(e);
+      return null;
+    }
   }
 
   Future signOut() async {
@@ -99,6 +119,20 @@ class _SelectSigninSignupScreenState extends State<SelectSigninSignupScreen> {
         // TODO: ページ遷移
       }
     });
+  }
+
+  String generateNonce([int length = 32]) {
+    final charset =
+        '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    final random = Random.secure();
+    return List.generate(length, (_) => charset[random.nextInt(charset.length)])
+        .join();
+  }
+
+  String sha256ofString(String input) {
+    final bytes = utf8.encode(input);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
   }
 
   @override
