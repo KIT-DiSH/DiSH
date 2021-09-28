@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:email_validator/email_validator.dart';
 
 import 'package:dish/configs/constant_colors.dart';
 
@@ -56,6 +57,17 @@ class _TextFieldWithHintState extends State<TextFieldWithHint> {
                   )
                 : null,
           ),
+          validator: (value) {
+            if (value!.isEmpty) {
+              return "このフィールドに入力してください";
+            } else if (!widget.isPassword && !EmailValidator.validate(value)) {
+              return "有効なメールアドレスではありません";
+            } else if (widget.isPassword && value.length > 32) {
+              return "32文字以内で入力してください";
+            } else {
+              return null;
+            }
+          },
           style: TextStyle(fontSize: 14),
           controller: widget.controller,
           obscureText: widget.isPassword ? _isObscure : false,
