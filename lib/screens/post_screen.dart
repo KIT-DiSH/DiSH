@@ -1,7 +1,9 @@
-import 'package:dish/plugins/rich_text_controller.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:dish/plugins/rich_text_controller.dart';
+import 'package:dish/widgets/common/simple_alert_dialog.dart';
 import 'package:dish/widgets/common/simple_divider.dart';
 import 'package:dish/widgets/post_screen/image_list.dart';
 import 'package:dish/widgets/post_screen/place_list.dart';
@@ -18,8 +20,14 @@ class PostScreen extends StatefulWidget {
 
 class _PostScreenState extends State<PostScreen> {
   late RichTextController _postTextController;
-
-  String restaurantName = "";
+  TextEditingController _restaurantNameController = TextEditingController();
+  static final _formKey = GlobalKey<FormState>();
+  final _initRestaurantName = "場所";
+  final _initRating = 3.0;
+  List<File> selectedImageFiles = [];
+  late double foodRate = _initRating;
+  late double atmRate = _initRating;
+  late double costRate = _initRating;
 
   @override
   void initState() {
@@ -29,6 +37,7 @@ class _PostScreenState extends State<PostScreen> {
       },
       // onMatch: () {print("#だよ");},
     );
+    _restaurantNameController.text = _initRestaurantName;
     super.initState();
   }
 
@@ -37,9 +46,13 @@ class _PostScreenState extends State<PostScreen> {
     final _hintText = "投稿文を書く";
     final _maxLength = 250;
 
-    void changeResName(String name) {
+    void updateResName(String name) {
       setState(() {
-        restaurantName = name;
+        if (name == "") {
+          _restaurantNameController.text = _initRestaurantName;
+        } else {
+          _restaurantNameController.text = name;
+        }
       });
     }
 
@@ -50,65 +63,125 @@ class _PostScreenState extends State<PostScreen> {
       });
     }
 
+    void updateSelectedImageFiles(List<File> files) {
+      setState(() {
+        selectedImageFiles = files;
+      });
+    }
+
+    void updateRating(double rating, String section) {
+      setState(() {
+        switch (section) {
+          case "料理":
+            foodRate = rating;
+            break;
+          case "雰囲気":
+            atmRate = rating;
+            break;
+          case "コスパ":
+            costRate = rating;
+            break;
+        }
+      });
+    }
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: _buildAppBar(context),
         body: SafeArea(
           child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    children: <Widget>[
-                      const SizedBox(height: 8),
-                      Container(
-                        width: double.infinity,
-                        child: Text(
-                          restaurantName != "" ? restaurantName : "店名",
-                          textAlign: TextAlign.left,
-                          style: Theme.of(context).textTheme.headline6,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Container(
-                        height: 200,
-                        child: TextField(
-                          style: Theme.of(context).textTheme.bodyText2,
-                          keyboardType: TextInputType.multiline,
-                          maxLines: 100,
-                          controller: _postTextController,
-                          maxLength: _maxLength,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: _hintText,
-                            contentPadding: EdgeInsets.zero,
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: <Widget>[
+                        const SizedBox(height: 8),
+                        Container(
+                          width: double.infinity,
+                          child: TextFormField(
+                            readOnly: true,
+                            controller: _restaurantNameController,
+                            textAlign: TextAlign.left,
+                            style: Theme.of(context).textTheme.headline6,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                            ),
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (value) {
+                              if (value == _initRestaurantName) {
+                                return "場所を選択してください";
+                              }
+                              return null;
+                            },
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                    ],
+                        const SizedBox(height: 8),
+                        Container(
+                          height: 200,
+                          child: TextFormField(
+                            style: Theme.of(context).textTheme.bodyText2,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: 100,
+                            controller: _postTextController,
+                            maxLength: _maxLength,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: _hintText,
+                              contentPadding: EdgeInsets.zero,
+                            ),
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (value) {
+                              if (value?.length == 0) {
+                                return "投稿文を記入してください";
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                    ),
                   ),
-                ),
-                ImageList(),
-                const SizedBox(height: 8),
-                SimpleDivider(),
-                HashtagList(emitHashtag: addHashtag),
-                SimpleDivider(),
-                PlaceList(emitRestaurantName: changeResName),
-                SimpleDivider(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    children: <Widget>[
-                      StarReview(sectionName: "料理"),
-                      StarReview(sectionName: "雰囲気"),
-                      StarReview(sectionName: "コスパ"),
-                    ],
+                  ImageList(
+                    selectedImageFiles: selectedImageFiles,
+                    updateImageFiles: updateSelectedImageFiles,
                   ),
-                ),
-              ],
+                  const SizedBox(height: 8),
+                  SimpleDivider(),
+                  HashtagList(addHashtag: addHashtag),
+                  SimpleDivider(),
+                  PlaceList(updateResName: updateResName),
+                  SimpleDivider(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: <Widget>[
+                        StarReview(
+                          sectionName: "料理",
+                          rating: foodRate,
+                          updateRating: updateRating,
+                        ),
+                        StarReview(
+                          sectionName: "雰囲気",
+                          rating: atmRate,
+                          updateRating: updateRating,
+                        ),
+                        StarReview(
+                          sectionName: "コスパ",
+                          rating: costRate,
+                          updateRating: updateRating,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -119,17 +192,45 @@ class _PostScreenState extends State<PostScreen> {
   AppBar _buildAppBar(BuildContext context) {
     final _titleText = "新規投稿";
 
+    bool checkIsEdited() {
+      if (selectedImageFiles.isEmpty &&
+          _restaurantNameController.text == _initRestaurantName &&
+          _postTextController.text.isEmpty &&
+          foodRate == _initRating &&
+          atmRate == _initRating &&
+          costRate == _initRating) {
+        return false;
+      }
+      return true;
+    }
+
     return AppBar(
       leading: IconButton(
         icon: const Icon(
           Icons.arrow_back_ios,
           color: Colors.black,
         ),
-        onPressed: () {
+        onPressed: () async {
           // 動作確認用として if で切り分けてる
           // フッターを非表示にする場合は if を削除する
           // if (Navigator.of(context).canPop()) Navigator.pop(context);
-          Navigator.pop(context);
+          if (checkIsEdited()) {
+            final result = await showDialog(
+              context: context,
+              builder: (_) {
+                return SimpleAlertDialog(
+                  title: "警告",
+                  content: "編集中の内容が削除されますがよろしいですか",
+                );
+              },
+            );
+            if (result) {
+              // 途中の投稿を保存する処理
+              Navigator.pop(context);
+            }
+          } else {
+            Navigator.pop(context);
+          }
         },
       ),
       title: Text(_titleText),
@@ -142,6 +243,9 @@ class _PostScreenState extends State<PostScreen> {
             color: AppColor.kPinkColor,
           ),
           onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              Navigator.pop(context);
+            }
             // ここで投稿作成の処理
           },
         ),

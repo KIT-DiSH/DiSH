@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dish/screens/select_signin_signup_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'package:dish/widgets/routes/route.dart';
+import 'package:dish/screens/select_signin_signup_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -5,9 +5,8 @@ import 'package:dish/dummy/dummy_places.dart';
 import 'package:dish/widgets/post_screen/specify_pin_map.dart';
 
 class PlaceList extends StatefulWidget {
-  final emitRestaurantName;
-  PlaceList({Key? key, required Function this.emitRestaurantName})
-      : super(key: key);
+  final updateResName;
+  PlaceList({Key? key, required Function this.updateResName}) : super(key: key);
 
   @override
   _PlaceListState createState() => _PlaceListState();
@@ -60,7 +59,7 @@ class _PlaceListState extends State<PlaceList> {
                         _selectedIndex = selected ? index : -1;
                       });
                       var _resName = selected ? dummyPlaces[index] : "";
-                      widget.emitRestaurantName(_resName);
+                      widget.updateResName(_resName);
                     }
                   },
                 );

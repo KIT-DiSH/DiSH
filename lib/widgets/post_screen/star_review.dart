@@ -6,17 +6,18 @@ class StarReview extends StatefulWidget {
   StarReview({
     Key? key,
     required this.sectionName,
+    required this.rating,
+    required this.updateRating,
   }) : super(key: key);
-  final sectionName;
+  final String sectionName;
+  final double rating;
+  final Function updateRating;
 
   @override
   _StarReviewState createState() => _StarReviewState();
 }
 
 class _StarReviewState extends State<StarReview> {
-  late double _rating;
-  double _initialRating = 2.0;
-
   @override
   Widget build(BuildContext context) {
     final _mediaWidth = MediaQuery.of(context).size.width;
@@ -33,7 +34,7 @@ class _StarReviewState extends State<StarReview> {
           ),
           Positioned(
             child: RatingBar.builder(
-              initialRating: _initialRating,
+              initialRating: widget.rating,
               minRating: 1,
               unratedColor: Colors.amber.withAlpha(50),
               itemCount: 5,
@@ -45,9 +46,7 @@ class _StarReviewState extends State<StarReview> {
                 color: Colors.amber,
               ),
               onRatingUpdate: (rating) {
-                setState(() {
-                  this._rating = rating;
-                });
+                widget.updateRating(rating, widget.sectionName);
               },
               updateOnDrag: true,
             ),
