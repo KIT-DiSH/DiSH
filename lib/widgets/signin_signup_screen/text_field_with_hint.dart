@@ -62,6 +62,8 @@ class _TextFieldWithHintState extends State<TextFieldWithHint> {
               return "このフィールドに入力してください";
             } else if (!widget.isPassword && !EmailValidator.validate(value)) {
               return "有効なメールアドレスではありません";
+            } else if (widget.isPassword && value.length > 30) {
+              return "32文字以内で入力してください";
             } else {
               return null;
             }
