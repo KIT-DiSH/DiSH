@@ -30,6 +30,7 @@ dependencies:
   sign_in_with_apple: ^3.2.0
   crypto: ^3.0.1
   email_validator: ^2.0.1
+  flutter_dotenv: ^5.0.2
 
 dev_dependencies:
   flutter_test:
@@ -40,3 +41,4 @@ flutter:
 
   assets:
     - assets/images/
+    - .env
