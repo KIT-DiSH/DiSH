@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/models/PostModel.dart';
 import 'package:dish/widgets/timeline_screen/post.dart';
 
@@ -30,6 +31,7 @@ class _DisplayPostsScreenState extends State<DisplayPostsScreen> {
     return AppBar(
       title: Text("TestUserNameの投稿"),
       centerTitle: true,
+      backgroundColor: AppColor.kWhiteColor,
       leading: Builder(
         builder: (BuildContext context) {
           return IconButton(

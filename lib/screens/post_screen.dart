@@ -233,9 +233,13 @@ class _PostScreenState extends State<PostScreen> {
           }
         },
       ),
-      title: Text(_titleText),
+      title: Text(
+        _titleText,
+        style: TextStyle(color: AppColor.kPrimaryTextColor),
+      ),
       centerTitle: true,
       elevation: 0,
+      backgroundColor: AppColor.kWhiteColor,
       actions: <Widget>[
         IconButton(
           icon: Icon(
