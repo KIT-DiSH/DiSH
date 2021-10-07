@@ -95,7 +95,7 @@ List<PostModel> posts = [
         ),
       )
     ],
-    map: LatLng(37.42796133580664, -122.085749655962),
+    map: LatLng(37.52796133580664, -122.085749655962),
     stars: [3, 2, 4],
   ),
   PostModel(
