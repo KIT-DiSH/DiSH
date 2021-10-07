@@ -42,7 +42,6 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
             ),
           );
           if (widget.latLng != null) {
-            //
             markers.add(
               Marker(
                 markerId: MarkerId(markers.length.toString()),
@@ -51,6 +50,10 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
                   BitmapDescriptor.hueBlue,
                 ),
               ),
+            );
+            currentPosition = CameraPosition(
+              target: widget.latLng!,
+              zoom: 15,
             );
           }
           for (PostModel post in posts) {
