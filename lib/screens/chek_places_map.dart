@@ -54,6 +54,8 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
             );
           }
           for (PostModel post in posts) {
+            // todo: 後々同じお店のIDなら弾くように変更
+            if (widget.latLng != null && widget.latLng == post.map) continue;
             markers.add(
               Marker(
                 markerId: MarkerId(markers.length.toString()),
