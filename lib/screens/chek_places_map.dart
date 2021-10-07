@@ -74,7 +74,7 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
       body: Stack(
         children: [
           GoogleMap(
-            mapType: MapType.hybrid,
+            mapType: MapType.normal,
             initialCameraPosition: currentPosition,
             onMapCreated: (GoogleMapController controller) {
               _controller.complete(controller);
