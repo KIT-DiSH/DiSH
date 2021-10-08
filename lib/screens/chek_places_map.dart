@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:dish/dummy/dummy_places.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -20,9 +21,12 @@ class CheckPlacesMap extends StatefulWidget {
 class CheckPlacesMapState extends State<CheckPlacesMap> {
   Completer<GoogleMapController> _controller = Completer();
   List<Marker> markers = [];
-  CameraPosition currentPosition = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 15,
+  // todo: initStateで変更した場所にカメラをフォーカス
+  late CameraPosition currentPosition = CameraPosition(
+    target: LatLng(
+      33.590188,
+      130.420685,
+    ),
   );
 
   @override
@@ -63,6 +67,14 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
               Marker(
                 markerId: MarkerId(markers.length.toString()),
                 position: post.map,
+              ),
+            );
+          }
+          for (int i = 0; i < dummyPlaces.length; i++) {
+            markers.add(
+              Marker(
+                markerId: MarkerId((markers.length + i + 1).toString()),
+                position: dummyPlaces[i],
               ),
             );
           }

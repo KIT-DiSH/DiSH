@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:dish/configs/constant_colors.dart';
-import 'package:dish/dummy/dummy_places.dart';
+import 'package:dish/dummy/dummy_res.dart';
 import 'package:dish/widgets/post_screen/specify_pin_map.dart';
 
 class PlaceList extends StatefulWidget {
@@ -34,12 +34,12 @@ class _PlaceListState extends State<PlaceList> {
             height: 40,
             width: _mediaWidth - _chipListPadding,
             child: ListView.separated(
-              itemCount: dummyPlaces.length + 1,
+              itemCount: dummyRes.length + 1,
               separatorBuilder: (_, __) => const SizedBox(width: 8),
               itemBuilder: (BuildContext context, int index) {
                 return FilterChip(
                   label: Text(
-                    index == dummyPlaces.length ? "場所を指定" : dummyPlaces[index],
+                    index == dummyRes.length ? "場所を指定" : dummyRes[index],
                   ),
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   selected: index == _selectedIndex,
@@ -47,7 +47,7 @@ class _PlaceListState extends State<PlaceList> {
                   showCheckmark: false,
                   pressElevation: 1,
                   onSelected: (selected) {
-                    if (index == dummyPlaces.length) {
+                    if (index == dummyRes.length) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) {
@@ -58,7 +58,7 @@ class _PlaceListState extends State<PlaceList> {
                       setState(() {
                         _selectedIndex = selected ? index : -1;
                       });
-                      var _resName = selected ? dummyPlaces[index] : "";
+                      var _resName = selected ? dummyRes[index] : "";
                       widget.updateResName(_resName);
                     }
                   },
