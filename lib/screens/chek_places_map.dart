@@ -27,6 +27,7 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
       33.590188,
       130.420685,
     ),
+    zoom: 15,
   );
 
   @override
@@ -60,6 +61,7 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
               zoom: 15,
             );
           }
+          // a@c.com
           for (PostModel post in posts) {
             // todo: 後々同じお店のIDなら弾くように変更
             if (widget.latLng != null && widget.latLng == post.map) continue;
