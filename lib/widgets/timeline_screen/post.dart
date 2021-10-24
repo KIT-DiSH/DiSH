@@ -5,7 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:dish/models/PostModel.dart';
 import 'package:dish/screens/profile_screen.dart';
-import 'package:dish/widgets/timeline_screen/chek_places_map.dart';
+import 'package:dish/screens/chek_places_map.dart';
 import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/timeline_screen/start.dart';
 
@@ -24,14 +24,6 @@ class _DishPostState extends State<DishPost> {
   int activeIndex = 0;
   bool favorite = false;
   bool isTextExpanded = false;
-  final List<String> imgList = [
-    'https://picsum.photos/600',
-    'https://picsum.photos/601',
-    'https://picsum.photos/602',
-    'https://picsum.photos/603',
-    'https://picsum.photos/604',
-    'https://picsum.photos/605',
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -58,9 +50,9 @@ class _DishPostState extends State<DishPost> {
                       setState(() => activeIndex = index),
                     },
                   ),
-                  itemCount: imgList.length,
+                  itemCount: widget.postInfo.imageUrls.length,
                   itemBuilder: (context, index, realIndex) {
-                    final url = imgList[index];
+                    final url = widget.postInfo.imageUrls[index];
                     return buildImage(context, url, index);
                   },
                 ),
@@ -130,7 +122,7 @@ class _DishPostState extends State<DishPost> {
                     image: new DecorationImage(
                       fit: BoxFit.fill,
                       image: new NetworkImage(
-                        widget.postInfo.user.imageUrl,
+                        widget.postInfo.postUser.iconUrl,
                       ),
                     ),
                   ),
@@ -141,14 +133,14 @@ class _DishPostState extends State<DishPost> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   new Text(
-                    widget.postInfo.user.name,
+                    widget.postInfo.postUser.name,
                     style: TextStyle(fontWeight: FontWeight.bold),
                     textAlign: TextAlign.start,
                   ),
                   Container(
                     width: 100,
                     child: StarReview(
-                      rate: widget.postInfo.star + .0,
+                      rate: widget.postInfo.stars[0] + .0,
                     ),
                   ),
                 ],
@@ -187,7 +179,7 @@ class _DishPostState extends State<DishPost> {
             vertical: 8,
           ),
           child: Text(
-            widget.postInfo.shop,
+            widget.postInfo.restName,
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 12,
@@ -208,7 +200,7 @@ class _DishPostState extends State<DishPost> {
               vertical: 8,
             ),
             child: Text(
-              widget.postInfo.discription,
+              widget.postInfo.content,
               maxLines: isTextExpanded ? 1000 : 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -273,7 +265,7 @@ class _DishPostState extends State<DishPost> {
 
   Widget buildIndicator() => AnimatedSmoothIndicator(
         activeIndex: activeIndex,
-        count: imgList.length,
+        count: widget.postInfo.imageUrls.length,
         effect: JumpingDotEffect(
           dotWidth: 10,
           dotHeight: 10,

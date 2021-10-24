@@ -37,7 +37,7 @@ class ProfileScreen extends StatelessWidget {
       preferredSize: Size.fromHeight(50.0),
       child: AppBar(
         centerTitle: true,
-        // backgroundColor: Colors.white,
+        backgroundColor: AppColor.kWhiteColor,
         elevation: 1.0,
         // popが存在するときだけ表示する
         leading: Navigator.canPop(context)

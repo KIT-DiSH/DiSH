@@ -54,94 +54,92 @@ class SigninScreen extends StatelessWidget {
         GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
           child: Scaffold(
-            resizeToAvoidBottomInset: false,
             backgroundColor: Colors.transparent,
-            body: Form(
-              key: _formKey,
-              child: Padding(
+            body: SingleChildScrollView(
+              child: Container(
+                height: MediaQuery.of(context).size.height,
                 padding: EdgeInsets.symmetric(horizontal: 40),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(height: 100),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Form(
+                  key: _formKey,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 100),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: SizedBox(
-                            height: 24,
-                            width: 24,
-                            child: Icon(
-                              Icons.arrow_back_ios,
-                              color: Colors.white,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: SizedBox(
+                                height: 24,
+                                width: 24,
+                                child: Icon(
+                                  Icons.arrow_back_ios,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ),
-                          ),
+                            Text(
+                              _title,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                letterSpacing: 3,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 24,
+                              height: 24,
+                            ),
+                          ],
                         ),
-                        Text(
-                          _title,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            letterSpacing: 3,
-                          ),
+                        Spacer(),
+                        TextFieldWithHint(
+                          controller: _mailController,
+                          hintText: "メールアドレス",
                         ),
+                        SizedBox(height: 20),
+                        TextFieldWithHint(
+                          isPassword: true,
+                          controller: _passwordController,
+                          hintText: "パスワード",
+                        ),
+                        Spacer(),
                         SizedBox(
-                          width: 24,
-                          height: 24,
+                          width: double.infinity,
+                          child: TextButton(
+                            child: Text(
+                              "ログイン",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            style: ButtonStyle(
+                              padding:
+                                  MaterialStateProperty.all(EdgeInsets.all(14)),
+                              minimumSize: MaterialStateProperty.all(Size.zero),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              backgroundColor: MaterialStateProperty.all(
+                                  AppColor.kPinkColor),
+                            ),
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                // アカウント存在確認処理
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => RouteWidget(),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
                         ),
+                        SizedBox(height: 100),
                       ],
                     ),
-                    Spacer(),
-                    TextFieldWithHint(
-                      controller: _mailController,
-                      hintText: "メールアドレス",
-                    ),
-                    SizedBox(height: 20),
-                    TextFieldWithHint(
-                      isPassword: true,
-                      controller: _passwordController,
-                      hintText: "パスワード",
-                    ),
-                    Spacer(),
-                    SizedBox(
-                      width: double.infinity,
-                      child: TextButton(
-                        child: Text(
-                          "ログイン",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        style: ButtonStyle(
-                          padding:
-                              MaterialStateProperty.all(EdgeInsets.all(14)),
-                          minimumSize: MaterialStateProperty.all(Size.zero),
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          backgroundColor:
-                              MaterialStateProperty.all(AppColor.kPinkColor),
-                        ),
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            // アカウント存在確認処理
-                            String res = await signInWithEmail();
-                            if (res == 'success') {
-                              print('サインイン成功');
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => RouteWidget(),
-                                ),
-                              );
-                            } else {
-                              print('サインイン失敗');
-                            }
-                          }
-                        },
-                      ),
-                    ),
-                    SizedBox(height: 100),
-                  ],
+                  ),
                 ),
               ),
             ),

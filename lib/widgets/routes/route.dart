@@ -1,6 +1,6 @@
+import 'package:dish/screens/chek_places_map.dart';
 import 'package:flutter/material.dart';
 
-import 'package:dish/screens/map_screen.dart';
 import 'package:dish/screens/post_screen.dart';
 import 'package:dish/widgets/routes/tab_navigator.dart';
 
@@ -46,7 +46,7 @@ class _RouteWidgetState extends State<RouteWidget> {
     } else if (tabItem == "Map") {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => MapScreen()),
+        MaterialPageRoute(builder: (_) => CheckPlacesMap()),
       );
       return;
     }
