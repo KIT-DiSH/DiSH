@@ -6,9 +6,12 @@ class Timeline extends StatelessWidget {
     backgroundColor: new Color(0xFFF8FAF8),
     centerTitle: false,
     elevation: 1.0,
-    title: SizedBox(
-      height: 40.0,
-      child: Image.asset('assets/images/Instagram_logo.png'),
+    title: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SizedBox(
+        height: 30.0,
+        child: Image.asset('assets/images/dish-logo.png'),
+      ),
     ),
     actions: [
       Padding(
