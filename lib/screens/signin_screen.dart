@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:dish/main.dart';
 import 'package:dish/configs/constant_colors.dart';
-import 'package:dish/widgets/routes/route.dart';
 import 'package:dish/widgets/signin_signup_screen/text_field_with_hint.dart';
 
-class SigninScreen extends StatelessWidget {
+class SigninScreen extends ConsumerWidget {
   final _title = "おかえりなさい！";
   final _backgroundImagePath = "assets/images/background.png";
   final _mailController = TextEditingController();
@@ -12,7 +13,7 @@ class SigninScreen extends StatelessWidget {
   static final _formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ScopedReader watch) {
     return Stack(
       children: [
         Container(
@@ -98,15 +99,14 @@ class SigninScreen extends StatelessWidget {
                                   AppColor.kPinkColor),
                             ),
                             onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                // アカウント存在確認処理
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => RouteWidget(),
-                                  ),
-                                );
-                              }
+                              // ログイン処理
+                              Navigator.popUntil(context, (route) => false);
+                              context.read(isLoginProvider).state = true;
+
+                              // if (_formKey.currentState!.validate()) {
+                              //   // アカウント存在確認処理
+                              //   ref.watch(isLoginProvider).state = true;
+                              // }
                             },
                           ),
                         ),

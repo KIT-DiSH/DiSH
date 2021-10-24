@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:dish/main.dart';
 import 'package:dish/configs/constant_colors.dart';
 
-class SearchScreen extends StatelessWidget {
+class SearchScreen extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ScopedReader watch) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -15,7 +17,13 @@ class SearchScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: Center(
-          child: Text("Search"),
+          child: TextButton(
+            child: Text("Search"),
+            onPressed: () {
+              // ログアウトの例
+              watch(isLoginProvider).state = false;
+            },
+          ),
         ),
       ),
     );

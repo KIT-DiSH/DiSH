@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:dish/configs/constant_colors.dart';
-import 'package:dish/widgets/routes/route.dart';
+import 'package:dish/screens/setup_account_screen.dart';
 import 'package:dish/widgets/signin_signup_screen/text_field_with_hint.dart';
 
 class SignupScreen extends StatelessWidget {
@@ -99,15 +99,21 @@ class SignupScreen extends StatelessWidget {
                                   AppColor.kPinkColor),
                             ),
                             onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                // アカウント作成処理
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => RouteWidget(),
-                                  ),
-                                );
-                              }
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => SetupAccountScreen(),
+                                ),
+                              );
+                              // if (_formKey.currentState!.validate()) {
+                              //   // アカウント作成処理
+                              //   Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //       builder: (_) => SetupAccountScreen(),
+                              //     ),
+                              //   );
+                              // }
                             },
                           ),
                         ),

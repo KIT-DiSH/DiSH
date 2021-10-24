@@ -10,8 +10,8 @@ import 'package:dish/widgets/signin_signup_screen/icon_with_label_button.dart';
 class SelectSigninSginupScreen extends StatelessWidget {
   final _backgroundImagePath = "assets/images/background.png";
   final _facebookIconPath = "assets/images/facebook_logo.svg";
-  final _appleIconPath = "assets/images/apple_logo.svg";
   final _googleIconPath = "assets/images/google_logo.svg";
+  final _appleIconPath = "assets/images/apple_logo.svg";
   final _facebookLabel = "Facebookでログイン";
   final _googleLabel = "Googleでログイン";
   final _appleLabel = "Appleでログイン";

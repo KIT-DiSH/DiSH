@@ -31,40 +31,37 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
     );
   }
 
-  PreferredSize _buildAppBar(BuildContext context) {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(50.0),
-      child: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 1.0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      centerTitle: true,
+      backgroundColor: Colors.white,
+      elevation: 1.0,
+      leading: IconButton(
+        icon: const Icon(
+          Icons.arrow_back_ios,
+          color: Colors.black,
         ),
-        title: Text(
-          _title,
-          style: TextStyle(
-            color: AppColor.kPrimaryTextColor,
-            fontSize: 16,
-          ),
-        ),
-        actions: [
-          GestureDetector(
-            onTap: () {},
-            child: Icon(
-              Icons.more_horiz,
-              color: AppColor.kPrimaryTextColor,
-            ),
-          ),
-          const SizedBox(width: 12),
-        ],
+        onPressed: () {
+          Navigator.pop(context);
+        },
       ),
+      title: Text(
+        _title,
+        style: TextStyle(
+          color: AppColor.kPrimaryTextColor,
+          fontSize: 16,
+        ),
+      ),
+      actions: [
+        GestureDetector(
+          onTap: () {},
+          child: Icon(
+            Icons.more_horiz,
+            color: AppColor.kPrimaryTextColor,
+          ),
+        ),
+        const SizedBox(width: 12),
+      ],
     );
   }
 }

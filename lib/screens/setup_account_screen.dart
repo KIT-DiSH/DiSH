@@ -1,16 +1,19 @@
+import 'package:dish/main.dart';
 import 'package:flutter/material.dart';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/signin_signup_screen/text_field_with_hint.dart';
 
-class SetupAccountScreen extends StatelessWidget {
+class SetupAccountScreen extends ConsumerWidget {
   final _title = "アカウント作成";
   final _backgroundImagePath = "assets/images/background.png";
   final _userNameController = TextEditingController();
   final _userIDController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ScopedReader watch) {
     return Stack(
       children: [
         Container(
@@ -126,7 +129,10 @@ class SetupAccountScreen extends StatelessWidget {
                           backgroundColor:
                               MaterialStateProperty.all(AppColor.kPinkColor),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.popUntil(context, (route) => false);
+                          context.read(isLoginProvider).state = true;
+                        },
                       ),
                     ),
                     SizedBox(height: 100),

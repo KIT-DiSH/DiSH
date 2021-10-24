@@ -1,17 +1,17 @@
-import 'package:dish/screens/chek_places_map.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:dish/screens/map_screen.dart';
 import 'package:dish/screens/post_screen.dart';
+import 'package:dish/screens/chek_places_map.dart';
 import 'package:dish/widgets/routes/tab_navigator.dart';
 
-class RouteWidget extends StatefulWidget {
-  const RouteWidget({Key? key}) : super(key: key);
+final footerIndexProvider = StateProvider((ref) => 0);
+final isOpenFooterProvider = StateProvider((ref) => true);
 
-  @override
-  _RouteWidgetState createState() => _RouteWidgetState();
-}
+class RouteWidget extends ConsumerWidget {
+  RouteWidget({Key? key}) : super(key: key);
 
-class _RouteWidgetState extends State<RouteWidget> {
   final List<String> _pageKeys = [
     "Home",
     "Search",
@@ -33,84 +33,60 @@ class _RouteWidgetState extends State<RouteWidget> {
     "Map": GlobalKey<NavigatorState>(),
     "Profile": GlobalKey<NavigatorState>(),
   };
-  String _currentPage = "Home";
-
-  void _selectTab(String tabItem, int index) {
-    /* フッターを隠したいページは、bodyを切り替えずに直接pushする */
-    if (tabItem == "NewPost") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => PostScreen()),
-      );
-      return;
-    } else if (tabItem == "Map") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => CheckPlacesMap()),
-      );
-      return;
-    }
-
-    if (tabItem == _currentPage) {
-      _navigatorKeys[tabItem]?.currentState?.popUntil((route) => route.isFirst);
-    } else {
-      setState(() {
-        _currentPage = _pageKeys[index];
-      });
-    }
-  }
 
   @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        final isFirstRouteInCurrentTab =
-            !await _navigatorKeys[_currentPage]!.currentState!.maybePop();
+  Widget build(BuildContext context, ScopedReader watch) {
+    int _currentPageIndex = watch(footerIndexProvider).state;
+    bool _isOpenFooter = watch(isOpenFooterProvider).state;
 
-        if (isFirstRouteInCurrentTab) {
-          if (_currentPage != "Home") {
-            _selectTab("Home", 0);
-            return false;
-          } else {
-            return false;
-          }
-        }
-
-        return isFirstRouteInCurrentTab;
-      },
-      child: Scaffold(
-        body: IndexedStack(
-          index: _pageKeys.indexOf(_currentPage),
-          children: _pageKeys
-              .map(
-                (key) => TabNavigator(
-                  navigatorKey: _navigatorKeys[key]!,
-                  tabItem: key,
-                ),
-              )
-              .toList(),
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          unselectedItemColor: Colors.black45,
-          selectedItemColor: Colors.black87,
-          showUnselectedLabels: false,
-          showSelectedLabels: false,
-          onTap: (index) {
-            _selectTab(_pageKeys[index], index);
-          },
-          currentIndex: _pageKeys.indexOf(_currentPage),
-          items: _pageKeys
-              .map(
-                (key) => BottomNavigationBarItem(
-                  icon: Icon(_bottomNaviItems[key]),
-                  label: "",
-                  tooltip: "",
-                ),
-              )
-              .toList(),
-          type: BottomNavigationBarType.fixed,
-        ),
+    return Scaffold(
+      body: IndexedStack(
+        index: _currentPageIndex,
+        children: _pageKeys
+            .map(
+              (key) => TabNavigator(
+                navigatorKey: _navigatorKeys[key]!,
+                tabItem: key,
+              ),
+            )
+            .toList(),
       ),
+      bottomNavigationBar: _isOpenFooter
+          ? BottomNavigationBar(
+              unselectedItemColor: Colors.black45,
+              selectedItemColor: Colors.black87,
+              showUnselectedLabels: false,
+              showSelectedLabels: false,
+              onTap: (index) {
+                if (index == 2) {
+                  // watch(isOpenFooterProvider).state = false;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => PostScreen()),
+                  );
+                } else if (index == 3) {
+                  // watch(isOpenFooterProvider).state = false;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => MapScreen()),
+                  );
+                } else {
+                  context.read(footerIndexProvider).state = index;
+                }
+              },
+              currentIndex: _currentPageIndex,
+              items: _pageKeys
+                  .map(
+                    (key) => BottomNavigationBarItem(
+                      icon: Icon(_bottomNaviItems[key]),
+                      label: "",
+                      tooltip: "",
+                    ),
+                  )
+                  .toList(),
+              type: BottomNavigationBarType.fixed,
+            )
+          : null,
     );
   }
 }

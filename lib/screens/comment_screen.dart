@@ -157,28 +157,25 @@ class _CommentScreenState extends State<CommentScreen> {
     );
   }
 
-  PreferredSize _buildAppBar(BuildContext context) {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(50.0),
-      child: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 1.0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      centerTitle: true,
+      backgroundColor: Colors.white,
+      elevation: 1.0,
+      leading: IconButton(
+        icon: const Icon(
+          Icons.arrow_back_ios,
+          color: Colors.black,
         ),
-        title: Text(
-          _title,
-          style: TextStyle(
-            color: AppColor.kPrimaryTextColor,
-            fontSize: 16,
-          ),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
+      title: Text(
+        _title,
+        style: TextStyle(
+          color: AppColor.kPrimaryTextColor,
+          fontSize: 16,
         ),
       ),
     );

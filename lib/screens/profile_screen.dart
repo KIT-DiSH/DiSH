@@ -32,43 +32,40 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  PreferredSize _buildAppBar(BuildContext context) {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(50.0),
-      child: AppBar(
-        centerTitle: true,
-        backgroundColor: AppColor.kWhiteColor,
-        elevation: 1.0,
-        // popが存在するときだけ表示する
-        leading: Navigator.canPop(context)
-            ? IconButton(
-                icon: const Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.black,
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              )
-            : null,
-        title: Text(
-          testUser.userId,
-          style: TextStyle(
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      centerTitle: true,
+      backgroundColor: AppColor.kWhiteColor,
+      elevation: 1.0,
+      // popが存在するときだけ表示する
+      leading: Navigator.canPop(context)
+          ? IconButton(
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          : null,
+      title: Text(
+        testUser.userId,
+        style: TextStyle(
+          color: AppColor.kPrimaryTextColor,
+          fontSize: 16,
+        ),
+      ),
+      actions: [
+        GestureDetector(
+          onTap: () {},
+          child: Icon(
+            Icons.more_horiz,
             color: AppColor.kPrimaryTextColor,
-            fontSize: 16,
           ),
         ),
-        actions: [
-          GestureDetector(
-            onTap: () {},
-            child: Icon(
-              Icons.more_horiz,
-              color: AppColor.kPrimaryTextColor,
-            ),
-          ),
-          const SizedBox(width: 12),
-        ],
-      ),
+        const SizedBox(width: 12),
+      ],
     );
   }
 }

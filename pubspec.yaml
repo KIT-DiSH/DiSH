@@ -23,6 +23,7 @@ dependencies:
   google_maps_flutter: ^2.0.8
   geolocator: ^7.6.0
   email_validator: ^2.0.1
+  flutter_riverpod: ^0.14.0+3
 
 dev_dependencies:
   flutter_test:
