@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
+import 'package:dish/apis/get_places.dart';
+
 class SpecifyPinMap extends StatefulWidget {
   @override
   State<SpecifyPinMap> createState() => SpecifyPinMapState();
@@ -88,8 +90,8 @@ class SpecifyPinMapState extends State<SpecifyPinMap> {
         padding: const EdgeInsets.only(bottom: 16),
         child: FloatingActionButton(
           heroTag: "hero1",
-          onPressed: () {
-            // ピンの座標からお店を取得する処理
+          onPressed: () async {
+            await execPlacesAPI(latlng: LatLng(33.590188, 130.420685));
             Navigator.pop(context);
           },
           child: Icon(Icons.check),
