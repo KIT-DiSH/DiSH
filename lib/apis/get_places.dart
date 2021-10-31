@@ -7,7 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:dish/plugins/simple_log_printer.dart';
 
-class Places {
+class PlaceDetail {
   final String businessStatus;
   final Map<String, dynamic> geometry;
   final String icon;
@@ -25,7 +25,7 @@ class Places {
   final int userRatingsTotal;
   final String vicinity;
 
-  Places(
+  PlaceDetail(
       this.businessStatus,
       this.geometry,
       this.icon,
@@ -43,7 +43,7 @@ class Places {
       this.userRatingsTotal,
       this.vicinity);
 
-  Places.fromJson(Map<String, dynamic> json)
+  PlaceDetail.fromJson(Map<String, dynamic> json)
       : businessStatus = json['business_status'],
         geometry = json['geometry'],
         icon = json['icon'],
@@ -62,7 +62,36 @@ class Places {
         vicinity = json['vicinity'];
 }
 
-Future<Places> execPlacesAPI({
+class Place {
+  final String businessStatus;
+  final Map<String, dynamic> geometry;
+  final String icon;
+  final String name;
+  final Map<String, dynamic> openingHours;
+  final List<dynamic> photos;
+  final String placeId;
+
+  Place(
+    this.businessStatus,
+    this.geometry,
+    this.icon,
+    this.name,
+    this.openingHours,
+    this.photos,
+    this.placeId,
+  );
+
+  Place.fromJson(Map<String, dynamic> json)
+      : businessStatus = json['business_status'],
+        geometry = json['geometry'],
+        icon = json['icon'],
+        name = json['name'],
+        openingHours = json['opening_hours'],
+        photos = json['photos'],
+        placeId = json['place_id'];
+}
+
+Future<List<Place>> execPlacesAPI({
   required LatLng latlng,
   int radius = 100,
   String type = "restaurant",
@@ -77,7 +106,6 @@ Future<Places> execPlacesAPI({
     "radius": radius.toString(),
     "type": type,
     "language": language,
-    "pagetoken": 10,
     "key": apiKey,
   });
   logger.i('Searching nearby places with provided coordinate');
@@ -85,7 +113,13 @@ Future<Places> execPlacesAPI({
   if (response.statusCode == 200) {
     var json = response.body;
     Map<String, dynamic> placesMap = jsonDecode(json);
-    Places places = new Places.fromJson(placesMap['results'][0]);
+    if (placesMap["status"] != "OK") throw new Error();
+    List<Place> places = [];
+    for (int i = 0; i < 10; i++) {
+      if (placesMap['results'][i] == null) break;
+      places.add(new Place.fromJson(placesMap['results'][i]));
+    }
+
     return places;
   } else {
     print('Request failed with status: ${response.statusCode}.');

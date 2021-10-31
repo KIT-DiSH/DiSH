@@ -91,7 +91,14 @@ class SpecifyPinMapState extends State<SpecifyPinMap> {
         child: FloatingActionButton(
           heroTag: "hero1",
           onPressed: () async {
-            await execPlacesAPI(latlng: LatLng(33.590188, 130.420685));
+            try {
+              var places =
+                  await execPlacesAPI(latlng: LatLng(33.590188, 130.420685));
+              print(places);
+            } catch (e) {
+              print("エラーが発生しました");
+              print(e);
+            }
             Navigator.pop(context);
           },
           child: Icon(Icons.check),
