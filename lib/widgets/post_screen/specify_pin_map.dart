@@ -6,6 +6,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:dish/apis/get_places.dart';
 
 class SpecifyPinMap extends StatefulWidget {
+  final LatLng currentLatLng;
+  SpecifyPinMap({Key? key, required this.currentLatLng}) : super(key: key);
+
   @override
   State<SpecifyPinMap> createState() => SpecifyPinMapState();
 }
@@ -13,11 +16,11 @@ class SpecifyPinMap extends StatefulWidget {
 class SpecifyPinMapState extends State<SpecifyPinMap> {
   Completer<GoogleMapController> _controller = Completer();
   late CameraPosition currentPosition = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
+    target: widget.currentLatLng,
     zoom: 14.4746,
   );
 
-  LatLng pinLatLng = LatLng(37.42796133580664, -122.085749655962);
+  late LatLng pinLatLng = widget.currentLatLng;
 
   @override
   initState() {
@@ -91,15 +94,14 @@ class SpecifyPinMapState extends State<SpecifyPinMap> {
         child: FloatingActionButton(
           heroTag: "hero1",
           onPressed: () async {
+            List<Place> places = [];
             try {
-              var places =
-                  await execPlacesAPI(latlng: LatLng(33.590188, 130.420685));
-              print(places);
+              places = await execPlacesAPI(latlng: pinLatLng);
             } catch (e) {
               print("エラーが発生しました");
               print(e);
             }
-            Navigator.pop(context);
+            Navigator.pop(context, places);
           },
           child: Icon(Icons.check),
         ),

@@ -63,30 +63,24 @@ class PlaceDetail {
 }
 
 class Place {
-  final String businessStatus;
   final Map<String, dynamic> geometry;
-  final String icon;
+  final String? icon;
   final String name;
-  final Map<String, dynamic> openingHours;
-  final List<dynamic> photos;
+  final List<dynamic>? photos;
   final String placeId;
 
   Place(
-    this.businessStatus,
     this.geometry,
     this.icon,
     this.name,
-    this.openingHours,
     this.photos,
     this.placeId,
   );
 
   Place.fromJson(Map<String, dynamic> json)
-      : businessStatus = json['business_status'],
-        geometry = json['geometry'],
+      : geometry = json['geometry'],
         icon = json['icon'],
         name = json['name'],
-        openingHours = json['opening_hours'],
         photos = json['photos'],
         placeId = json['place_id'];
 }
@@ -113,11 +107,14 @@ Future<List<Place>> execPlacesAPI({
   if (response.statusCode == 200) {
     var json = response.body;
     Map<String, dynamic> placesMap = jsonDecode(json);
+    if (placesMap["status"] == "ZERO_RESULTS") return [];
     if (placesMap["status"] != "OK") throw new Error();
     List<Place> places = [];
-    for (int i = 0; i < 10; i++) {
-      if (placesMap['results'][i] == null) break;
-      places.add(new Place.fromJson(placesMap['results'][i]));
+    int placeCount = 0;
+    for (var place in (placesMap['results'] as List)) {
+      if (placeCount >= 10) break;
+      places.add(new Place.fromJson(place));
+      placeCount++;
     }
 
     return places;
