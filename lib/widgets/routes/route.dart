@@ -1,6 +1,9 @@
-import 'package:dish/screens/chek_places_map.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import 'package:dish/apis/get_places.dart';
+import 'package:dish/screens/chek_places_map.dart';
 import 'package:dish/screens/post_screen.dart';
 import 'package:dish/widgets/routes/tab_navigator.dart';
 
@@ -35,12 +38,26 @@ class _RouteWidgetState extends State<RouteWidget> {
   };
   String _currentPage = "Home";
 
-  void _selectTab(String tabItem, int index) {
+  Future<void> _selectTab(String tabItem, int index) async {
     /* フッターを隠したいページは、bodyを切り替えずに直接pushする */
     if (tabItem == "NewPost") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => PostScreen()),
+      LatLng latlng;
+      await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      ).then(
+        (posi) => {
+          latlng = new LatLng(posi.latitude, posi.longitude),
+          execPlacesAPI(latlng: latlng).then(
+            (resultPlaces) => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => PostScreen(places: resultPlaces),
+                ),
+              ),
+            },
+          ),
+        },
       );
       return;
     } else if (tabItem == "Map") {
@@ -69,7 +86,7 @@ class _RouteWidgetState extends State<RouteWidget> {
 
         if (isFirstRouteInCurrentTab) {
           if (_currentPage != "Home") {
-            _selectTab("Home", 0);
+            await _selectTab("Home", 0);
             return false;
           } else {
             return false;
@@ -95,8 +112,8 @@ class _RouteWidgetState extends State<RouteWidget> {
           selectedItemColor: Colors.black87,
           showUnselectedLabels: false,
           showSelectedLabels: false,
-          onTap: (index) {
-            _selectTab(_pageKeys[index], index);
+          onTap: (index) async {
+            await _selectTab(_pageKeys[index], index);
           },
           currentIndex: _pageKeys.indexOf(_currentPage),
           items: _pageKeys
