@@ -76,8 +76,22 @@ class _PlaceListState extends State<PlaceList> {
                         }),
                       );
                       if (placesResult != null) {
-                        if (placesResult == []) {
-                          print("エラーが発生しています。");
+                        if ((placesResult as List<Place>).length == 0) {
+                          await showDialog(
+                            context: context,
+                            builder: (_) {
+                              return SimpleDialog(
+                                title: Text("一件も見つかりませんでした"),
+                                children: <Widget>[
+                                  const SizedBox(height: 32),
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: Text("OK"),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         } else {
                           setState(() {
                             places = placesResult;
