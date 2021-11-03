@@ -8,9 +8,7 @@ import 'package:dish/widgets/post_screen/specify_pin_map.dart';
 
 class PlaceList extends StatefulWidget {
   final Function updateResName;
-  final List<Place> places;
-  PlaceList({Key? key, required this.updateResName, required this.places})
-      : super(key: key);
+  PlaceList({Key? key, required this.updateResName}) : super(key: key);
 
   @override
   _PlaceListState createState() => _PlaceListState();
@@ -18,22 +16,30 @@ class PlaceList extends StatefulWidget {
 
 class _PlaceListState extends State<PlaceList> {
   int _selectedIndex = -1;
-  late List<Place> places = widget.places;
-  LatLng currentLatLng = LatLng(
-    33.590188,
-    130.420685,
-  );
+  late List<Place> places = [];
+  LatLng currentLatLng = LatLng(0, 0);
 
   @override
-  void initState() {
-    super.initState();
-    Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    ).then(
-      (posi) => setState(() {
-        currentLatLng = new LatLng(posi.latitude, posi.longitude);
-      }),
-    );
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+    if (places.length == 0 && mounted) {
+      await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      ).then(
+        (posi) => {
+          setState(() {
+            currentLatLng = new LatLng(posi.latitude, posi.longitude);
+          }),
+        },
+      );
+      await execPlacesAPI(latlng: currentLatLng).then(
+        (resultPlaces) => {
+          setState(() {
+            places = resultPlaces;
+          }),
+        },
+      );
+    }
   }
 
   @override
@@ -95,14 +101,16 @@ class _PlaceListState extends State<PlaceList> {
                         } else {
                           setState(() {
                             places = placesResult;
+                            _selectedIndex = -1;
                           });
+                          widget.updateResName("");
                         }
                       }
                     } else {
                       setState(() {
                         _selectedIndex = selected ? index : -1;
                       });
-                      var _resName = selected ? places[index].name : "";
+                      String _resName = selected ? places[index].name : "";
                       widget.updateResName(_resName);
                     }
                   },

@@ -38,26 +38,14 @@ class _RouteWidgetState extends State<RouteWidget> {
   };
   String _currentPage = "Home";
 
-  Future<void> _selectTab(String tabItem, int index) async {
+  void _selectTab(String tabItem, int index) {
     /* フッターを隠したいページは、bodyを切り替えずに直接pushする */
     if (tabItem == "NewPost") {
-      LatLng latlng;
-      await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      ).then(
-        (posi) => {
-          latlng = new LatLng(posi.latitude, posi.longitude),
-          execPlacesAPI(latlng: latlng).then(
-            (resultPlaces) => {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => PostScreen(places: resultPlaces),
-                ),
-              ),
-            },
-          ),
-        },
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => PostScreen(),
+        ),
       );
       return;
     } else if (tabItem == "Map") {
@@ -86,7 +74,7 @@ class _RouteWidgetState extends State<RouteWidget> {
 
         if (isFirstRouteInCurrentTab) {
           if (_currentPage != "Home") {
-            await _selectTab("Home", 0);
+            _selectTab("Home", 0);
             return false;
           } else {
             return false;
@@ -112,8 +100,8 @@ class _RouteWidgetState extends State<RouteWidget> {
           selectedItemColor: Colors.black87,
           showUnselectedLabels: false,
           showSelectedLabels: false,
-          onTap: (index) async {
-            await _selectTab(_pageKeys[index], index);
+          onTap: (index) {
+            _selectTab(_pageKeys[index], index);
           },
           currentIndex: _pageKeys.indexOf(_currentPage),
           items: _pageKeys

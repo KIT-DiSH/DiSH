@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:dish/apis/get_places.dart';
 import 'package:dish/plugins/rich_text_controller.dart';
 import 'package:dish/widgets/common/simple_alert_dialog.dart';
 import 'package:dish/widgets/common/simple_divider.dart';
@@ -13,8 +12,7 @@ import 'package:dish/widgets/post_screen/star_review.dart';
 import 'package:dish/configs/constant_colors.dart';
 
 class PostScreen extends StatefulWidget {
-  final List<Place> places;
-  const PostScreen({Key? key, required this.places}) : super(key: key);
+  const PostScreen({Key? key}) : super(key: key);
 
   @override
   _PostScreenState createState() => _PostScreenState();
@@ -158,8 +156,7 @@ class _PostScreenState extends State<PostScreen> {
                   SimpleDivider(),
                   HashtagList(addHashtag: addHashtag),
                   SimpleDivider(),
-                  PlaceList(
-                      places: widget.places, updateResName: updateResName),
+                  PlaceList(updateResName: updateResName),
                   SimpleDivider(),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
