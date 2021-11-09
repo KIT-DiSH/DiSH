@@ -85,6 +85,15 @@ class Place {
         placeId = json['place_id'];
 }
 
+bool checkValue(place) {
+  if (place['geometry'] == null ||
+      place['icon'] == null ||
+      place['name'] == null ||
+      place['photos'] == null ||
+      place['place_id'] == null) return false;
+  return true;
+}
+
 Future<List<Place>> execPlacesAPI({
   required LatLng latlng,
   int radius = 100,
@@ -113,7 +122,7 @@ Future<List<Place>> execPlacesAPI({
     int placeCount = 0;
     for (var place in (placesMap['results'] as List)) {
       if (placeCount >= 10) break;
-      places.add(new Place.fromJson(place));
+      if (!checkValue(place)) places.add(new Place.fromJson(place));
       placeCount++;
     }
 
