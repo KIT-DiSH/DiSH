@@ -1,6 +1,9 @@
-import 'package:dish/screens/chek_places_map.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import 'package:dish/apis/get_places.dart';
+import 'package:dish/screens/chek_places_map.dart';
 import 'package:dish/screens/post_screen.dart';
 import 'package:dish/widgets/routes/tab_navigator.dart';
 
@@ -40,7 +43,9 @@ class _RouteWidgetState extends State<RouteWidget> {
     if (tabItem == "NewPost") {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => PostScreen()),
+        MaterialPageRoute(
+          builder: (_) => PostScreen(),
+        ),
       );
       return;
     } else if (tabItem == "Map") {
