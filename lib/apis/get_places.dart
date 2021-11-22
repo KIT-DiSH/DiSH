@@ -122,7 +122,7 @@ Future<List<Place>> execPlacesAPI({
     int placeCount = 0;
     for (var place in (placesMap['results'] as List)) {
       if (placeCount >= 10) break;
-      if (!checkValue(place)) places.add(new Place.fromJson(place));
+      if (checkValue(place)) places.add(new Place.fromJson(place));
       placeCount++;
     }
 
