@@ -109,9 +109,10 @@ class _DishPostState extends State<DishPost> {
                 onTap: () {
                   // 実際には ProfileScreen に UserID を渡すなどして
                   // プロフィールページの中身を決定する
+                  String uid = "uruCi5pw8gWNOQeudRWfYiQ8Age2";
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => ProfileScreen()),
+                    MaterialPageRoute(builder: (_) => ProfileScreen(uid: uid)),
                   );
                 },
                 child: Container(
