@@ -1,17 +1,15 @@
+import 'package:dish/models/User.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import 'package:dish/models/TimelineUser.dart';
-import 'package:dish/models/Comment.dart';
 
 class PostModel {
   // 店全体のモデルを持っていても良い
   final String id, content, date, restName, tags;
   final List<String> imageUrls;
   final User postUser;
-  final List<User> favoUsers;
-  final List<Comment> comments;
+  final List<String> favoUsers;
+  final List<String> comments;
   final LatLng map;
-  final List<int> stars;
+  final Map<String, double> stars;
 
   PostModel({
     required this.id,
@@ -44,59 +42,22 @@ List<PostModel> posts = [
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0qiRHm66XVULIf1CoIxqopOMZMZM6nObHIw&usqp=CAU',
     ],
     postUser: User(
-      id: 'aaa',
-      name: 'kaito',
-      iconUrl: 'https://picsum.photos/40',
+      userId: 'aaa',
+      userName: 'kaito',
+      iconImageUrl: 'https://picsum.photos/40',
       profileText: '自己紹介．自己紹介．自己紹介',
+      postCount: 6,
       followCount: 123,
       followerCount: 234,
-      postIds: [
-        'test1',
-      ],
     ),
-    favoUsers: [
-      User(
-        id: 'abc',
-        name: 'fuji',
-        iconUrl: 'https://picsum.photos/40',
-        profileText: '自己紹介．自己紹介．自己紹介',
-        followCount: 123,
-        followerCount: 234,
-        postIds: [
-          'test1',
-        ],
-      ),
-      User(
-        id: 'abcd',
-        name: 'fujikaito',
-        iconUrl: 'https://picsum.photos/40',
-        profileText: '自己紹介．自己紹介．自己紹介',
-        followCount: 123,
-        followerCount: 234,
-        postIds: [
-          'test1',
-        ],
-      ),
-    ],
-    comments: [
-      Comment(
-        id: 'comment1',
-        content: 'この店おいしかったです．',
-        user: User(
-          id: 'reviewer1',
-          name: 'kai',
-          iconUrl: 'https://picsum.photos/40',
-          profileText: '自己紹介．自己紹介．自己紹介',
-          followCount: 123,
-          followerCount: 234,
-          postIds: [
-            'test1',
-          ],
-        ),
-      )
-    ],
+    favoUsers: [],
+    comments: [],
     map: LatLng(33.59119948029149, 130.4206489802915),
-    stars: [3, 2, 4],
+    stars: {
+      "cost": 3,
+      "mood": 2,
+      "taste": 5,
+    },
   ),
   PostModel(
     id: '1',
@@ -113,58 +74,21 @@ List<PostModel> posts = [
       'https://www.c-hisada1.com/wp-content/uploads/sp_main_002b.jpg',
     ],
     postUser: User(
-      id: 'aaa',
-      name: 'kaito',
-      iconUrl: 'https://picsum.photos/40',
+      userId: 'aaa',
+      userName: 'kaito',
+      iconImageUrl: 'https://picsum.photos/40',
       profileText: '自己紹介．自己紹介．自己紹介',
+      postCount: 10,
       followCount: 123,
       followerCount: 234,
-      postIds: [
-        'test1',
-      ],
     ),
-    favoUsers: [
-      User(
-        id: 'abc',
-        name: 'fuji',
-        iconUrl: 'https://picsum.photos/40',
-        profileText: '自己紹介．自己紹介．自己紹介',
-        followCount: 123,
-        followerCount: 234,
-        postIds: [
-          'test1',
-        ],
-      ),
-      User(
-        id: 'abcd',
-        name: 'fujikaito',
-        iconUrl: 'https://picsum.photos/40',
-        profileText: '自己紹介．自己紹介．自己紹介',
-        followCount: 123,
-        followerCount: 234,
-        postIds: [
-          'test1',
-        ],
-      ),
-    ],
-    comments: [
-      Comment(
-        id: 'comment1',
-        content: 'この店おいしかったです．',
-        user: User(
-          id: 'reviewer1',
-          name: 'kai',
-          iconUrl: 'https://picsum.photos/40',
-          profileText: '自己紹介．自己紹介．自己紹介',
-          followCount: 123,
-          followerCount: 234,
-          postIds: [
-            'test1',
-          ],
-        ),
-      )
-    ],
+    favoUsers: [],
+    comments: [],
     map: LatLng(33.59017658029149, 130.4204201802915),
-    stars: [4, 5, 4],
+    stars: {
+      "cost": 4,
+      "mood": 5,
+      "taste": 4,
+    },
   ),
 ];

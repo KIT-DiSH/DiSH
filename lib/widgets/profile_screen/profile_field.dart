@@ -77,7 +77,7 @@ class _ProfileFieldState extends State<ProfileField> {
               Row(
                 children: [
                   _buildNumWithLabel(
-                    user.postCount,
+                    user.postCount!,
                     _postLabel,
                     () {},
                   ),
@@ -89,7 +89,7 @@ class _ProfileFieldState extends State<ProfileField> {
                     ),
                   ),
                   _buildNumWithLabel(
-                    user.followerCount,
+                    user.followerCount!,
                     _followerLabel,
                     () {
                       print("Navigate to FollowerListScreen");
@@ -109,7 +109,7 @@ class _ProfileFieldState extends State<ProfileField> {
                     ),
                   ),
                   _buildNumWithLabel(
-                    user.followCount,
+                    user.followCount!,
                     _followLabel,
                     () {
                       print("Navigate to FollowListScreen");
