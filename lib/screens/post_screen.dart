@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:dish/plugins/rich_text_controller.dart';
 import 'package:dish/widgets/common/simple_alert_dialog.dart';
@@ -191,6 +192,16 @@ class _PostScreenState extends State<PostScreen> {
     );
   }
 
+  // void _uploadImages(String uid, List<File> files) async {
+  //   // String uid = "uruCi5pw8gWNOQeudRWfYiQ8Age2";
+  //   FirebaseStorage storage = FirebaseStorage.instance;
+  //   try {
+  //     await storage.ref("post_images/$uid").putFile(files[0]);
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
+
   AppBar _buildAppBar(BuildContext context) {
     final _titleText = "新規投稿";
 
@@ -248,42 +259,54 @@ class _PostScreenState extends State<PostScreen> {
             Icons.check,
             color: AppColor.kPinkColor,
           ),
-          onPressed: () {
+          onPressed: () async {
             if (_formKey.currentState!.validate()) {
               Navigator.pop(context);
             }
             // ここで投稿作成の処理
             // uid は Firebase のインスタンスから取得するようにする（後ほど）
             String uid = "uruCi5pw8gWNOQeudRWfYiQ8Age2";
-            CollectionReference<Map<String, dynamic>> ref =
-                FirebaseFirestore.instance.collection("USERS/$uid/POSTS");
-            ref
-                .add({
-                  "uid": uid,
-                  "content": _postTextController.value.text,
-                  "restaurant_name": _restaurantNameController.value.text,
-                  "location": {
-                    // 仮の座標をべた書きしている
-                    "lat": 37.42796133580664,
-                    "lng": -122.085749655962,
-                  },
-                  "evaluation": {
-                    "cost": costRate,
-                    "mood": atmRate,
-                    "taste": foodRate,
-                  },
-                  "image_paths": [
-                    // 仮の画像パスをべた書きしている
-                    "https://d3bhdfps5qyllw.cloudfront.net/org/57/57fb3c11bb13ae10b47d540120fae536_1242x1242_w.jpg",
-                    "https://d3bhdfps5qyllw.cloudfront.net/org/57/57fb3c11bb13ae10b47d540120fae536_1242x1242_w.jpg",
-                  ],
-                  "timestamp": DateTime.now(),
-                })
-                .then((value) => print("success"))
-                .catchError((e) => print("fail: $e"));
+            // await _uploadImages(uid, selectedImageFiles);
+            await addNewPost(uid, _postTextController.value.text,
+                _restaurantNameController.value.text, {
+              "lat": 37.42796133580664,
+              "lng": -122.085749655962,
+            }, {
+              "cost": costRate,
+              "mood": atmRate,
+              "taste": foodRate,
+            }, [
+              "https://d3bhdfps5qyllw.cloudfront.net/org/57/57fb3c11bb13ae10b47d540120fae536_1242x1242_w.jpg",
+              "https://d3bhdfps5qyllw.cloudfront.net/org/57/57fb3c11bb13ae10b47d540120fae536_1242x1242_w.jpg",
+            ]);
           },
         ),
       ],
     );
+  }
+
+  Future<String> addNewPost(
+    String uid,
+    String content,
+    String restaurantName,
+    Map<String, double> location,
+    Map<String, double> evaluation,
+    List<String> imagePaths,
+  ) async {
+    CollectionReference<Map<String, dynamic>> collectionRef =
+        FirebaseFirestore.instance.collection("USERS/$uid/POSTS");
+    Future<String> res = collectionRef
+        .add({
+          "uid": uid,
+          "content": content,
+          "restaurant_name": restaurantName,
+          "location": location,
+          "evaluation": evaluation,
+          "image_paths": imagePaths,
+          "timestamp": DateTime.now(),
+        })
+        .then((value) => "success")
+        .catchError((e) => "fail: $e");
+    return res.toString();
   }
 }
