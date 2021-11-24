@@ -1,15 +1,75 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/routes/route.dart';
 import 'package:dish/widgets/signin_signup_screen/text_field_with_hint.dart';
 
-class SigninScreen extends StatelessWidget {
+class SigninScreen extends StatefulWidget {
+  @override
+  _SigninScreenState createState() => _SigninScreenState();
+}
+
+class _SigninScreenState extends State<SigninScreen> {
   final _title = "おかえりなさい！";
   final _backgroundImagePath = "assets/images/background.png";
   final _mailController = TextEditingController();
   final _passwordController = TextEditingController();
   static final _formKey = GlobalKey<FormState>();
+  String signinMessage = '';
+
+  Future<String> signInWithEmail() async {
+    print(_mailController.text);
+    print(_passwordController.text);
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: _mailController.text, password: _passwordController.text);
+      final User user = userCredential.user!;
+      if (!user.emailVerified) {
+        await user.sendEmailVerification();
+      }
+      return 'success';
+    } on FirebaseAuthException catch (e) {
+      print(e.code);
+      return e.code;
+    } catch (e) {
+      print(e);
+      return 'error';
+    }
+  }
+
+  Future onSignin(BuildContext context) async {
+    if (!_formKey.currentState!.validate()) return;
+
+    String loginState = await signInWithEmail();
+    switch (loginState) {
+      case 'success':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => RouteWidget(),
+          ),
+        );
+        break;
+      case 'user-not-found':
+        // no user for this email
+        setState(() {
+          signinMessage = 'このメールアドレスは登録されていません';
+        });
+        break;
+      case 'wrong-password':
+        // wrong password for this email
+        setState(() {
+          signinMessage = 'パスワードが間違っています';
+        });
+        break;
+      default:
+        setState(() {
+          signinMessage = '予期せぬエラーが発生しました';
+        });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +131,16 @@ class SigninScreen extends StatelessWidget {
                           ],
                         ),
                         Spacer(),
+                        if (signinMessage != '')
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: Text(
+                              signinMessage,
+                              style: TextStyle(
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
                         TextFieldWithHint(
                           controller: _mailController,
                           hintText: "メールアドレス",
@@ -97,16 +167,8 @@ class SigninScreen extends StatelessWidget {
                               backgroundColor: MaterialStateProperty.all(
                                   AppColor.kPinkColor),
                             ),
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                // アカウント存在確認処理
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => RouteWidget(),
-                                  ),
-                                );
-                              }
+                            onPressed: () async {
+                              await onSignin(context);
                             },
                           ),
                         ),
