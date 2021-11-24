@@ -1,16 +1,16 @@
 // 仮のデータ構造
 class User {
   final String userId, userName, profileText, iconImageUrl;
-  final int followCount, followerCount, postCount;
+  final int? followCount, followerCount, postCount;
 
   User({
     required this.userId,
     required this.userName,
     required this.profileText,
     required this.iconImageUrl,
-    required this.followCount,
-    required this.followerCount,
-    required this.postCount,
+    this.followCount,
+    this.followerCount,
+    this.postCount,
   });
 }
 

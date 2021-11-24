@@ -22,7 +22,7 @@ dependencies:
   image_cropper: ^1.4.1
   google_maps_flutter: ^2.0.8
   geolocator: ^7.6.0
-  firebase_core: ^1.6.0
+  firebase_core: ^1.8.0
   firebase_analytics: ^8.3.2
   firebase_auth: ^3.1.1
   google_sign_in: ^5.0.0
@@ -30,9 +30,11 @@ dependencies:
   sign_in_with_apple: ^3.2.0
   crypto: ^3.0.1
   email_validator: ^2.0.1
-  http: ^0.13.4
+  cloud_firestore: ^2.5.4
+  http: ^0.13.0
   logger: ^1.1.0
   flutter_dotenv: ^5.0.2
+  firebase_storage: ^10.1.0
 
 dev_dependencies:
   flutter_test:

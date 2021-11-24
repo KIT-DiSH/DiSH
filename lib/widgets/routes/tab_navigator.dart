@@ -16,6 +16,8 @@ class TabNavigator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ここは Firebase のグローバルIDを使う
+    String uid = "uruCi5pw8gWNOQeudRWfYiQ8Age2";
     Widget child;
 
     switch (tabItem) {
@@ -32,7 +34,7 @@ class TabNavigator extends StatelessWidget {
       //   child = MapScreen();
       //   break;
       case "Profile":
-        child = ProfileScreen();
+        child = ProfileScreen(uid: uid);
         break;
       default:
         child = Container();
