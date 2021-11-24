@@ -1,15 +1,71 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/routes/route.dart';
 import 'package:dish/widgets/signin_signup_screen/text_field_with_hint.dart';
 
-class SignupScreen extends StatelessWidget {
+class SignupScreen extends StatefulWidget {
+  @override
+  _SignupScreenState createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
   final _title = "DiSHへようこそ！";
   final _backgroundImagePath = "assets/images/background.png";
   final _mailController = TextEditingController();
   final _passwordController = TextEditingController();
   static final _formKey = GlobalKey<FormState>();
+  String signupMessage = '';
+
+  Future<String> signUpWithEmail() async {
+    print(_mailController.text);
+    print(_passwordController.text);
+    try {
+      final FirebaseAuth auth = FirebaseAuth.instance;
+      final UserCredential result = await auth.createUserWithEmailAndPassword(
+        email: _mailController.text,
+        password: _passwordController.text,
+      );
+      final User user = result.user!;
+      print("登録OK：${user.email}");
+      return 'success';
+    } on FirebaseAuthException catch (e) {
+      return e.code;
+    } catch (e) {
+      return 'error';
+    }
+  }
+
+  Future onSignup(BuildContext context) async {
+    if (!_formKey.currentState!.validate()) return;
+
+    String signupState = await signUpWithEmail();
+    switch (signupState) {
+      case 'success':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => RouteWidget(),
+          ),
+        );
+        break;
+      case 'weak-password':
+        setState(() {
+          signupMessage = 'このパスワードはすぐに推測されます';
+        });
+        break;
+      case 'email-already-in-use':
+        setState(() {
+          signupMessage = 'このメールアドレスはすでに使用されています';
+        });
+        break;
+      default:
+        setState(() {
+          signupMessage = '予期せぬエラーが発生しました';
+        });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +127,16 @@ class SignupScreen extends StatelessWidget {
                           ],
                         ),
                         Spacer(),
+                        if (signupMessage != '')
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: Text(
+                              signupMessage,
+                              style: TextStyle(
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
                         TextFieldWithHint(
                           controller: _mailController,
                           hintText: "メールアドレス",
@@ -98,16 +164,8 @@ class SignupScreen extends StatelessWidget {
                               backgroundColor: MaterialStateProperty.all(
                                   AppColor.kPinkColor),
                             ),
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                // アカウント作成処理
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => RouteWidget(),
-                                  ),
-                                );
-                              }
+                            onPressed: () async {
+                              await onSignup(context);
                             },
                           ),
                         ),

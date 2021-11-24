@@ -3,7 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
+import 'package:dish/apis/get_places.dart';
+
 class SpecifyPinMap extends StatefulWidget {
+  final LatLng currentLatLng;
+  SpecifyPinMap({Key? key, required this.currentLatLng}) : super(key: key);
+
   @override
   State<SpecifyPinMap> createState() => SpecifyPinMapState();
 }
@@ -11,11 +16,11 @@ class SpecifyPinMap extends StatefulWidget {
 class SpecifyPinMapState extends State<SpecifyPinMap> {
   Completer<GoogleMapController> _controller = Completer();
   late CameraPosition currentPosition = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
+    target: widget.currentLatLng,
     zoom: 14.4746,
   );
 
-  LatLng pinLatLng = LatLng(37.42796133580664, -122.085749655962);
+  late LatLng pinLatLng = widget.currentLatLng;
 
   @override
   initState() {
@@ -88,9 +93,15 @@ class SpecifyPinMapState extends State<SpecifyPinMap> {
         padding: const EdgeInsets.only(bottom: 16),
         child: FloatingActionButton(
           heroTag: "hero1",
-          onPressed: () {
-            // ピンの座標からお店を取得する処理
-            Navigator.pop(context);
+          onPressed: () async {
+            List<Place> places = [];
+            try {
+              places = await execPlacesAPI(latlng: pinLatLng);
+            } catch (e) {
+              print("エラーが発生しました");
+              print(e);
+            }
+            Navigator.pop(context, places);
           },
           child: Icon(Icons.check),
         ),
