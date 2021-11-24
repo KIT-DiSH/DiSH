@@ -137,7 +137,7 @@ class _DishPostState extends State<DishPost> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   new Text(
-                    widget.postInfo.postUser.userName,
+                    widget.postInfo.postUser.userId,
                     style: TextStyle(fontWeight: FontWeight.bold),
                     textAlign: TextAlign.start,
                   ),

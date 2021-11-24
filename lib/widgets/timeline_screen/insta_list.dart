@@ -21,7 +21,7 @@ class _InstaListState extends State<InstaList> {
 
   @override
   void initState() {
-    // 最新のタイムラインを10件取得する
+    // 最新のタイムラインを20件取得する
     // 自動更新あり
     timelineStream = FirebaseFirestore.instance
         .collection("USERS")
