@@ -10,9 +10,12 @@ import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/timeline_screen/start.dart';
 
 class DishPost extends StatefulWidget {
+  final String uid;
   final PostModel postInfo;
 
   DishPost({
+    Key? key,
+    required this.uid,
     required this.postInfo,
   });
 
@@ -109,10 +112,10 @@ class _DishPostState extends State<DishPost> {
                 onTap: () {
                   // 実際には ProfileScreen に UserID を渡すなどして
                   // プロフィールページの中身を決定する
-                  String uid = "uruCi5pw8gWNOQeudRWfYiQ8Age2";
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => ProfileScreen(uid: uid)),
+                    MaterialPageRoute(
+                        builder: (_) => ProfileScreen(uid: widget.uid)),
                   );
                 },
                 child: Container(
@@ -123,7 +126,7 @@ class _DishPostState extends State<DishPost> {
                     image: new DecorationImage(
                       fit: BoxFit.fill,
                       image: new NetworkImage(
-                        widget.postInfo.postUser.iconUrl,
+                        widget.postInfo.postUser.iconImageUrl,
                       ),
                     ),
                   ),
@@ -134,14 +137,14 @@ class _DishPostState extends State<DishPost> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   new Text(
-                    widget.postInfo.postUser.name,
+                    widget.postInfo.postUser.userId,
                     style: TextStyle(fontWeight: FontWeight.bold),
                     textAlign: TextAlign.start,
                   ),
                   Container(
                     width: 100,
                     child: StarReview(
-                      rate: widget.postInfo.stars[0] + .0,
+                      rate: widget.postInfo.stars["cost"]!,
                     ),
                   ),
                 ],
