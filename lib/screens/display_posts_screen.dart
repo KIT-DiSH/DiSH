@@ -20,6 +20,7 @@ class _DisplayPostsScreenState extends State<DisplayPostsScreen> {
         child: ListView.builder(
           itemCount: posts.length,
           itemBuilder: (context, index) => DishPost(
+            uid: "uruCi5pw8gWNOQeudRWfYiQ8Age2",
             postInfo: posts[index],
           ),
         ),

@@ -10,9 +10,12 @@ import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/timeline_screen/start.dart';
 
 class DishPost extends StatefulWidget {
+  final String uid;
   final PostModel postInfo;
 
   DishPost({
+    Key? key,
+    required this.uid,
     required this.postInfo,
   });
 
@@ -109,10 +112,10 @@ class _DishPostState extends State<DishPost> {
                 onTap: () {
                   // 実際には ProfileScreen に UserID を渡すなどして
                   // プロフィールページの中身を決定する
-                  String uid = "uruCi5pw8gWNOQeudRWfYiQ8Age2";
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => ProfileScreen(uid: uid)),
+                    MaterialPageRoute(
+                        builder: (_) => ProfileScreen(uid: widget.uid)),
                   );
                 },
                 child: Container(
