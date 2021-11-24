@@ -5,7 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:dish/models/PostModel.dart';
 import 'package:dish/screens/profile_screen.dart';
-import 'package:dish/screens/chek_places_map.dart';
+import 'package:dish/screens/check_places_map.dart';
 import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/timeline_screen/start.dart';
 
