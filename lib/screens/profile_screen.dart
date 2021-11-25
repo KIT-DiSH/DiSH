@@ -85,11 +85,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _getUserPosts(String uid) async {
-    CollectionReference postsRef = FirebaseFirestore.instance
-        .collection("USERS")
-        .doc(uid)
-        .collection("POSTS");
-    QuerySnapshot snapshot = await postsRef.get();
+    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+        .instance
+        .collection("POSTS")
+        .where("uid", isEqualTo: uid)
+        .get();
 
     List<QueryDocumentSnapshot> docs = snapshot.docs;
     if (docs.isNotEmpty) {
