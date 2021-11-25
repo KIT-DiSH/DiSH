@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:firebase_storage/firebase_storage.dart';
 
@@ -32,6 +32,7 @@ class _PostScreenState extends State<PostScreen> {
   late double foodRate = _initRating;
   late double atmRate = _initRating;
   late double costRate = _initRating;
+  String uid = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   void initState() {
@@ -266,10 +267,8 @@ class _PostScreenState extends State<PostScreen> {
               Navigator.pop(context);
             }
             // ここで投稿作成の処理
-            // uid は Firebase のインスタンスから取得するようにする（後ほど）
-            String uid = "uruCi5pw8gWNOQeudRWfYiQ8Age2";
             // await _uploadImages(uid, selectedImageFiles);
-            await addNewPost(
+            final String res = await addNewPost(
               uid,
               _postTextController.value.text,
               _restaurantNameController.value.text,
@@ -284,6 +283,11 @@ class _PostScreenState extends State<PostScreen> {
                 "https://d3bhdfps5qyllw.cloudfront.net/org/57/57fb3c11bb13ae10b47d540120fae536_1242x1242_w.jpg",
               ],
             );
+            if (res == "success") {
+              print("🍥 SUCCESS");
+            } else {
+              print("💣 Something went wrong => $res");
+            }
           },
         ),
       ],
@@ -299,7 +303,7 @@ class _PostScreenState extends State<PostScreen> {
     List<String> imagePaths,
   ) async {
     CollectionReference<Map<String, dynamic>> collectionRef =
-        FirebaseFirestore.instance.collection("USERS/$uid/POSTS");
+        FirebaseFirestore.instance.collection("POSTS");
     Future<String> res = collectionRef
         .add({
           "uid": uid,
@@ -312,6 +316,6 @@ class _PostScreenState extends State<PostScreen> {
         })
         .then((value) => "success")
         .catchError((e) => "fail: $e");
-    return res.toString();
+    return res;
   }
 }
