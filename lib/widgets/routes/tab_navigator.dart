@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:dish/screens/map_screen.dart';
 import 'package:dish/screens/post_screen.dart';
 import 'package:dish/screens/profile_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dish/screens/timeline_screen.dart';
 import 'package:dish/screens/sample_screens/search_screen.dart';
 
@@ -16,8 +17,7 @@ class TabNavigator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ここは Firebase のグローバルIDを使う
-    String uid = "uruCi5pw8gWNOQeudRWfYiQ8Age2";
+    String uid = FirebaseAuth.instance.currentUser!.uid;
     Widget child;
 
     switch (tabItem) {
