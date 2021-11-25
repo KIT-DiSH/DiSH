@@ -7,16 +7,19 @@ import 'package:dish/models/User.dart';
 import 'package:dish/models/PostModel.dart';
 import 'package:dish/widgets/timeline_screen/post.dart';
 
-class InstaList extends StatefulWidget {
-  const InstaList({Key? key}) : super(key: key);
+class DiSHList extends StatefulWidget {
+  const DiSHList({
+    Key? key,
+    required this.uid,
+  }) : super(key: key);
+
+  final String uid;
 
   @override
-  _InstaListState createState() => _InstaListState();
+  _DiSHListState createState() => _DiSHListState();
 }
 
-class _InstaListState extends State<InstaList> {
-  // Firebaseが持つ値を使う
-  String uid = "uruCi5pw8gWNOQeudRWfYiQ8Age2";
+class _DiSHListState extends State<DiSHList> {
   Stream<List<DishPost>>? timelineStream;
 
   @override
@@ -25,7 +28,7 @@ class _InstaListState extends State<InstaList> {
     // 自動更新あり
     timelineStream = FirebaseFirestore.instance
         .collection("USERS")
-        .doc(uid)
+        .doc(widget.uid)
         .collection("/TIMELINE")
         .orderBy("timestamp", descending: true)
         .limit(20)
@@ -37,15 +40,23 @@ class _InstaListState extends State<InstaList> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: timelineStream,
-        builder: (BuildContext context, AsyncSnapshot<List<DishPost>> posts) {
-          if (posts.data == null) {
-            print("⌚ Fetch data now...");
-            return Center(child: CircularProgressIndicator());
-          }
-          return ListView(children: posts.data!);
-        });
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Flexible(
+          child: StreamBuilder(
+              stream: timelineStream,
+              builder:
+                  (BuildContext context, AsyncSnapshot<List<DishPost>> posts) {
+                if (posts.data == null) {
+                  print("⌚ Fetch data now...");
+                  return Center(child: CircularProgressIndicator());
+                }
+                return ListView(children: posts.data!);
+              }),
+        ),
+      ],
+    );
   }
 
   Future<DishPost> _generateDiSHPost(
