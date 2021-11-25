@@ -7,8 +7,8 @@ import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/post_screen/specify_pin_map.dart';
 
 class PlaceList extends StatefulWidget {
-  final Function updateResName;
-  PlaceList({Key? key, required this.updateResName}) : super(key: key);
+  final Function updateRes;
+  PlaceList({Key? key, required this.updateRes}) : super(key: key);
 
   @override
   _PlaceListState createState() => _PlaceListState();
@@ -103,7 +103,7 @@ class _PlaceListState extends State<PlaceList> {
                             places = placesResult;
                             _selectedIndex = -1;
                           });
-                          widget.updateResName("");
+                          widget.updateRes("");
                         }
                       }
                     } else {
@@ -111,7 +111,16 @@ class _PlaceListState extends State<PlaceList> {
                         _selectedIndex = selected ? index : -1;
                       });
                       String _resName = selected ? places[index].name : "";
-                      widget.updateResName(_resName);
+                      // places[index].geometryの変換
+                      dynamic geometory = places[index].geometry["location"];
+                      Map<String, double> latLng = {
+                        "lat": geometory["lat"],
+                        "lng": geometory["lng"],
+                      };
+                      widget.updateRes(
+                        _resName,
+                        latLng,
+                      );
                     }
                   },
                 );

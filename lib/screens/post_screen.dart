@@ -28,6 +28,7 @@ class _PostScreenState extends State<PostScreen> {
   final _initRestaurantName = "場所";
   final _initRating = 3.0;
   List<File> selectedImageFiles = [];
+  Map<String, double> selectedLatLng = {"lat": 0, "lng": 0};
   late double foodRate = _initRating;
   late double atmRate = _initRating;
   late double costRate = _initRating;
@@ -50,12 +51,13 @@ class _PostScreenState extends State<PostScreen> {
     final _hintText = "投稿文を書く";
     final _maxLength = 250;
 
-    void updateResName(String name) {
+    void updateRes(String name, Map<String, double>? latLng) {
       setState(() {
-        if (name == "") {
+        if (name == "" && latLng == null) {
           _restaurantNameController.text = _initRestaurantName;
         } else {
           _restaurantNameController.text = name;
+          selectedLatLng = latLng!;
         }
       });
     }
@@ -160,7 +162,7 @@ class _PostScreenState extends State<PostScreen> {
                   SimpleDivider(),
                   HashtagList(addHashtag: addHashtag),
                   SimpleDivider(),
-                  PlaceList(updateResName: updateResName),
+                  PlaceList(updateRes: updateRes),
                   SimpleDivider(),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -270,10 +272,7 @@ class _PostScreenState extends State<PostScreen> {
               uid,
               _postTextController.value.text,
               _restaurantNameController.value.text,
-              {
-                "lat": 37.42796133580664,
-                "lng": -122.085749655962,
-              },
+              selectedLatLng,
               {
                 "cost": costRate,
                 "mood": atmRate,
