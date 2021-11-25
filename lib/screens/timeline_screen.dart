@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:dish/widgets/timeline_screen/insta_body.dart';
+import 'package:dish/widgets/timeline_screen/dish_list.dart';
 
 class Timeline extends StatefulWidget {
   const Timeline({Key? key}) : super(key: key);
@@ -12,20 +13,20 @@ class Timeline extends StatefulWidget {
 
 class _TimelineState extends State<Timeline> {
   String? _userIconPath;
+  String? uid;
 
   @override
   Future<void> didChangeDependencies() async {
-    // Firebaseが持つ値を使う
-    String uid = "uruCi5pw8gWNOQeudRWfYiQ8Age2";
+    uid = FirebaseAuth.instance.currentUser!.uid;
     super.didChangeDependencies();
-    await _getUserIconPath(uid);
+    await _getUserIconPath(uid!);
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: _buildAppBar(_userIconPath),
-      body: InstaBody(),
+      body: DiSHList(uid: uid!),
     );
   }
 
