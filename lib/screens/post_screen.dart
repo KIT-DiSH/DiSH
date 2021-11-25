@@ -266,18 +266,29 @@ class _PostScreenState extends State<PostScreen> {
             }
             // ここで投稿作成の処理
             // await _uploadImages(uid, selectedImageFiles);
-            await addNewPost(uid, _postTextController.value.text,
-                _restaurantNameController.value.text, {
-              "lat": 37.42796133580664,
-              "lng": -122.085749655962,
-            }, {
-              "cost": costRate,
-              "mood": atmRate,
-              "taste": foodRate,
-            }, [
-              "https://d3bhdfps5qyllw.cloudfront.net/org/57/57fb3c11bb13ae10b47d540120fae536_1242x1242_w.jpg",
-              "https://d3bhdfps5qyllw.cloudfront.net/org/57/57fb3c11bb13ae10b47d540120fae536_1242x1242_w.jpg",
-            ]);
+            final String res = await addNewPost(
+              uid,
+              _postTextController.value.text,
+              _restaurantNameController.value.text,
+              {
+                "lat": 37.42796133580664,
+                "lng": -122.085749655962,
+              },
+              {
+                "cost": costRate,
+                "mood": atmRate,
+                "taste": foodRate,
+              },
+              [
+                "https://d3bhdfps5qyllw.cloudfront.net/org/57/57fb3c11bb13ae10b47d540120fae536_1242x1242_w.jpg",
+                "https://d3bhdfps5qyllw.cloudfront.net/org/57/57fb3c11bb13ae10b47d540120fae536_1242x1242_w.jpg",
+              ],
+            );
+            if (res == "success") {
+              print("🍥 SUCCESS");
+            } else {
+              print("💣 Something went wrong => $res");
+            }
           },
         ),
       ],
@@ -293,7 +304,7 @@ class _PostScreenState extends State<PostScreen> {
     List<String> imagePaths,
   ) async {
     CollectionReference<Map<String, dynamic>> collectionRef =
-        FirebaseFirestore.instance.collection("USERS/$uid/POSTS");
+        FirebaseFirestore.instance.collection("POSTS");
     Future<String> res = collectionRef
         .add({
           "uid": uid,
@@ -306,6 +317,6 @@ class _PostScreenState extends State<PostScreen> {
         })
         .then((value) => "success")
         .catchError((e) => "fail: $e");
-    return res.toString();
+    return res;
   }
 }
