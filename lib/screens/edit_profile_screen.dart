@@ -170,51 +170,48 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  PreferredSize _buildAppBar(BuildContext context) {
+  AppBar _buildAppBar(BuildContext context) {
     const _preserveText = "保存";
 
-    return PreferredSize(
-      preferredSize: Size.fromHeight(50.0),
-      child: AppBar(
-        centerTitle: true,
-        // backgroundColor: Colors.white,
-        elevation: 1.0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+    return AppBar(
+      centerTitle: true,
+      // backgroundColor: Colors.white,
+      elevation: 1.0,
+      leading: IconButton(
+        icon: const Icon(
+          Icons.arrow_back_ios,
+          color: Colors.black,
         ),
-        actions: [
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 9),
-            child: TextButton(
-              child: Text(
-                _preserveText,
-                style: TextStyle(
-                  fontSize: 14,
-                ),
-              ),
-              style: TextButton.styleFrom(
-                primary: Colors.white,
-                backgroundColor: AppColor.kPinkColor,
-                padding: EdgeInsets.all(0),
-              ),
-              onPressed: () {
-                // プロフィール編集処理
-                print(_userNameController.text);
-                print(_userIdController.text);
-                print(_biographyController.text);
-                Navigator.pop(context);
-              },
-            ),
-          ),
-          const SizedBox(width: 12),
-        ],
+        onPressed: () {
+          Navigator.pop(context);
+        },
       ),
+      actions: [
+        Container(
+          margin: EdgeInsets.symmetric(vertical: 9),
+          child: TextButton(
+            child: Text(
+              _preserveText,
+              style: TextStyle(
+                fontSize: 14,
+              ),
+            ),
+            style: TextButton.styleFrom(
+              primary: Colors.white,
+              backgroundColor: AppColor.kPinkColor,
+              padding: EdgeInsets.all(0),
+            ),
+            onPressed: () {
+              // プロフィール編集処理
+              print(_userNameController.text);
+              print(_userIdController.text);
+              print(_biographyController.text);
+              Navigator.pop(context);
+            },
+          ),
+        ),
+        const SizedBox(width: 12),
+      ],
     );
   }
 }
