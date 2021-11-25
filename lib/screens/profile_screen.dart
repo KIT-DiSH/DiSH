@@ -19,13 +19,19 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  String _userId = "";
   User? _myself;
+  String _userId = "";
   List<Post> _posts = [];
+  int _postsCount = 0;
+  int _followCount = 0;
+  int _followerCount = 0;
 
   @override
   Future<void> didChangeDependencies() async {
     super.didChangeDependencies();
+    await _getPostsCount(widget.uid);
+    await _getFollowCount(widget.uid, "follow");
+    await _getFollowCount(widget.uid, "follower");
     await _getUser(widget.uid);
     await _getUserPosts(widget.uid);
   }
@@ -74,9 +80,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       userName: data["user_name"],
       profileText: data["profile_text"],
       iconImageUrl: data["icon_path"],
-      followCount: 200,
-      followerCount: 210,
-      postCount: 10,
+      followCount: _followCount,
+      followerCount: _followerCount,
+      postCount: _postsCount,
     );
     setState(() {
       _myself = myself;
@@ -112,6 +118,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _posts = posts;
       });
     }
+  }
+
+  Future<void> _getPostsCount(String uid) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+        .instance
+        .collection("POSTS")
+        .where("uid", isEqualTo: uid)
+        .get();
+    setState(() {
+      _postsCount = snapshot.docs.length;
+    });
+  }
+
+  Future<void> _getFollowCount(String uid, String type) async {
+    String? searchKey;
+    if (type == "follow")
+      searchKey = "followee_id";
+    else
+      searchKey = "follower_id";
+    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+        .instance
+        .collection("FOLLOW_FOLLOWER")
+        .where(searchKey, isEqualTo: uid)
+        .get();
+    setState(() {
+      if (type == "follow")
+        _followCount = snapshot.docs.length;
+      else
+        _followerCount = snapshot.docs.length;
+    });
   }
 
   AppBar _buildAppBar(BuildContext context) {
