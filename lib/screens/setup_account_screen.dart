@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:dish/widgets/routes/route.dart';
 import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/signin_signup_screen/text_field_with_hint.dart';
 
-class SetupAccountScreen extends StatelessWidget {
+class SetupAccountScreen extends StatefulWidget {
+  const SetupAccountScreen({Key? key, required this.uid}) : super(key: key);
+
+  final String uid;
+
+  @override
+  _SetupAccountScreenState createState() => _SetupAccountScreenState();
+}
+
+class _SetupAccountScreenState extends State<SetupAccountScreen> {
   final _title = "アカウント作成";
   final _backgroundImagePath = "assets/images/background.png";
   final _userNameController = TextEditingController();
   final _userIDController = TextEditingController();
+  String _iconPath =
+      "https://i.pinimg.com/474x/9b/47/a0/9b47a023caf29f113237d61170f34ad9.jpg";
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +95,7 @@ class SetupAccountScreen extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(999)),
                         child: Image.network(
-                          "https://i.pinimg.com/474x/9b/47/a0/9b47a023caf29f113237d61170f34ad9.jpg",
+                          _iconPath,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -126,7 +139,20 @@ class SetupAccountScreen extends StatelessWidget {
                           backgroundColor:
                               MaterialStateProperty.all(AppColor.kPinkColor),
                         ),
-                        onPressed: () {},
+                        onPressed: () async {
+                          final String res = await _setupNewAccount(widget.uid);
+                          if (res == "success") {
+                            print("🍥 SUCCESS");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => RouteWidget(),
+                              ),
+                            );
+                          } else {
+                            print("💣 Something went wrong => $res");
+                          }
+                        },
                       ),
                     ),
                     SizedBox(height: 100),
@@ -138,5 +164,21 @@ class SetupAccountScreen extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Future<String> _setupNewAccount(String uid) async {
+    CollectionReference<Map<String, dynamic>> collectionRef =
+        FirebaseFirestore.instance.collection("USERS");
+    Future<String> res = collectionRef
+        .doc(uid)
+        .set({
+          "profile_text": "DiSH始めました!!",
+          "icon_path": _iconPath,
+          "user_id": _userIDController.text,
+          "user_name": _userNameController.text,
+        })
+        .then((value) => "success")
+        .catchError((e) => "fail: $e");
+    return res;
   }
 }
