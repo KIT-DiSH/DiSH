@@ -1,3 +1,4 @@
+import 'package:dish/models/User.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dish/configs/constant_colors.dart';
@@ -6,10 +7,14 @@ import 'package:dish/screens/edit_profile_screen.dart';
 class ActionButton extends StatefulWidget {
   ActionButton({
     Key? key,
+    required this.uid,
+    required this.user,
     required this.userType,
     required this.setUserType,
   });
 
+  final User user;
+  final String uid;
   final String userType;
   final void Function(String) setUserType;
 
@@ -57,7 +62,7 @@ class _ActionButtonState extends State<ActionButton> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) {
-                  return EditProfileScreen();
+                  return EditProfileScreen(uid: widget.uid, user: widget.user);
                 }),
               );
             },

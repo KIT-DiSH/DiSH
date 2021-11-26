@@ -12,9 +12,11 @@ import 'package:dish/widgets/profile_screen/action_button.dart';
 class ProfileField extends StatefulWidget {
   ProfileField({
     Key? key,
+    required this.uid,
     required this.user,
   });
 
+  final String uid;
   final User user;
 
   @override
@@ -45,6 +47,7 @@ class _ProfileFieldState extends State<ProfileField> {
 
   @override
   Widget build(BuildContext context) {
+    final String uid = widget.uid;
     final User user = widget.user;
 
     return Padding(
@@ -139,16 +142,24 @@ class _ProfileFieldState extends State<ProfileField> {
           ),
           const SizedBox(height: 12),
           // プロフィールテキスト
-          Text(
-            user.profileText,
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColor.kPrimaryTextColor,
+          SizedBox(
+            width: double.infinity,
+            child: Text(
+              user.profileText,
+              style: TextStyle(
+                fontSize: 13,
+                color: AppColor.kPrimaryTextColor,
+              ),
             ),
           ),
           const SizedBox(height: 24),
           // ボタン
-          ActionButton(userType: _userType, setUserType: setUserType),
+          ActionButton(
+            uid: uid,
+            user: user,
+            userType: _userType,
+            setUserType: setUserType,
+          ),
           // 一時的なログアウトボタン
           Container(
             height: 36,

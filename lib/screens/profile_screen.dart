@@ -49,7 +49,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               const SizedBox(height: 24),
               _myself != null
-                  ? ProfileField(user: _myself!)
+                  ? ProfileField(uid: widget.uid, user: _myself!)
                   : Center(child: CircularProgressIndicator()),
               const SizedBox(height: 24),
               SimpleDivider(),
