@@ -17,7 +17,7 @@ class TabNavigator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String uid = FirebaseAuth.instance.currentUser!.uid;
+    String? uid = FirebaseAuth.instance.currentUser?.uid;
     Widget child;
 
     switch (tabItem) {
@@ -34,7 +34,7 @@ class TabNavigator extends StatelessWidget {
       //   child = MapScreen();
       //   break;
       case "Profile":
-        child = ProfileScreen(uid: uid);
+        child = uid != null ? ProfileScreen(uid: uid) : Container();
         break;
       default:
         child = Container();
