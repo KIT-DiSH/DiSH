@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:dish/configs/constant_colors.dart';
-import 'package:dish/widgets/routes/route.dart';
+import 'package:dish/screens/setup_account_screen.dart';
 import 'package:dish/widgets/signin_signup_screen/text_field_with_hint.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -43,12 +43,15 @@ class _SignupScreenState extends State<SignupScreen> {
     String signupState = await signUpWithEmail();
     switch (signupState) {
       case 'success':
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => RouteWidget(),
-          ),
-        );
+        {
+          final String uid = FirebaseAuth.instance.currentUser!.uid;
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => SetupAccountScreen(uid: uid),
+            ),
+          );
+        }
         break;
       case 'weak-password':
         setState(() {
