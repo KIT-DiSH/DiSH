@@ -1,19 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:dish/models/User.dart';
 import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/common/simple_divider.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({Key? key}) : super(key: key);
+  const EditProfileScreen({
+    Key? key,
+    required this.uid,
+    required this.user,
+  }) : super(key: key);
+
+  final String uid;
+  final User user;
 
   @override
   _EditProfileScreenState createState() => _EditProfileScreenState();
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  final _userNameController = TextEditingController(text: "苗字名前");
-  final _userIdController = TextEditingController(text: "sample_id");
-  final _biographyController = TextEditingController(text: "GG Guys.");
+  String? _iconPath;
+  final _userNameController = TextEditingController();
+  final _userIdController = TextEditingController();
+  final _profileTextController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _iconPath = widget.user.iconImageUrl;
+    _userNameController.text = widget.user.userName;
+    _userIdController.text = widget.user.userId;
+    _profileTextController.text = widget.user.profileText;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +132,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             maxLength: 200,
                             decoration: InputDecoration.collapsed(hintText: ""),
                             style: TextStyle(fontSize: 14),
-                            controller: _biographyController,
+                            controller: _profileTextController,
                           ),
                         ),
                       ),
@@ -171,11 +190,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   AppBar _buildAppBar(BuildContext context) {
-    const _preserveText = "保存";
+    final String _preserveText = "保存";
 
     return AppBar(
       centerTitle: true,
-      // backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       elevation: 1.0,
       leading: IconButton(
         icon: const Icon(
@@ -201,17 +220,96 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               backgroundColor: AppColor.kPinkColor,
               padding: EdgeInsets.all(0),
             ),
-            onPressed: () {
-              // プロフィール編集処理
-              print(_userNameController.text);
-              print(_userIdController.text);
-              print(_biographyController.text);
-              Navigator.pop(context);
-            },
+            onPressed: _clickSaveButton,
           ),
         ),
         const SizedBox(width: 12),
       ],
     );
+  }
+
+  Future<void> _clickSaveButton() async {
+    String res;
+    User user = widget.user;
+    String userId = _userIdController.text;
+    String userName = _userNameController.text;
+    String profileText = _profileTextController.text;
+
+    if (userId == user.userId &&
+        userName == user.userName &&
+        _iconPath == user.iconImageUrl &&
+        profileText == user.profileText) {
+      Navigator.pop(context);
+      return;
+    }
+
+    if (userId == "") userId = widget.user.userId;
+    if (userName == "") userName = widget.user.userName;
+    if (_iconPath == "" || _iconPath == null)
+      _iconPath = widget.user.iconImageUrl;
+
+    final bool isAvailableId = await _checkAvailableUserId(widget.uid);
+
+    if (isAvailableId) {
+      res = await _editProfileInfo(
+        widget.uid,
+        userId,
+        userName,
+        _iconPath!,
+        profileText,
+      );
+    } else {
+      // 既に使用されたIDを登録しようとしている
+      // ここでバリデーションテキストを出してほしい
+      print("This USER ID is duplicated...");
+      return;
+    }
+
+    if (res == "success") {
+      print("🍥 SUCCESS");
+      Navigator.pop(context);
+    } else {
+      print("💣 Something went wrong => $res");
+    }
+  }
+
+  Future<bool> _checkAvailableUserId(String uid) async {
+    QuerySnapshot<Map<String, dynamic>> snapshots = await FirebaseFirestore
+        .instance
+        .collection("USERS")
+        .where("user_id", isEqualTo: _userIdController.text)
+        .get();
+    final int length = snapshots.docs.length;
+    if (length > 1) {
+      return false;
+    } else if (length == 1) {
+      final String userId = snapshots.docs.first.data()["user_id"];
+      if (userId != widget.user.userId) return false;
+    }
+    return true;
+  }
+
+  Future<String> _editProfileInfo(
+    String uid,
+    String userId,
+    String userName,
+    String iconPath,
+    String profileText,
+  ) async {
+    DocumentReference<Map<String, dynamic>> documentRef =
+        FirebaseFirestore.instance.collection("USERS").doc(uid);
+    Future<String> res = documentRef
+        .set(
+          {
+            "user_id": userId,
+            "user_name": userName,
+            "icon_path": _iconPath,
+            "profile_text": profileText,
+          },
+          SetOptions(merge: true),
+        )
+        .then((value) => "success")
+        .catchError((e) => "fail: $e");
+    return res;
   }
 }
