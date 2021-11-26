@@ -1,5 +1,6 @@
 import 'package:dish/screens/comment_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:rich_text_view/rich_text_view.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -203,10 +204,19 @@ class _DishPostState extends State<DishPost> {
               horizontal: 16,
               vertical: 8,
             ),
-            child: Text(
-              widget.postInfo.content,
+            // child: Text(
+            //   widget.postInfo.content,
+            //   maxLines: isTextExpanded ? 1000 : 2,
+            //   overflow: TextOverflow.ellipsis,
+            //   style: TextStyle(
+            //     fontSize: 12,
+            //     color: AppColor.kPrimaryTextColor,
+            //   ),
+            // ),
+            child: RichTextView(
+              text: widget.postInfo.content + widget.postInfo.tags,
               maxLines: isTextExpanded ? 1000 : 2,
-              overflow: TextOverflow.ellipsis,
+              // overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 12,
                 color: AppColor.kPrimaryTextColor,
@@ -216,19 +226,19 @@ class _DishPostState extends State<DishPost> {
         ),
 
         // 5th row
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 8,
-          ),
-          child: Text(
-            widget.postInfo.tags,
-            style: TextStyle(
-              fontSize: 10,
-              color: Colors.orange,
-            ),
-          ),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.symmetric(
+        //     horizontal: 16,
+        //     vertical: 8,
+        //   ),
+        //   child: Text(
+        //     widget.postInfo.tags,
+        //     style: TextStyle(
+        //       fontSize: 10,
+        //       color: Colors.orange,
+        //     ),
+        //   ),
+        // ),
 
         // 6th row
         GestureDetector(
