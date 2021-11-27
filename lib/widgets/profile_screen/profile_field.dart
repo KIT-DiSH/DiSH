@@ -111,7 +111,7 @@ class _ProfileFieldState extends State<ProfileField> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) {
-                          return FollowerListScreen();
+                          return FollowerListScreen(uid: widget.uid);
                         }),
                       );
                     },
@@ -131,7 +131,7 @@ class _ProfileFieldState extends State<ProfileField> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) {
-                          return FollowListScreen();
+                          return FollowListScreen(uid: widget.uid);
                         }),
                       );
                     },
