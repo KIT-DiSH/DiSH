@@ -1,8 +1,8 @@
 // 仮のデータ構造
 class User {
   final String? uid;
-  final String userId, userName, profileText, iconImageUrl;
-  final int? followCount, followerCount, postCount;
+  String userId, userName, profileText, iconImageUrl;
+  int? followCount, followerCount, postCount;
 
   User({
     this.uid,
