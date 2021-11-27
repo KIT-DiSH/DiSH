@@ -1,6 +1,7 @@
-import 'package:dish/models/User.dart';
 import 'package:flutter/material.dart';
 
+import 'package:dish/models/User.dart';
+import 'package:dish/screens/profile_screen.dart';
 import 'package:dish/configs/constant_colors.dart';
 
 class UserCard extends StatefulWidget {
@@ -32,22 +33,31 @@ class _UserCardState extends State<UserCard> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            height: 45,
-            width: 45,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColor.kPinkColor,
-                width: 2,
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => ProfileScreen(uid: widget.user.uid!)),
+              );
+            },
+            child: Container(
+              height: 45,
+              width: 45,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: AppColor.kPinkColor,
+                  width: 2,
+                ),
               ),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(50)),
-              child: Image.network(
-                widget.user.iconImageUrl,
-                fit: BoxFit.cover,
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(50)),
+                child: Image.network(
+                  widget.user.iconImageUrl,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),

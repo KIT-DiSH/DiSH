@@ -56,6 +56,7 @@ class _FollowListScreenState extends State<FollowListScreen> {
         await FirebaseFirestore.instance.collection("USERS").doc(uid).get();
     final data = snapshot.data() as Map<String, dynamic>;
     User user = User(
+      uid: uid,
       iconImageUrl: data["icon_path"],
       userId: data["user_id"],
       userName: data["user_name"],

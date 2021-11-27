@@ -1,9 +1,11 @@
 // 仮のデータ構造
 class User {
+  final String? uid;
   final String userId, userName, profileText, iconImageUrl;
   final int? followCount, followerCount, postCount;
 
   User({
+    this.uid,
     required this.userId,
     required this.userName,
     required this.profileText,
@@ -15,6 +17,7 @@ class User {
 }
 
 final testUser = User(
+  uid: "",
   userId: "TestUserName",
   userName: "苗字 名前",
   profileText:
