@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
 
+import 'package:dish/models/User.dart';
+import 'package:dish/screens/profile_screen.dart';
 import 'package:dish/configs/constant_colors.dart';
 
 class UserCard extends StatefulWidget {
-  const UserCard({Key? key}) : super(key: key);
+  UserCard({
+    Key? key,
+    required this.user,
+    required this.isFollowed,
+  }) : super(key: key);
+
+  final User user;
+  bool isFollowed;
 
   @override
   _UserCardState createState() => _UserCardState();
 }
 
 class _UserCardState extends State<UserCard> {
-  bool isFollowed = false;
   final _followedLabel = "フォロー中";
   final _notFollowedLabel = "フォロー";
 
@@ -25,22 +33,31 @@ class _UserCardState extends State<UserCard> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            height: 45,
-            width: 45,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColor.kPinkColor,
-                width: 2,
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => ProfileScreen(uid: widget.user.uid!)),
+              );
+            },
+            child: Container(
+              height: 45,
+              width: 45,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: AppColor.kPinkColor,
+                  width: 2,
+                ),
               ),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(50)),
-              child: Image.network(
-                "https://i.pinimg.com/474x/9b/47/a0/9b47a023caf29f113237d61170f34ad9.jpg",
-                fit: BoxFit.cover,
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(50)),
+                child: Image.network(
+                  widget.user.iconImageUrl,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
@@ -50,14 +67,14 @@ class _UserCardState extends State<UserCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "苗字 名前",
+                widget.user.userName,
                 style: TextStyle(
                   color: AppColor.kPrimaryTextColor,
                   fontSize: 12,
                 ),
               ),
               Text(
-                "UserName",
+                widget.user.userId,
                 style: TextStyle(
                   color: AppColor.kPrimaryTextColor,
                   fontWeight: FontWeight.bold,
@@ -67,7 +84,7 @@ class _UserCardState extends State<UserCard> {
             ],
           ),
           Spacer(),
-          isFollowed
+          widget.isFollowed
               ? Container(
                   width: 88,
                   height: 32,
@@ -90,7 +107,7 @@ class _UserCardState extends State<UserCard> {
                     onPressed: () {
                       setState(() {
                         // フォロー解除処理
-                        isFollowed = false;
+                        widget.isFollowed = false;
                       });
                     },
                   ),
@@ -116,7 +133,7 @@ class _UserCardState extends State<UserCard> {
                     onPressed: () {
                       setState(() {
                         // フォロー処理
-                        isFollowed = true;
+                        widget.isFollowed = true;
                       });
                     },
                   ),
