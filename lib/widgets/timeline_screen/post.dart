@@ -204,43 +204,22 @@ class _DishPostState extends State<DishPost> {
               horizontal: 16,
               vertical: 8,
             ),
-            // child: Text(
-            //   widget.postInfo.content,
-            //   maxLines: isTextExpanded ? 1000 : 2,
-            //   overflow: TextOverflow.ellipsis,
-            //   style: TextStyle(
-            //     fontSize: 12,
-            //     color: AppColor.kPrimaryTextColor,
-            //   ),
-            // ),
             child: RichTextView(
-              text: widget.postInfo.content + widget.postInfo.tags,
+              text: widget.postInfo.content,
               maxLines: isTextExpanded ? 1000 : 2,
-              // overflow: TextOverflow.ellipsis,
+              onHashTagClicked: (hashtag) => print('$hashtag push!'),
               style: TextStyle(
                 fontSize: 12,
                 color: AppColor.kPrimaryTextColor,
+              ),
+              linkStyle: TextStyle(
+                color: Colors.orange,
               ),
             ),
           ),
         ),
 
         // 5th row
-        // Padding(
-        //   padding: const EdgeInsets.symmetric(
-        //     horizontal: 16,
-        //     vertical: 8,
-        //   ),
-        //   child: Text(
-        //     widget.postInfo.tags,
-        //     style: TextStyle(
-        //       fontSize: 10,
-        //       color: Colors.orange,
-        //     ),
-        //   ),
-        // ),
-
-        // 6th row
         GestureDetector(
           onTap: () {
             // コメント画面に遷移
