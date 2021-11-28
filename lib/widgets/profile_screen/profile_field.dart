@@ -1,7 +1,5 @@
-import 'package:dish/screens/select_signin_signup_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart' as firebaseAuth;
 
 import 'package:dish/models/User.dart';
 import 'package:dish/configs/constant_colors.dart';
@@ -33,16 +31,6 @@ class _ProfileFieldState extends State<ProfileField> {
     setState(() {
       _userType = userType;
     });
-  }
-
-  Future signOut() async {
-    try {
-      await firebaseAuth.FirebaseAuth.instance.signOut();
-      print('ログアウト成功');
-    } catch (e) {
-      print('ログアウトエラー');
-      print(e);
-    }
   }
 
   @override
@@ -111,7 +99,7 @@ class _ProfileFieldState extends State<ProfileField> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) {
-                          return FollowerListScreen();
+                          return FollowerListScreen(uid: widget.uid);
                         }),
                       );
                     },
@@ -131,7 +119,7 @@ class _ProfileFieldState extends State<ProfileField> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) {
-                          return FollowListScreen();
+                          return FollowListScreen(uid: widget.uid);
                         }),
                       );
                     },
@@ -159,40 +147,6 @@ class _ProfileFieldState extends State<ProfileField> {
             user: user,
             userType: _userType,
             setUserType: setUserType,
-          ),
-          // 一時的なログアウトボタン
-          Container(
-            height: 36,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(3),
-              border: Border.all(color: AppColor.kDefaultBorderColor),
-            ),
-            child: TextButton(
-              child: Text(
-                'ログアウト',
-                style: TextStyle(
-                  fontSize: 12,
-                  letterSpacing: 1,
-                ),
-              ),
-              style: TextButton.styleFrom(
-                primary: AppColor.kPrimaryTextColor,
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(3),
-                ),
-              ),
-              onPressed: () {
-                signOut();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => SelectSigninSignupScreen(),
-                  ),
-                );
-              },
-            ),
           ),
         ],
       ),

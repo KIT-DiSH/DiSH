@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebaseAuth;
 
 import 'package:dish/models/User.dart';
 import 'package:dish/models/Post.dart';
@@ -21,19 +22,72 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   User? _myself;
   String _userId = "";
-  List<Post> _posts = [];
   int _postsCount = 0;
   int _followCount = 0;
   int _followerCount = 0;
+  Stream<User>? userStream;
+  Stream<List<Post>>? postsStream;
+
+  Future<User> _generateUserProfile(
+      DocumentSnapshot<Map<String, dynamic>> snapshot) async {
+    final data = snapshot.data() as Map<String, dynamic>;
+    final postsCount = await _getPostsCount(widget.uid);
+    final followCount = await _getFollowCount(widget.uid, "follow");
+    final followerCount = await _getFollowCount(widget.uid, "follower");
+    setState(() {
+      _postsCount = postsCount;
+      _followCount = followCount;
+      _followerCount = followerCount;
+    });
+    User user = User(
+      profileText: data["profile_text"],
+      userId: data["user_id"],
+      userName: data["user_name"],
+      iconImageUrl: data["icon_path"],
+      postCount: _postsCount,
+      followCount: _followCount,
+      followerCount: _followerCount,
+    );
+    setState(() {
+      _myself = user;
+      _userId = data["user_id"];
+    });
+    return user;
+  }
+
+  Future<Post> _generatePost(
+      QueryDocumentSnapshot<Map<String, dynamic>> doc) async {
+    final int postsCount = await _getPostsCount(widget.uid);
+    setState(() {
+      if (_myself != null) _myself!.postCount = postsCount;
+    });
+    Map<String, dynamic> data = doc.data();
+    Post post = Post(
+      userId: _userId,
+      postId: doc.id,
+      postText: data["content"],
+      postImageUrls: data["image_paths"].cast<String>() as List<String>,
+      postedDate: DateFormat("yyyy/MM/dd").format(data["timestamp"].toDate()),
+      commentCount: 0,
+      favoCount: 0,
+    );
+    return post;
+  }
 
   @override
-  Future<void> didChangeDependencies() async {
-    super.didChangeDependencies();
-    await _getPostsCount(widget.uid);
-    await _getFollowCount(widget.uid, "follow");
-    await _getFollowCount(widget.uid, "follower");
-    await _getUser(widget.uid);
-    await _getUserPosts(widget.uid);
+  void initState() {
+    userStream = FirebaseFirestore.instance
+        .collection("USERS")
+        .doc(widget.uid)
+        .snapshots()
+        .asyncMap((snapshot) => _generateUserProfile(snapshot));
+    postsStream = FirebaseFirestore.instance
+        .collection("POSTS")
+        .where("uid", isEqualTo: widget.uid)
+        .snapshots()
+        .asyncMap((snapshot) =>
+            Future.wait([for (var doc in snapshot.docs) _generatePost(doc)]));
+    super.initState();
   }
 
   @override
@@ -48,15 +102,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: ListView(
             children: [
               const SizedBox(height: 24),
-              _myself != null
-                  ? ProfileField(uid: widget.uid, user: _myself!)
-                  : Center(child: CircularProgressIndicator()),
+              StreamBuilder(
+                stream: userStream,
+                builder: (BuildContext context, AsyncSnapshot<User> user) {
+                  if (user.data == null) {
+                    print("⌚ Fetch data now...");
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  return ProfileField(uid: widget.uid, user: user.data!);
+                },
+              ),
               const SizedBox(height: 24),
               SimpleDivider(),
               const SizedBox(height: 4),
-              _myself != null
-                  ? PostsField(user: _myself!, posts: _posts)
-                  : Center(child: CircularProgressIndicator()),
+              StreamBuilder(
+                stream: postsStream,
+                builder:
+                    (BuildContext context, AsyncSnapshot<List<Post>> posts) {
+                  if (posts.data == null || _myself == null) {
+                    print("⌚ Fetch data now...");
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  return PostsField(user: _myself!, posts: posts.data!);
+                },
+              ),
             ],
           ),
         ),
@@ -64,74 +133,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Future<void> _getUser(String uid) async {
-    DocumentReference userRef =
-        FirebaseFirestore.instance.collection("USERS").doc(uid);
-    DocumentSnapshot snapshot = await userRef.get();
-
-    if (!snapshot.exists) {
-      print("Something went wrong");
-      return;
-    }
-
-    Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-    User myself = User(
-      userId: data["user_id"],
-      userName: data["user_name"],
-      profileText: data["profile_text"],
-      iconImageUrl: data["icon_path"],
-      followCount: _followCount,
-      followerCount: _followerCount,
-      postCount: _postsCount,
-    );
-    setState(() {
-      _myself = myself;
-      _userId = data["user_id"];
-    });
-  }
-
-  Future<void> _getUserPosts(String uid) async {
+  Future<int> _getPostsCount(String uid) async {
     QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
         .instance
         .collection("POSTS")
         .where("uid", isEqualTo: uid)
         .get();
-
-    List<QueryDocumentSnapshot> docs = snapshot.docs;
-    if (docs.isNotEmpty) {
-      List<Post> posts = docs.map((doc) {
-        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        Post post = Post(
-          userId: _userId,
-          postId: doc.id,
-          postText: data["content"],
-          postImageUrls: data["image_paths"].cast<String>() as List<String>,
-          postedDate:
-              DateFormat("yyyy/MM/dd").format(data["timestamp"].toDate()),
-          commentCount: 0,
-          favoCount: 0,
-        );
-        return post;
-      }).toList();
-
-      setState(() {
-        _posts = posts;
-      });
-    }
+    return snapshot.docs.length;
   }
 
-  Future<void> _getPostsCount(String uid) async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-        .instance
-        .collection("POSTS")
-        .where("uid", isEqualTo: uid)
-        .get();
-    setState(() {
-      _postsCount = snapshot.docs.length;
-    });
-  }
-
-  Future<void> _getFollowCount(String uid, String type) async {
+  Future<int> _getFollowCount(String uid, String type) async {
     String? searchKey;
     if (type == "follow")
       searchKey = "followee_id";
@@ -142,12 +153,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
         .collection("FOLLOW_FOLLOWER")
         .where(searchKey, isEqualTo: uid)
         .get();
-    setState(() {
-      if (type == "follow")
-        _followCount = snapshot.docs.length;
-      else
-        _followerCount = snapshot.docs.length;
-    });
+    if (type == "follow")
+      return snapshot.docs.length;
+    else
+      return snapshot.docs.length;
+  }
+
+  Future<String> signOut() async {
+    try {
+      await firebaseAuth.FirebaseAuth.instance.signOut();
+      return "success";
+    } catch (e) {
+      return e.toString();
+    }
   }
 
   AppBar _buildAppBar(BuildContext context) {
@@ -176,7 +194,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       actions: [
         GestureDetector(
-          onTap: () {},
+          onTap: () async {
+            await showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(15),
+                ),
+              ),
+              builder: (BuildContext context) {
+                return SizedBox(
+                  height: 210,
+                  child: Column(
+                    children: [
+                      ListTile(
+                        leading: Icon(Icons.logout),
+                        title: Text("ログアウト"),
+                        onTap: () async {
+                          final String res = await signOut();
+                          if (res == "success") {
+                            print("💮 SUCCESS LOGOUT");
+                            // ここでログイン画面に遷移する
+                          } else {
+                            print("💀 FAIL LOGOUT");
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
           child: Icon(
             Icons.more_horiz,
             color: AppColor.kPrimaryTextColor,

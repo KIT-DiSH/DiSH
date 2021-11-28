@@ -45,15 +45,16 @@ class _DiSHListState extends State<DiSHList> {
       children: [
         Flexible(
           child: StreamBuilder(
-              stream: timelineStream,
-              builder:
-                  (BuildContext context, AsyncSnapshot<List<DishPost>> posts) {
-                if (posts.data == null) {
-                  print("⌚ Fetch data now...");
-                  return Center(child: CircularProgressIndicator());
-                }
-                return ListView(children: posts.data!);
-              }),
+            stream: timelineStream,
+            builder:
+                (BuildContext context, AsyncSnapshot<List<DishPost>> posts) {
+              if (posts.data == null) {
+                print("⌚ Fetch data now...");
+                return Center(child: CircularProgressIndicator());
+              }
+              return ListView(children: posts.data!);
+            },
+          ),
         ),
       ],
     );

@@ -1,9 +1,10 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:dish/plugins/rich_text_controller.dart';
 import 'package:dish/widgets/common/simple_alert_dialog.dart';
@@ -195,15 +196,44 @@ class _PostScreenState extends State<PostScreen> {
     );
   }
 
-  // void _uploadImages(String uid, List<File> files) async {
-  //   // String uid = "uruCi5pw8gWNOQeudRWfYiQ8Age2";
-  //   FirebaseStorage storage = FirebaseStorage.instance;
-  //   try {
-  //     await storage.ref("post_images/$uid").putFile(files[0]);
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
+  String randomString(int length) {
+    const _randomChars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const _charsLength = _randomChars.length;
+
+    final rand = new Random();
+    final codeUnits = new List.generate(
+      length,
+      (index) {
+        final n = rand.nextInt(_charsLength);
+        return _randomChars.codeUnitAt(n);
+      },
+    );
+    return new String.fromCharCodes(codeUnits);
+  }
+
+  Future<List<String>> _uploadImages(String uid, List<File> files) async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    final List<String> downloadURLs = [];
+    try {
+      for (var file in files) {
+        final String fileName = randomString(12);
+        print('file name: $fileName');
+        final TaskSnapshot putFiles = await storage
+            .ref('post_images/')
+            .child('$uid/$fileName')
+            .putFile(file);
+        final String downloadURL = await putFiles.ref.getDownloadURL();
+        print('downloadURL:  $downloadURL');
+        downloadURLs.add(downloadURL);
+      }
+
+      return downloadURLs;
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
 
   AppBar _buildAppBar(BuildContext context) {
     final _titleText = "新規投稿";
@@ -263,11 +293,13 @@ class _PostScreenState extends State<PostScreen> {
             color: AppColor.kPinkColor,
           ),
           onPressed: () async {
-            if (_formKey.currentState!.validate()) {
-              Navigator.pop(context);
-            }
-            // ここで投稿作成の処理
-            // await _uploadImages(uid, selectedImageFiles);
+            // バリデーションをなくすために一旦コメントアウト
+            // if (_formKey.currentState!.validate()) {
+            //   Navigator.pop(context);
+            // }
+
+            final List<String> URLs =
+                await _uploadImages(uid, selectedImageFiles);
             final String res = await addNewPost(
               uid,
               _postTextController.value.text,
@@ -278,10 +310,7 @@ class _PostScreenState extends State<PostScreen> {
                 "mood": atmRate,
                 "taste": foodRate,
               },
-              [
-                "https://d3bhdfps5qyllw.cloudfront.net/org/57/57fb3c11bb13ae10b47d540120fae536_1242x1242_w.jpg",
-                "https://d3bhdfps5qyllw.cloudfront.net/org/57/57fb3c11bb13ae10b47d540120fae536_1242x1242_w.jpg",
-              ],
+              URLs,
             );
             if (res == "success") {
               print("🍥 SUCCESS");
