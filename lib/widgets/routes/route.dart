@@ -64,6 +64,10 @@ class _RouteWidgetState extends State<RouteWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final VoidCallback popUntilFirstScreen = () {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    };
+
     return WillPopScope(
       onWillPop: () async {
         final isFirstRouteInCurrentTab =
@@ -86,6 +90,7 @@ class _RouteWidgetState extends State<RouteWidget> {
           children: _pageKeys
               .map(
                 (key) => TabNavigator(
+                  popUntilFirstScreen: popUntilFirstScreen,
                   navigatorKey: _navigatorKeys[key]!,
                   tabItem: key,
                 ),

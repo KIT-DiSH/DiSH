@@ -11,9 +11,14 @@ import 'package:dish/widgets/profile_screen/posts_field.dart';
 import 'package:dish/widgets/profile_screen/profile_field.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key, required this.uid}) : super(key: key);
+  const ProfileScreen({
+    Key? key,
+    required this.uid,
+    this.popUntilFirstScreen,
+  }) : super(key: key);
 
   final String uid;
+  final VoidCallback? popUntilFirstScreen;
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -27,6 +32,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int _followerCount = 0;
   Stream<User>? userStream;
   Stream<List<Post>>? postsStream;
+  final String _myUid = firebaseAuth.FirebaseAuth.instance.currentUser!.uid;
 
   Future<User> _generateUserProfile(
       DocumentSnapshot<Map<String, dynamic>> snapshot) async {
@@ -193,45 +199,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
       actions: [
-        GestureDetector(
-          onTap: () async {
-            await showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(15),
-                ),
-              ),
-              builder: (BuildContext context) {
-                return SizedBox(
-                  height: 210,
-                  child: Column(
-                    children: [
-                      ListTile(
-                        leading: Icon(Icons.logout),
-                        title: Text("ログアウト"),
-                        onTap: () async {
-                          final String res = await signOut();
-                          if (res == "success") {
-                            print("💮 SUCCESS LOGOUT");
-                            // ここでログイン画面に遷移する
-                          } else {
-                            print("💀 FAIL LOGOUT");
-                          }
-                        },
+        widget.uid == _myUid
+            ? GestureDetector(
+                onTap: () async {
+                  await showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(15),
                       ),
-                    ],
-                  ),
-                );
-              },
-            );
-          },
-          child: Icon(
-            Icons.more_horiz,
-            color: AppColor.kPrimaryTextColor,
-          ),
-        ),
+                    ),
+                    builder: (BuildContext context) {
+                      return SizedBox(
+                        height: 210,
+                        child: Column(
+                          children: [
+                            ListTile(
+                              leading: Icon(Icons.logout),
+                              title: Text("ログアウト"),
+                              onTap: () async {
+                                final String res = await signOut();
+                                if (res == "success") {
+                                  print("💮 SUCCESS LOGOUT");
+                                  widget.popUntilFirstScreen!();
+                                } else {
+                                  print("💀 FAIL LOGOUT");
+                                  print(res);
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: Icon(
+                  Icons.more_horiz,
+                  color: AppColor.kPrimaryTextColor,
+                ),
+              )
+            : Container(),
         const SizedBox(width: 12),
       ],
     );
