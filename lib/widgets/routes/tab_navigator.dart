@@ -9,15 +9,18 @@ import 'package:dish/screens/sample_screens/search_screen.dart';
 
 class TabNavigator extends StatelessWidget {
   TabNavigator({
+    required this.popUntilFirstScreen,
     required this.navigatorKey,
     required this.tabItem,
   });
+
+  final VoidCallback popUntilFirstScreen;
   final GlobalKey<NavigatorState> navigatorKey;
   final String tabItem;
 
   @override
   Widget build(BuildContext context) {
-    String? uid = FirebaseAuth.instance.currentUser?.uid;
+    String uid = FirebaseAuth.instance.currentUser!.uid;
     Widget child;
 
     switch (tabItem) {
@@ -34,7 +37,10 @@ class TabNavigator extends StatelessWidget {
       //   child = MapScreen();
       //   break;
       case "Profile":
-        child = uid != null ? ProfileScreen(uid: uid) : Container();
+        child = ProfileScreen(
+          uid: uid,
+          popUntilFirstScreen: popUntilFirstScreen,
+        );
         break;
       default:
         child = Container();
