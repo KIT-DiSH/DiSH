@@ -10,6 +10,7 @@ import 'package:dish/widgets/common/simple_divider.dart';
 import 'package:dish/widgets/profile_screen/posts_field.dart';
 import 'package:dish/widgets/profile_screen/profile_field.dart';
 
+// sample comment
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key, required this.uid}) : super(key: key);
 
