@@ -25,6 +25,7 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   String? _iconPath;
+  File? _iconFile;
   final _userNameController = TextEditingController();
   final _userIdController = TextEditingController();
   final _profileTextController = TextEditingController();
@@ -75,16 +76,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.all(Radius.circular(50)),
-                          child: Image.network(
-                            _iconPath!,
-                            fit: BoxFit.cover,
-                          ),
+                          child: _iconFile == null
+                              ? Image.network(
+                                  _iconPath!,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.file(
+                                  _iconFile!,
+                                  fit: BoxFit.cover,
+                                ),
                         ),
                       ),
                       Spacer(),
                       GestureDetector(
                         onTap: () {
-                          String url;
+                          // String url;
                           AssetPicker.pickAssets(
                             context,
                             maxAssets: 1,
@@ -95,13 +101,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             (assets) async => {
                               if (assets != null)
                                 {
-                                  url = await _uploadImage(
-                                    widget.uid,
-                                    assets[0].file,
-                                  ),
-                                  setState(() {
-                                    _iconPath = url;
-                                  })
+                                  assets[0].file.then(
+                                        (file) => {
+                                          setState(() {
+                                            _iconFile = file;
+                                          })
+                                        },
+                                      )
+                                  // url = await _uploadImage(
+                                  //   widget.uid,
+                                  //   assets[0].file,
+                                  // ),
+                                  // setState(() {
+                                  //   _iconPath = url;
+                                  // })
                                 },
                             },
                           );
@@ -229,14 +242,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return new String.fromCharCodes(codeUnits);
   }
 
-  Future<String> _uploadImage(String uid, Future<File?> file) async {
+  Future<String> _uploadImage(String uid, File? file) async {
     FirebaseStorage storage = FirebaseStorage.instance;
     try {
       final String fileName = randomString(12);
       print('file name: $fileName');
 
-      final TaskSnapshot putFiles = await file.then((file) =>
-          storage.ref('user_icons/').child('$fileName').putFile(file!));
+      final TaskSnapshot putFiles =
+          await storage.ref('user_icons/').child('$fileName').putFile(file!);
       final String downloadURL = await putFiles.ref.getDownloadURL();
       print('downloadURL:  $downloadURL');
 
@@ -278,7 +291,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               backgroundColor: AppColor.kPinkColor,
               padding: EdgeInsets.all(0),
             ),
-            onPressed: _clickSaveButton,
+            onPressed: () async {
+              await _clickSaveButton();
+            },
           ),
         ),
         const SizedBox(width: 12),
@@ -292,6 +307,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     String userId = _userIdController.text;
     String userName = _userNameController.text;
     String profileText = _profileTextController.text;
+
+    if (_iconFile != null) {
+      final url = await _uploadImage(widget.uid, _iconFile);
+      setState(() {
+        _iconPath = url;
+      });
+    }
 
     if (userId == user.userId &&
         userName == user.userName &&
