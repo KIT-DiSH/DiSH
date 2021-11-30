@@ -90,7 +90,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       Spacer(),
                       GestureDetector(
                         onTap: () {
-                          // String url;
                           AssetPicker.pickAssets(
                             context,
                             maxAssets: 1,
@@ -235,6 +234,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return new String.fromCharCodes(codeUnits);
   }
 
+  Future<void> _deleteOldImage(String url) async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    try {
+      storage.refFromURL(url).delete();
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future<String> _uploadImage(String uid, File? file) async {
     FirebaseStorage storage = FirebaseStorage.instance;
     try {
@@ -303,6 +311,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     if (_iconFile != null) {
       final url = await _uploadImage(widget.uid, _iconFile);
+      await _deleteOldImage(_iconPath!);
       setState(() {
         _iconPath = url;
       });
