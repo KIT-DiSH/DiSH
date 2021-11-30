@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dish/models/User.dart';
@@ -9,13 +10,45 @@ class UserCard extends StatefulWidget {
     Key? key,
     required this.user,
     required this.isFollowed,
+    required this.myselfUid,
   }) : super(key: key);
 
   final User user;
   bool isFollowed;
+  final String myselfUid;
 
   @override
   _UserCardState createState() => _UserCardState();
+}
+
+Future<String> _followUser(String followerUid, String followeeUid) async {
+  Future<String> res =
+      FirebaseFirestore.instance.collection('FOLLOW_FOLLOWER').add({
+    "follower_id": followerUid,
+    "followee_id": followeeUid,
+  }).then((value) {
+    return value.id;
+  }).catchError((e) => "fail: $e");
+
+  return res;
+}
+
+Future<String> _unfollowUser(String followerUid, String followeeUid) async {
+  QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+      .instance
+      .collection("FOLLOW_FOLLOWER")
+      .where('follower_id', isEqualTo: followerUid)
+      .where('followee_id', isEqualTo: followeeUid)
+      .get();
+
+  if (snapshot.docs.isEmpty || snapshot.docs.length != 1) return 'fail';
+
+  await FirebaseFirestore.instance
+      .collection("FOLLOW_FOLLOWER")
+      .doc(snapshot.docs[0].id)
+      .delete()
+      .catchError((e) => e);
+  return 'success';
 }
 
 class _UserCardState extends State<UserCard> {
@@ -108,6 +141,8 @@ class _UserCardState extends State<UserCard> {
                       setState(() {
                         // フォロー解除処理
                         widget.isFollowed = false;
+                        _unfollowUser(widget.myselfUid,
+                            widget.user.uid ?? 'this must be followee uid');
                       });
                     },
                   ),
@@ -134,6 +169,8 @@ class _UserCardState extends State<UserCard> {
                       setState(() {
                         // フォロー処理
                         widget.isFollowed = true;
+                        _followUser(widget.myselfUid,
+                            widget.user.uid ?? 'this must be followee uid');
                       });
                     },
                   ),

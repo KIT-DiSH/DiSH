@@ -42,6 +42,7 @@ class _FollowListScreenState extends State<FollowListScreen> {
             return UserCard(
               user: _userList[index],
               isFollowed: true,
+              myselfUid: widget.uid,
             );
           },
           separatorBuilder: (_, __) => SimpleDivider(height: 1.0),
