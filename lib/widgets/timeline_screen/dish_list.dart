@@ -69,7 +69,6 @@ class _DiSHListState extends State<DiSHList> {
       content: data["content"],
       restName: data["restaurant_name"],
       // タグの扱いは後ほど考え直す必要あり
-      tags: "#ムリぽ",
       imageUrls: data["image_paths"].cast<String>() as List<String>,
       postUser: user,
       date: DateFormat("yyyy/MM/dd").format(data["timestamp"].toDate()),
