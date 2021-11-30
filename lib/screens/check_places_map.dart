@@ -29,7 +29,7 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
   // todo: initStateで変更した場所にカメラをフォーカス
   CameraPosition? currentPosition;
 
-  Stream<Map<String, dynamic>>? timeline;
+  Stream<List<PostModel>>? timeline;
 
   @override
   initState() {
@@ -51,22 +51,9 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
               ),
             ),
           );
-          currentPosition = CameraPosition(
-            target: widget.latLng,
-            zoom: 15,
-          );
-        }
-        for (PostModel post in posts) {
-          // todo: 後々同じお店のIDなら弾くように変更
-          if (widget.latLng != null && widget.latLng == post.map) continue;
-          markers.add(
-            Marker(
-              markerId: MarkerId(markers.length.toString()),
-              position: post.map,
-            ),
-          );
         }
         for (int i = 0; i < dummyPlaces.length; i++) {
+          if (widget.latLng == dummyPlaces[i]) continue;
           markers.add(
             Marker(
               markerId: MarkerId((markers.length + i + 1).toString()),
@@ -76,70 +63,124 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
         }
       },
     );
+    timeline = FirebaseFirestore.instance
+        .collection("USERS")
+        .doc(widget.uid)
+        .collection("/TIMELINE")
+        .orderBy("timestamp", descending: true)
+        .limit(20)
+        .snapshots()
+        .asyncMap(
+          (snapshot) => Future.wait(
+            [for (var doc in snapshot.docs) _generatePostMap(doc)],
+          ),
+        );
   }
 
-  // Future<Map<String, dynamic>> _generateDiSHPost(
-  //     QueryDocumentSnapshot<Map<String, dynamic>> doc) async {
-  //   Map<String, dynamic> data = doc.data();
-  //   User user = await _getUser(data["uid"]);
-  //   PostModel postInfo = PostModel(
-  //     id: "item.id",
-  //     content: data["content"],
-  //     restName: data["restaurant_name"],
-  //     // タグの扱いは後ほど考え直す必要あり
-  //     tags: "#ムリぽ",
-  //     imageUrls: data["image_paths"].cast<String>() as List<String>,
-  //     postUser: user,
-  //     date: DateFormat("yyyy/MM/dd").format(data["timestamp"].toDate()),
-  //     favoUsers: [],
-  //     comments: [],
-  //     map: LatLng(
-  //       data["location"]["lat"] + 0.0,
-  //       data["location"]["lng"] + 0.0,
-  //     ),
-  //     stars: {
-  //       "cost": data["evaluation"]["cost"] + 0.0,
-  //       "mood": data["evaluation"]["mood"] + 0.0,
-  //       "taste": data["evaluation"]["taste"] + 0.0,
-  //     },
-  //   );
-  //   return new Map<String, dynamic>.from(
-  //       {"uid": data["uid"], "postInfo": postInfo});
-  // }
+  List<Marker> _generateMaker(List<PostModel> post) {
+    List<Marker> markers = [];
 
-  // Future<User> _getUser(String uid) async {
-  //   DocumentReference userRef =
-  //       FirebaseFirestore.instance.collection("USERS").doc(uid);
-  //   DocumentSnapshot snapshot = await userRef.get();
+    if (widget.uid != null) {
+      markers.add(
+        Marker(
+          markerId: MarkerId(markers.length.toString()),
+          position: widget.latLng,
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueBlue,
+          ),
+        ),
+      );
+    }
+    for (int i = 0; i < post.length; i++) {
+      if (widget.latLng == post[i].map) continue;
+      markers.add(
+        Marker(
+          markerId: MarkerId((markers.length + i + 1).toString()),
+          position: post[i].map,
+        ),
+      );
+    }
+    return markers;
+  }
 
-  //   if (!snapshot.exists) {
-  //     print("💣 Something went wrong");
-  //   }
+  Future<PostModel> _generatePostMap(
+      QueryDocumentSnapshot<Map<String, dynamic>> doc) async {
+    Map<String, dynamic> data = doc.data();
+    User user = await _getUser(data["uid"]);
+    PostModel postInfo = PostModel(
+      id: "item.id",
+      content: data["content"],
+      restName: data["restaurant_name"],
+      // タグの扱いは後ほど考え直す必要あり
+      tags: "#ムリぽ",
+      imageUrls: data["image_paths"].cast<String>() as List<String>,
+      postUser: user,
+      date: DateFormat("yyyy/MM/dd").format(data["timestamp"].toDate()),
+      favoUsers: [],
+      comments: [],
+      map: LatLng(
+        data["location"]["lat"] + 0.0,
+        data["location"]["lng"] + 0.0,
+      ),
+      stars: {
+        "cost": data["evaluation"]["cost"] + 0.0,
+        "mood": data["evaluation"]["mood"] + 0.0,
+        "taste": data["evaluation"]["taste"] + 0.0,
+      },
+    );
+    return postInfo;
+  }
 
-  //   Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-  //   User user = User(
-  //     userId: data["user_id"],
-  //     userName: data["user_name"],
-  //     profileText: data["profile_text"],
-  //     iconImageUrl: data["icon_path"],
-  //   );
-  //   return user;
-  // }
+  Future<User> _getUser(String uid) async {
+    DocumentReference userRef =
+        FirebaseFirestore.instance.collection("USERS").doc(uid);
+    DocumentSnapshot snapshot = await userRef.get();
+
+    if (!snapshot.exists) {
+      print("💣 Something went wrong");
+    }
+
+    Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+    User user = User(
+      userId: data["user_id"],
+      userName: data["user_name"],
+      profileText: data["profile_text"],
+      iconImageUrl: data["icon_path"],
+    );
+    return user;
+  }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       body: Stack(
         children: [
-          GoogleMap(
-            mapType: MapType.normal,
-            initialCameraPosition: currentPosition!,
-            onMapCreated: (GoogleMapController controller) {
-              _controller.complete(controller);
-            },
-            markers: markers.toSet(),
-            myLocationEnabled: true,
-          ),
+          StreamBuilder(
+              stream: timeline,
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<PostModel>> snapshot) {
+                if (snapshot.data == null) {
+                  return GoogleMap(
+                    mapType: MapType.normal,
+                    initialCameraPosition: currentPosition!,
+                    onMapCreated: (GoogleMapController controller) {
+                      _controller.complete(controller);
+                    },
+                    // markers: _generateMaker(snapshot.data).toSet(),
+                    myLocationEnabled: true,
+                  );
+                } else {
+                  return GoogleMap(
+                    mapType: MapType.normal,
+                    initialCameraPosition: currentPosition!,
+                    onMapCreated: (GoogleMapController controller) {
+                      _controller.complete(controller);
+                    },
+                    markers: _generateMaker(snapshot.data!).toSet(),
+                    myLocationEnabled: true,
+                  );
+                }
+              }),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
