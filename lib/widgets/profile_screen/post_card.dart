@@ -25,12 +25,14 @@ class PostCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        // タップした投稿（post_idなど）に応じて画面遷移を行う
         print("Navigate to DisplayPostsScreen");
         Navigator.push(
           context,
           MaterialPageRoute(builder: (_) {
-            return DisplayPostsScreen();
+            return DisplayPostsScreen(
+              user: user,
+              postId: post.postId,
+            );
           }),
         );
       },

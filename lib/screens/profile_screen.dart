@@ -46,6 +46,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _followerCount = followerCount;
     });
     User user = User(
+      uid: widget.uid,
       profileText: data["profile_text"],
       userId: data["user_id"],
       userName: data["user_name"],
