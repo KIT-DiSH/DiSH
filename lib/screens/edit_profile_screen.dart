@@ -73,7 +73,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.all(Radius.circular(50)),
                           child: Image.network(
-                            "https://i.pinimg.com/474x/9b/47/a0/9b47a023caf29f113237d61170f34ad9.jpg",
+                            widget.user.iconImageUrl,
                             fit: BoxFit.cover,
                           ),
                         ),
