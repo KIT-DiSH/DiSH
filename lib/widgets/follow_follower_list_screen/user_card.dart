@@ -42,13 +42,13 @@ Future<String> _unfollowUser(String followerUid, String followeeUid) async {
       .where('followee_id', isEqualTo: followeeUid)
       .get();
 
-  if (snapshot.docs.isEmpty || snapshot.docs.length != 1) return 'fail';
-
-  await FirebaseFirestore.instance
-      .collection("FOLLOW_FOLLOWER")
-      .doc(snapshot.docs[0].id)
-      .delete()
-      .catchError((e) => e);
+  for (QueryDocumentSnapshot doc in snapshot.docs) {
+    final String res = await doc.reference
+        .delete()
+        .then((_) => "success")
+        .onError((error, stackTrace) => "fail");
+    if (res == "fail") return "fail";
+  }
   return 'success';
 }
 
