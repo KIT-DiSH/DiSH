@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dish/models/User.dart';
 import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/common/simple_divider.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({
@@ -80,7 +81,29 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       Spacer(),
                       GestureDetector(
                         onTap: () {
-                          // 画像を選択する処理
+                          AssetPicker.pickAssets(
+                            context,
+                            maxAssets: 1,
+                            textDelegate: JapaneseTextDelegate(),
+                            themeColor: AppColor.kPinkColor,
+                            requestType: RequestType.image,
+                          ).then(
+                            (assets) async => {
+                              // if (assets != null)
+                              //   {
+                              //     await Future.forEach(
+                              //       assets,
+                              //       (AssetEntity asset) async {
+                              //         _tmpFiles.add((await asset.file)!);
+                              //       },
+                              //     ),
+                              //     setState(() {
+                              //       selectedAssets = assets;
+                              //     }),
+                              //     widget.updateImageFiles(_tmpFiles),
+                              //   },
+                            },
+                          );
                         },
                         child: Text(
                           _changeIconLabel,
