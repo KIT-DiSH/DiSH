@@ -166,7 +166,10 @@ class _DishPostState extends State<DishPost> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) {
-                        return CheckPlacesMap(latLng: widget.postInfo.map);
+                        return CheckPlacesMap(
+                          latLng: widget.postInfo.map,
+                          uid: widget.uid,
+                        );
                       }),
                     );
                   },
