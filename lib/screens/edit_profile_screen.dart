@@ -1,5 +1,8 @@
+import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:dish/models/User.dart';
 import 'package:dish/configs/constant_colors.dart';
@@ -73,7 +76,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.all(Radius.circular(50)),
                           child: Image.network(
-                            widget.user.iconImageUrl,
+                            _iconPath!,
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -81,6 +84,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       Spacer(),
                       GestureDetector(
                         onTap: () {
+                          String url;
                           AssetPicker.pickAssets(
                             context,
                             maxAssets: 1,
@@ -89,19 +93,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             requestType: RequestType.image,
                           ).then(
                             (assets) async => {
-                              // if (assets != null)
-                              //   {
-                              //     await Future.forEach(
-                              //       assets,
-                              //       (AssetEntity asset) async {
-                              //         _tmpFiles.add((await asset.file)!);
-                              //       },
-                              //     ),
-                              //     setState(() {
-                              //       selectedAssets = assets;
-                              //     }),
-                              //     widget.updateImageFiles(_tmpFiles),
-                              //   },
+                              if (assets != null)
+                                {
+                                  url = await _uploadImage(
+                                      widget.uid, assets[0].file),
+                                  setState(() {
+                                    _iconPath = url;
+                                  })
+                                },
                             },
                           );
                         },
@@ -210,6 +209,40 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ],
       ),
     );
+  }
+
+  String randomString(int length) {
+    const _randomChars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const _charsLength = _randomChars.length;
+
+    final rand = new Random();
+    final codeUnits = new List.generate(
+      length,
+      (index) {
+        final n = rand.nextInt(_charsLength);
+        return _randomChars.codeUnitAt(n);
+      },
+    );
+    return new String.fromCharCodes(codeUnits);
+  }
+
+  Future<String> _uploadImage(String uid, Future<File?> file) async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    try {
+      final String fileName = randomString(12);
+      print('file name: $fileName');
+
+      final TaskSnapshot putFiles = await file.then((file) =>
+          storage.ref('user_icons/').child('$fileName').putFile(file!));
+      final String downloadURL = await putFiles.ref.getDownloadURL();
+      print('downloadURL:  $downloadURL');
+
+      return downloadURL;
+    } catch (e) {
+      print(e);
+      return "";
+    }
   }
 
   AppBar _buildAppBar(BuildContext context) {
