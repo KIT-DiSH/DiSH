@@ -108,13 +108,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                           })
                                         },
                                       )
-                                  // url = await _uploadImage(
-                                  //   widget.uid,
-                                  //   assets[0].file,
-                                  // ),
-                                  // setState(() {
-                                  //   _iconPath = url;
-                                  // })
                                 },
                             },
                           );
