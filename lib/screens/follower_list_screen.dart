@@ -109,16 +109,6 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
           fontSize: 16,
         ),
       ),
-      actions: [
-        GestureDetector(
-          onTap: () {},
-          child: Icon(
-            Icons.more_horiz,
-            color: AppColor.kPrimaryTextColor,
-          ),
-        ),
-        const SizedBox(width: 12),
-      ],
     );
   }
 }
