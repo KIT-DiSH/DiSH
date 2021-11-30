@@ -96,7 +96,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               if (assets != null)
                                 {
                                   url = await _uploadImage(
-                                      widget.uid, assets[0].file),
+                                    widget.uid,
+                                    assets[0].file,
+                                  ),
                                   setState(() {
                                     _iconPath = url;
                                   })
