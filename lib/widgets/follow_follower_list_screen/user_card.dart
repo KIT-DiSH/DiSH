@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:dish/models/User.dart';
 import 'package:dish/screens/profile_screen.dart';
@@ -9,12 +9,12 @@ class UserCard extends StatefulWidget {
   UserCard({
     Key? key,
     required this.user,
-    required this.isFollowed,
+    required this.didFollow,
     required this.myselfUid,
   }) : super(key: key);
 
   final User user;
-  bool isFollowed;
+  bool didFollow;
   final String myselfUid;
 
   @override
@@ -117,7 +117,7 @@ class _UserCardState extends State<UserCard> {
             ],
           ),
           Spacer(),
-          widget.isFollowed
+          widget.didFollow
               ? Container(
                   width: 88,
                   height: 32,
@@ -140,9 +140,8 @@ class _UserCardState extends State<UserCard> {
                     onPressed: () {
                       setState(() {
                         // フォロー解除処理
-                        widget.isFollowed = false;
-                        _unfollowUser(widget.myselfUid,
-                            widget.user.uid ?? 'this must be followee uid');
+                        widget.didFollow = false;
+                        _unfollowUser(widget.myselfUid, widget.user.uid!);
                       });
                     },
                   ),
@@ -168,9 +167,8 @@ class _UserCardState extends State<UserCard> {
                     onPressed: () {
                       setState(() {
                         // フォロー処理
-                        widget.isFollowed = true;
-                        _followUser(widget.myselfUid,
-                            widget.user.uid ?? 'this must be followee uid');
+                        widget.didFollow = true;
+                        _followUser(widget.myselfUid, widget.user.uid!);
                       });
                     },
                   ),

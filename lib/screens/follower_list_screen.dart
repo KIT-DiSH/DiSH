@@ -21,7 +21,7 @@ class FollowerListScreen extends StatefulWidget {
 class _FollowerListScreenState extends State<FollowerListScreen> {
   final _title = "フォロワー";
   List<String> _followerIdList = [];
-  List<User> _userList = [];
+  List<Map> _userList = [];
 
   @override
   Future<void> didChangeDependencies() async {
@@ -40,8 +40,8 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
             if (index == _userList.length) return SimpleDivider(height: 1.0);
 
             return UserCard(
-              user: _userList[index],
-              isFollowed: false,
+              user: _userList[index]["user"],
+              didFollow: _userList[index]["didFollow"],
               myselfUid: widget.uid,
             );
           },
@@ -52,21 +52,30 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
     );
   }
 
-  Future<User> _getUser(String uid) async {
+  Future<Map> _getUser(String uid) async {
     DocumentSnapshot<Map<String, dynamic>> snapshot =
         await FirebaseFirestore.instance.collection("USERS").doc(uid).get();
     final data = snapshot.data() as Map<String, dynamic>;
     User user = User(
+      uid: widget.uid,
       iconImageUrl: data["icon_path"],
       userId: data["user_id"],
       userName: data["user_name"],
       profileText: data["profile_text"],
     );
-    return user;
+
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
+        .instance
+        .collection("FOLLOW_FOLLOWER")
+        .where("follower_id", isEqualTo: uid)
+        .where("followee_id", isEqualTo: widget.uid)
+        .get();
+    final didFollow = querySnapshot.docs.length > 0;
+    return {"didFollow": didFollow, "user": user};
   }
 
   Future<void> _setUserList(List<String> idList) async {
-    List<User> userList =
+    List<Map> userList =
         await Future.wait(idList.map((String id) => _getUser(id)));
     setState(() {
       _userList = userList;
