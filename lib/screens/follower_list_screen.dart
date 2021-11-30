@@ -53,11 +53,8 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
   }
 
   Future<User> _getUser(String uid) async {
-    DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-        .instance
-        .collection("USERS")
-        .doc(widget.uid)
-        .get();
+    DocumentSnapshot<Map<String, dynamic>> snapshot =
+        await FirebaseFirestore.instance.collection("USERS").doc(uid).get();
     final data = snapshot.data() as Map<String, dynamic>;
     User user = User(
       iconImageUrl: data["icon_path"],
