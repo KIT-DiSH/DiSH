@@ -22,6 +22,7 @@ class UserCard extends StatefulWidget {
 }
 
 Future<String> _followUser(String followerUid, String followeeUid) async {
+  print("$followeeUid, $followerUid");
   Future<String> res =
       FirebaseFirestore.instance.collection('FOLLOW_FOLLOWER').add({
     "follower_id": followerUid,
@@ -141,8 +142,8 @@ class _UserCardState extends State<UserCard> {
                       setState(() {
                         // フォロー解除処理
                         widget.didFollow = false;
-                        _unfollowUser(widget.myselfUid, widget.user.uid!);
                       });
+                      _unfollowUser(widget.user.uid!, widget.myselfUid);
                     },
                   ),
                 )
@@ -168,8 +169,8 @@ class _UserCardState extends State<UserCard> {
                       setState(() {
                         // フォロー処理
                         widget.didFollow = true;
-                        _followUser(widget.myselfUid, widget.user.uid!);
                       });
+                      _followUser(widget.user.uid!, widget.myselfUid);
                     },
                   ),
                 ),
