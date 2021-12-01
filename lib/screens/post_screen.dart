@@ -293,7 +293,8 @@ class _PostScreenState extends State<PostScreen> {
             color: AppColor.kPinkColor,
           ),
           onPressed: () async {
-            if (!_formKey.currentState!.validate()) return;
+            if (!_formKey.currentState!.validate() ||
+                selectedImageFiles.isEmpty) return;
             Navigator.pop(context);
 
             final List<String> URLs =
