@@ -55,7 +55,7 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
     print(timeline);
   }
 
-  List<Marker> _generateMaker(List<PinModel> post) {
+  List<Marker> _generateMaker(List<PinModel> posts) {
     List<Marker> markers = [];
 
     if (widget.fromPost) {
@@ -69,12 +69,12 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
         ),
       );
     }
-    for (int i = 0; i < post.length; i++) {
-      if (widget.latLng == post[i].map) continue;
+    for (PinModel post in posts) {
+      if (widget.latLng == post.map) continue;
       markers.add(
         Marker(
-          markerId: MarkerId((markers.length + i + 1).toString()),
-          position: post[i].map,
+          markerId: MarkerId((markers.length + 1).toString()),
+          position: post.map,
         ),
       );
     }
