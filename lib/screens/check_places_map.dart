@@ -55,7 +55,7 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
     print(timeline);
   }
 
-  List<Marker> _generateMaker(List<PinModel> post) {
+  List<Marker> _generateMarker(List<PinModel> post) {
     List<Marker> markers = [];
 
     print("post:");
@@ -123,7 +123,7 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
                   onMapCreated: (GoogleMapController controller) {
                     _controller.complete(controller);
                   },
-                  markers: _generateMaker(snapshot.data!).toSet(),
+                  markers: _generateMarker(snapshot.data!).toSet(),
                   myLocationEnabled: true,
                 );
               }
