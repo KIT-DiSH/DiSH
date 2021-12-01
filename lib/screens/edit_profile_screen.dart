@@ -1,9 +1,13 @@
+import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:dish/models/User.dart';
 import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/common/simple_divider.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({
@@ -21,6 +25,7 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   String? _iconPath;
+  File? _iconFile;
   final _userNameController = TextEditingController();
   final _userIdController = TextEditingController();
   final _profileTextController = TextEditingController();
@@ -71,16 +76,40 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.all(Radius.circular(50)),
-                          child: Image.network(
-                            "https://i.pinimg.com/474x/9b/47/a0/9b47a023caf29f113237d61170f34ad9.jpg",
-                            fit: BoxFit.cover,
-                          ),
+                          child: _iconFile == null
+                              ? Image.network(
+                                  _iconPath!,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.file(
+                                  _iconFile!,
+                                  fit: BoxFit.cover,
+                                ),
                         ),
                       ),
                       Spacer(),
                       GestureDetector(
                         onTap: () {
-                          // 画像を選択する処理
+                          AssetPicker.pickAssets(
+                            context,
+                            maxAssets: 1,
+                            textDelegate: JapaneseTextDelegate(),
+                            themeColor: AppColor.kPinkColor,
+                            requestType: RequestType.image,
+                          ).then(
+                            (assets) async => {
+                              if (assets != null)
+                                {
+                                  assets[0].file.then(
+                                        (file) => {
+                                          setState(() {
+                                            _iconFile = file;
+                                          })
+                                        },
+                                      )
+                                },
+                            },
+                          );
                         },
                         child: Text(
                           _changeIconLabel,
@@ -189,6 +218,49 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
+  String randomString(int length) {
+    const _randomChars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const _charsLength = _randomChars.length;
+
+    final rand = new Random();
+    final codeUnits = new List.generate(
+      length,
+      (index) {
+        final n = rand.nextInt(_charsLength);
+        return _randomChars.codeUnitAt(n);
+      },
+    );
+    return new String.fromCharCodes(codeUnits);
+  }
+
+  Future<void> _deleteOldImage(String url) async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    try {
+      storage.refFromURL(url).delete();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<String> _uploadImage(String uid, File? file) async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    try {
+      final String fileName = randomString(12);
+      print('file name: $fileName');
+
+      final TaskSnapshot putFiles =
+          await storage.ref('user_icons/').child('$fileName').putFile(file!);
+      final String downloadURL = await putFiles.ref.getDownloadURL();
+      print('downloadURL:  $downloadURL');
+
+      return downloadURL;
+    } catch (e) {
+      print(e);
+      return "";
+    }
+  }
+
   AppBar _buildAppBar(BuildContext context) {
     final String _preserveText = "保存";
 
@@ -220,7 +292,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               backgroundColor: AppColor.kPinkColor,
               padding: EdgeInsets.all(0),
             ),
-            onPressed: _clickSaveButton,
+            onPressed: () async {
+              await _clickSaveButton();
+            },
           ),
         ),
         const SizedBox(width: 12),
@@ -234,6 +308,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     String userId = _userIdController.text;
     String userName = _userNameController.text;
     String profileText = _profileTextController.text;
+
+    if (_iconFile != null) {
+      final url = await _uploadImage(widget.uid, _iconFile);
+      await _deleteOldImage(_iconPath!);
+      setState(() {
+        _iconPath = url;
+      });
+    }
 
     if (userId == user.userId &&
         userName == user.userName &&
