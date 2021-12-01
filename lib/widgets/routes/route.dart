@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dish/screens/check_places_map.dart';
@@ -51,6 +52,7 @@ class _RouteWidgetState extends State<RouteWidget> {
       Position posi = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
+      String uid = FirebaseAuth.instance.currentUser!.uid;
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -59,6 +61,8 @@ class _RouteWidgetState extends State<RouteWidget> {
               posi.latitude,
               posi.longitude,
             ),
+            uid: uid,
+            fromPost: false,
           ),
         ),
       );
