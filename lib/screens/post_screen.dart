@@ -312,7 +312,24 @@ class _PostScreenState extends State<PostScreen> {
               },
               URLs,
             );
-            if (res == "success") {
+
+            final List<String> myFollowers = await _getMyFollower(uid);
+
+            final String result = await _addPostToEach(
+              myFollowers,
+              uid,
+              _postTextController.value.text,
+              _restaurantNameController.value.text,
+              selectedLatLng,
+              {
+                "cost": costRate,
+                "mood": atmRate,
+                "taste": foodRate,
+              },
+              URLs,
+            );
+
+            if (res == "success" && result == "success") {
               print("🍥 SUCCESS");
             } else {
               print("💣 Something went wrong => $res");
@@ -346,5 +363,52 @@ class _PostScreenState extends State<PostScreen> {
         .then((value) => "success")
         .catchError((e) => "fail: $e");
     return res;
+  }
+
+  Future<List<String>> _getMyFollower(String uid) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+        .instance
+        .collection("FOLLOW_FOLLOWER")
+        .where("followee_id", isEqualTo: uid)
+        .get();
+
+    return snapshot.docs
+        .map((doc) => doc.data()["follower_id"] as String)
+        .toList();
+  }
+
+  Future<String> _addPostToEach(
+    List<String> myFollwersUids,
+    String myUid,
+    String content,
+    String restaurantName,
+    Map<String, double> location,
+    Map<String, double> evaluation,
+    List<String> imagePaths,
+  ) async {
+    String result = "success";
+    for (var uid in myFollwersUids) {
+      if (result != "success") return "fail";
+
+      CollectionReference<Map<String, dynamic>> collectionRef =
+          FirebaseFirestore.instance
+              .collection("USERS")
+              .doc(uid)
+              .collection("TIMELINE");
+      Future<String> res = collectionRef
+          .add({
+            "uid": myUid,
+            "content": content,
+            "restaurant_name": restaurantName,
+            "location": location,
+            "evaluation": evaluation,
+            "image_paths": imagePaths,
+            "timestamp": DateTime.now(),
+          })
+          .then((value) => "success")
+          .catchError((_) => "fail");
+      res.then((r) => result = r);
+    }
+    return "success";
   }
 }
