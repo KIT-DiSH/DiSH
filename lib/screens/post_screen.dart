@@ -293,10 +293,9 @@ class _PostScreenState extends State<PostScreen> {
             color: AppColor.kPinkColor,
           ),
           onPressed: () async {
-            // バリデーションをなくすために一旦コメントアウト
-            // if (_formKey.currentState!.validate()) {
-            //   Navigator.pop(context);
-            // }
+            if (!_formKey.currentState!.validate() ||
+                selectedImageFiles.isEmpty) return;
+            Navigator.pop(context);
 
             final List<String> URLs =
                 await _uploadImages(uid, selectedImageFiles);
@@ -323,7 +322,6 @@ class _PostScreenState extends State<PostScreen> {
 
             if (res == "success" && result == "success") {
               print("🍥 SUCCESS");
-              Navigator.pop(context);
             } else {
               print("💣 Something went wrong => $res");
             }
