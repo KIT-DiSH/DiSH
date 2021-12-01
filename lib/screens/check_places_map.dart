@@ -41,26 +41,26 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
           zoom: 15,
         );
         // 新しいフラグを考える必要あり
-        if (widget.uid != null) {
-          markers.add(
-            Marker(
-              markerId: MarkerId(markers.length.toString()),
-              position: widget.latLng,
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueBlue,
-              ),
-            ),
-          );
-        }
-        for (int i = 0; i < dummyPlaces.length; i++) {
-          if (widget.latLng == dummyPlaces[i]) continue;
-          markers.add(
-            Marker(
-              markerId: MarkerId((markers.length + i + 1).toString()),
-              position: dummyPlaces[i],
-            ),
-          );
-        }
+        // if (widget.uid != null) {
+        //   markers.add(
+        //     Marker(
+        //       markerId: MarkerId(markers.length.toString()),
+        //       position: widget.latLng,
+        //       icon: BitmapDescriptor.defaultMarkerWithHue(
+        //         BitmapDescriptor.hueBlue,
+        //       ),
+        //     ),
+        //   );
+        // }
+        // for (int i = 0; i < dummyPlaces.length; i++) {
+        //   if (widget.latLng == dummyPlaces[i]) continue;
+        //   markers.add(
+        //     Marker(
+        //       markerId: MarkerId((markers.length + i + 1).toString()),
+        //       position: dummyPlaces[i],
+        //     ),
+        //   );
+        // }
       },
     );
     timeline = FirebaseFirestore.instance
@@ -75,12 +75,17 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
             [for (var doc in snapshot.docs) _generatePostMap(doc)],
           ),
         );
+    print(timeline);
   }
 
   List<Marker> _generateMaker(List<PostModel> post) {
     List<Marker> markers = [];
 
+    print("post:");
+    print(post);
+
     if (widget.uid != null) {
+      print("aaa");
       markers.add(
         Marker(
           markerId: MarkerId(markers.length.toString()),
@@ -92,7 +97,9 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
       );
     }
     for (int i = 0; i < post.length; i++) {
+      print("bbb");
       if (widget.latLng == post[i].map) continue;
+      print("ccc");
       markers.add(
         Marker(
           markerId: MarkerId((markers.length + i + 1).toString()),
@@ -127,6 +134,8 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
         "taste": data["evaluation"]["taste"] + 0.0,
       },
     );
+    print("info: ");
+    print(postInfo);
     return postInfo;
   }
 
