@@ -46,7 +46,7 @@ Future<String> _unfollowUser(String followerUid, String followeeUid) async {
     final String res = await doc.reference
         .delete()
         .then((_) => "success")
-        .onError((error, stackTrace) => "fail");
+        .catchError((_) => "fail");
     if (res == "fail") return "fail";
   }
   return 'success';
