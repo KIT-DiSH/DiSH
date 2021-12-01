@@ -318,10 +318,12 @@ class _PostScreenState extends State<PostScreen> {
 
             final List<String> myFollowers = await _getMyFollower(uid);
 
-            final String result = await _addPostToEach(myFollowers, postDict);
+            final String result =
+                await _addPostToEach(myFollowers + [uid], postDict);
 
             if (res == "success" && result == "success") {
               print("🍥 SUCCESS");
+              Navigator.pop(context);
             } else {
               print("💣 Something went wrong => $res");
             }
@@ -345,11 +347,11 @@ class _PostScreenState extends State<PostScreen> {
     QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
         .instance
         .collection("FOLLOW_FOLLOWER")
-        .where("followee_id", isEqualTo: uid)
+        .where("follower_id", isEqualTo: uid)
         .get();
 
     return snapshot.docs
-        .map((doc) => doc.data()["follower_id"] as String)
+        .map((doc) => doc.data()["followee_id"] as String)
         .toList();
   }
 
