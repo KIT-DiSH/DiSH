@@ -294,38 +294,37 @@ class _PostScreenState extends State<PostScreen> {
           ),
           onPressed: () async {
             // バリデーションをなくすために一旦コメントアウト
-            // if (_formKey.currentState!.validate()) {
-            //   Navigator.pop(context);
-            // }
-
-            final List<String> URLs =
-                await _uploadImages(uid, selectedImageFiles);
-
-            final Map<String, dynamic> postDict = {
-              "uid": uid,
-              "content": _postTextController.value.text,
-              "restaurant_name": _restaurantNameController.value.text,
-              "location": selectedLatLng,
-              "evaluation": {
-                "cost": costRate,
-                "mood": atmRate,
-                "taste": foodRate,
-              },
-              "image_paths": URLs,
-              "timestamp": DateTime.now(),
-            };
-            final String res = await addNewPost(uid, postDict);
-
-            final List<String> myFollowers = await _getMyFollower(uid);
-
-            final String result =
-                await _addPostToEach(myFollowers + [uid], postDict);
-
-            if (res == "success" && result == "success") {
-              print("🍥 SUCCESS");
+            if (_formKey.currentState!.validate()) {
               Navigator.pop(context);
-            } else {
-              print("💣 Something went wrong => $res");
+
+              final List<String> URLs =
+                  await _uploadImages(uid, selectedImageFiles);
+
+              final Map<String, dynamic> postDict = {
+                "uid": uid,
+                "content": _postTextController.value.text,
+                "restaurant_name": _restaurantNameController.value.text,
+                "location": selectedLatLng,
+                "evaluation": {
+                  "cost": costRate,
+                  "mood": atmRate,
+                  "taste": foodRate,
+                },
+                "image_paths": URLs,
+                "timestamp": DateTime.now(),
+              };
+              final String res = await addNewPost(uid, postDict);
+
+              final List<String> myFollowers = await _getMyFollower(uid);
+
+              final String result =
+                  await _addPostToEach(myFollowers + [uid], postDict);
+
+              if (res == "success" && result == "success") {
+                print("🍥 SUCCESS");
+              } else {
+                print("💣 Something went wrong => $res");
+              }
             }
           },
         ),
