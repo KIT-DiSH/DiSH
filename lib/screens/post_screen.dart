@@ -300,34 +300,25 @@ class _PostScreenState extends State<PostScreen> {
 
             final List<String> URLs =
                 await _uploadImages(uid, selectedImageFiles);
-            final String res = await addNewPost(
-              uid,
-              _postTextController.value.text,
-              _restaurantNameController.value.text,
-              selectedLatLng,
-              {
+
+            final Map<String, dynamic> postDict = {
+              "uid": uid,
+              "content": _postTextController.value.text,
+              "restaurant_name": _restaurantNameController.value.text,
+              "location": selectedLatLng,
+              "evaluation": {
                 "cost": costRate,
                 "mood": atmRate,
                 "taste": foodRate,
               },
-              URLs,
-            );
+              "image_paths": URLs,
+              "timestamp": DateTime.now(),
+            };
+            final String res = await addNewPost(uid, postDict);
 
             final List<String> myFollowers = await _getMyFollower(uid);
 
-            final String result = await _addPostToEach(
-              myFollowers,
-              uid,
-              _postTextController.value.text,
-              _restaurantNameController.value.text,
-              selectedLatLng,
-              {
-                "cost": costRate,
-                "mood": atmRate,
-                "taste": foodRate,
-              },
-              URLs,
-            );
+            final String result = await _addPostToEach(myFollowers, postDict);
 
             if (res == "success" && result == "success") {
               print("🍥 SUCCESS");
@@ -340,26 +331,11 @@ class _PostScreenState extends State<PostScreen> {
     );
   }
 
-  Future<String> addNewPost(
-    String uid,
-    String content,
-    String restaurantName,
-    Map<String, double> location,
-    Map<String, double> evaluation,
-    List<String> imagePaths,
-  ) async {
+  Future<String> addNewPost(String uid, Map<String, dynamic> postDict) async {
     CollectionReference<Map<String, dynamic>> collectionRef =
         FirebaseFirestore.instance.collection("POSTS");
     Future<String> res = collectionRef
-        .add({
-          "uid": uid,
-          "content": content,
-          "restaurant_name": restaurantName,
-          "location": location,
-          "evaluation": evaluation,
-          "image_paths": imagePaths,
-          "timestamp": DateTime.now(),
-        })
+        .add(postDict)
         .then((value) => "success")
         .catchError((e) => "fail: $e");
     return res;
@@ -378,14 +354,7 @@ class _PostScreenState extends State<PostScreen> {
   }
 
   Future<String> _addPostToEach(
-    List<String> myFollwersUids,
-    String myUid,
-    String content,
-    String restaurantName,
-    Map<String, double> location,
-    Map<String, double> evaluation,
-    List<String> imagePaths,
-  ) async {
+      List<String> myFollwersUids, Map<String, dynamic> postDict) async {
     String result = "success";
     for (var uid in myFollwersUids) {
       if (result != "success") return "fail";
@@ -395,18 +364,11 @@ class _PostScreenState extends State<PostScreen> {
               .collection("USERS")
               .doc(uid)
               .collection("TIMELINE");
-      collectionRef
-          .add({
-            "uid": myUid,
-            "content": content,
-            "restaurant_name": restaurantName,
-            "location": location,
-            "evaluation": evaluation,
-            "image_paths": imagePaths,
-            "timestamp": DateTime.now(),
-          })
-          .then((_) { result = "success" })
-          .catchError((_) { result = "fail" });
+      collectionRef.add(postDict).then((_) {
+        result = "success";
+      }).catchError((_) {
+        result = "fail";
+      });
     }
     return "success";
   }
