@@ -395,7 +395,7 @@ class _PostScreenState extends State<PostScreen> {
               .collection("USERS")
               .doc(uid)
               .collection("TIMELINE");
-      Future<String> res = collectionRef
+      collectionRef
           .add({
             "uid": myUid,
             "content": content,
@@ -405,9 +405,8 @@ class _PostScreenState extends State<PostScreen> {
             "image_paths": imagePaths,
             "timestamp": DateTime.now(),
           })
-          .then((_) => "success")
-          .catchError((_) => "fail");
-      res.then((r) => result = r);
+          .then((_) { result = "success" })
+          .catchError((_) { result = "fail" });
     }
     return "success";
   }
