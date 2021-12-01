@@ -87,11 +87,8 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
   Future<PinModel> _generatePinModel(
       QueryDocumentSnapshot<Map<String, dynamic>> doc) async {
     Map<String, dynamic> data = doc.data();
-    // User user = await _getUser(data["uid"]);
     PinModel postInfo = PinModel(
-      id: "item.id",
       restName: data["restaurant_name"],
-      // タグの扱いは後ほど考え直す必要あり
       imageUrls: data["image_paths"].cast<String>() as List<String>,
       map: LatLng(
         data["location"]["lat"] + 0.0,
