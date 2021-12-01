@@ -147,6 +147,50 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
               ),
             ),
           ),
+          SafeArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  child: Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12.0),
+                        child: Stack(
+                          children: [
+                            AspectRatio(
+                              aspectRatio: 16 / 9,
+                              child: Image.network(
+                                "https://firebasestorage.googleapis.com/v0/b/dish-dev-af497.appspot.com/o/post_images%2FSf9Yz7ZrQhh1wNr5hiZTv5Vwth13%2FVpziEcZdAr2F?alt=media&token=97ce0c70-a08a-4815-8715-29acb3dcd1a0",
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            Container(
+                              alignment: Alignment.bottomLeft,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 8),
+                                child: Text(
+                                  "叙々苑",
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              color: Colors.black.withOpacity(0.5),
+                              // height: double.infinity,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
