@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dish/models/User.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'package:dish/models/PostModel.dart';
-import 'package:intl/intl.dart';
+import 'package:dish/models/PinModel.dart';
 
 class CheckPlacesMap extends StatefulWidget {
   CheckPlacesMap({
@@ -29,7 +27,7 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
   // todo: initStateで変更した場所にカメラをフォーカス
   CameraPosition? currentPosition;
 
-  Stream<List<PostModel>>? timeline;
+  Stream<List<PinModel>>? timeline;
 
   @override
   initState() {
@@ -51,13 +49,13 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
         .snapshots()
         .asyncMap(
           (snapshot) => Future.wait(
-            [for (var doc in snapshot.docs) _generatePostMap(doc)],
+            [for (var doc in snapshot.docs) _generatePinModel(doc)],
           ),
         );
     print(timeline);
   }
 
-  List<Marker> _generateMaker(List<PostModel> post) {
+  List<Marker> _generateMaker(List<PinModel> post) {
     List<Marker> markers = [];
 
     print("post:");
@@ -86,50 +84,21 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
     return markers;
   }
 
-  Future<PostModel> _generatePostMap(
+  Future<PinModel> _generatePinModel(
       QueryDocumentSnapshot<Map<String, dynamic>> doc) async {
     Map<String, dynamic> data = doc.data();
-    User user = await _getUser(data["uid"]);
-    PostModel postInfo = PostModel(
+    // User user = await _getUser(data["uid"]);
+    PinModel postInfo = PinModel(
       id: "item.id",
-      content: data["content"],
       restName: data["restaurant_name"],
       // タグの扱いは後ほど考え直す必要あり
       imageUrls: data["image_paths"].cast<String>() as List<String>,
-      postUser: user,
-      date: DateFormat("yyyy/MM/dd").format(data["timestamp"].toDate()),
-      favoUsers: [],
-      comments: [],
       map: LatLng(
         data["location"]["lat"] + 0.0,
         data["location"]["lng"] + 0.0,
       ),
-      stars: {
-        "cost": data["evaluation"]["cost"] + 0.0,
-        "mood": data["evaluation"]["mood"] + 0.0,
-        "taste": data["evaluation"]["taste"] + 0.0,
-      },
     );
     return postInfo;
-  }
-
-  Future<User> _getUser(String uid) async {
-    DocumentReference userRef =
-        FirebaseFirestore.instance.collection("USERS").doc(uid);
-    DocumentSnapshot snapshot = await userRef.get();
-
-    if (!snapshot.exists) {
-      print("💣 Something went wrong");
-    }
-
-    Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-    User user = User(
-      userId: data["user_id"],
-      userName: data["user_name"],
-      profileText: data["profile_text"],
-      iconImageUrl: data["icon_path"],
-    );
-    return user;
   }
 
   @override
@@ -139,8 +108,8 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
         children: [
           StreamBuilder(
             stream: timeline,
-            builder: (BuildContext context,
-                AsyncSnapshot<List<PostModel>> snapshot) {
+            builder:
+                (BuildContext context, AsyncSnapshot<List<PinModel>> snapshot) {
               if (snapshot.data == null) {
                 return GoogleMap(
                   mapType: MapType.normal,
