@@ -58,25 +58,31 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
   List<Marker> _generateMaker(List<PinModel> posts) {
     List<Marker> markers = [];
 
-    if (widget.fromPost) {
-      markers.add(
-        Marker(
-          markerId: MarkerId(markers.length.toString()),
-          position: widget.latLng,
-          icon: BitmapDescriptor.defaultMarkerWithHue(
-            BitmapDescriptor.hueBlue,
-          ),
-        ),
-      );
-    }
     for (PinModel post in posts) {
-      if (widget.latLng == post.map) continue;
-      markers.add(
-        Marker(
-          markerId: MarkerId((markers.length).toString()),
-          position: post.map,
-        ),
-      );
+      if (widget.latLng == post.map && widget.fromPost) {
+        markers.add(
+          Marker(
+            markerId: MarkerId(markers.length.toString()),
+            position: post.map,
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+              BitmapDescriptor.hueBlue,
+            ),
+            // onTap: () {
+            //   print(post.restName);
+            // },
+          ),
+        );
+      } else {
+        markers.add(
+          Marker(
+            markerId: MarkerId((markers.length).toString()),
+            position: post.map,
+            // onTap: () {
+            //   print(post.restName);
+            // },
+          ),
+        );
+      }
     }
     return markers;
   }
