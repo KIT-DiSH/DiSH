@@ -73,7 +73,7 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
       if (widget.latLng == post.map) continue;
       markers.add(
         Marker(
-          markerId: MarkerId((markers.length + 1).toString()),
+          markerId: MarkerId((markers.length).toString()),
           position: post.map,
         ),
       );
