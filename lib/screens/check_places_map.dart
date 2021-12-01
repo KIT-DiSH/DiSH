@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dish/dummy/dummy_places.dart';
 import 'package:dish/models/User.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:dish/models/PostModel.dart';
@@ -13,11 +11,13 @@ class CheckPlacesMap extends StatefulWidget {
   CheckPlacesMap({
     Key? key,
     required this.latLng,
-    this.uid,
+    required this.uid,
+    required this.fromPost,
   });
   // のちにお店に修正
   final LatLng latLng;
-  final String? uid;
+  final String uid;
+  final bool fromPost;
 
   @override
   State<CheckPlacesMap> createState() => CheckPlacesMapState();
@@ -40,27 +40,6 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
           target: widget.latLng,
           zoom: 15,
         );
-        // 新しいフラグを考える必要あり
-        // if (widget.uid != null) {
-        //   markers.add(
-        //     Marker(
-        //       markerId: MarkerId(markers.length.toString()),
-        //       position: widget.latLng,
-        //       icon: BitmapDescriptor.defaultMarkerWithHue(
-        //         BitmapDescriptor.hueBlue,
-        //       ),
-        //     ),
-        //   );
-        // }
-        // for (int i = 0; i < dummyPlaces.length; i++) {
-        //   if (widget.latLng == dummyPlaces[i]) continue;
-        //   markers.add(
-        //     Marker(
-        //       markerId: MarkerId((markers.length + i + 1).toString()),
-        //       position: dummyPlaces[i],
-        //     ),
-        //   );
-        // }
       },
     );
     timeline = FirebaseFirestore.instance
@@ -84,8 +63,7 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
     print("post:");
     print(post);
 
-    if (widget.uid != null) {
-      print("aaa");
+    if (widget.fromPost) {
       markers.add(
         Marker(
           markerId: MarkerId(markers.length.toString()),
@@ -97,9 +75,7 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
       );
     }
     for (int i = 0; i < post.length; i++) {
-      print("bbb");
       if (widget.latLng == post[i].map) continue;
-      print("ccc");
       markers.add(
         Marker(
           markerId: MarkerId((markers.length + i + 1).toString()),
@@ -134,8 +110,6 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
         "taste": data["evaluation"]["taste"] + 0.0,
       },
     );
-    print("info: ");
-    print(postInfo);
     return postInfo;
   }
 
@@ -164,31 +138,31 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
       body: Stack(
         children: [
           StreamBuilder(
-              stream: timeline,
-              builder: (BuildContext context,
-                  AsyncSnapshot<List<PostModel>> snapshot) {
-                if (snapshot.data == null) {
-                  return GoogleMap(
-                    mapType: MapType.normal,
-                    initialCameraPosition: currentPosition!,
-                    onMapCreated: (GoogleMapController controller) {
-                      _controller.complete(controller);
-                    },
-                    // markers: _generateMaker(snapshot.data).toSet(),
-                    myLocationEnabled: true,
-                  );
-                } else {
-                  return GoogleMap(
-                    mapType: MapType.normal,
-                    initialCameraPosition: currentPosition!,
-                    onMapCreated: (GoogleMapController controller) {
-                      _controller.complete(controller);
-                    },
-                    markers: _generateMaker(snapshot.data!).toSet(),
-                    myLocationEnabled: true,
-                  );
-                }
-              }),
+            stream: timeline,
+            builder: (BuildContext context,
+                AsyncSnapshot<List<PostModel>> snapshot) {
+              if (snapshot.data == null) {
+                return GoogleMap(
+                  mapType: MapType.normal,
+                  initialCameraPosition: currentPosition!,
+                  onMapCreated: (GoogleMapController controller) {
+                    _controller.complete(controller);
+                  },
+                  myLocationEnabled: true,
+                );
+              } else {
+                return GoogleMap(
+                  mapType: MapType.normal,
+                  initialCameraPosition: currentPosition!,
+                  onMapCreated: (GoogleMapController controller) {
+                    _controller.complete(controller);
+                  },
+                  markers: _generateMaker(snapshot.data!).toSet(),
+                  myLocationEnabled: true,
+                );
+              }
+            },
+          ),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
