@@ -405,7 +405,7 @@ class _PostScreenState extends State<PostScreen> {
             "image_paths": imagePaths,
             "timestamp": DateTime.now(),
           })
-          .then((value) => "success")
+          .then((_) => "success")
           .catchError((_) => "fail");
       res.then((r) => result = r);
     }
