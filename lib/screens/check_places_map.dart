@@ -58,9 +58,6 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
   List<Marker> _generateMaker(List<PinModel> post) {
     List<Marker> markers = [];
 
-    print("post:");
-    print(post);
-
     if (widget.fromPost) {
       markers.add(
         Marker(
