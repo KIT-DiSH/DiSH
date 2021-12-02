@@ -52,7 +52,6 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
             [for (var doc in snapshot.docs) _generatePinModel(doc)],
           ),
         );
-    print(timeline);
   }
 
   List<Marker> _generateMaker(List<PinModel> posts) {
