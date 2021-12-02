@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:dish/models/User.dart';
 import 'package:dish/screens/profile_screen.dart';
@@ -9,12 +9,12 @@ class UserCard extends StatefulWidget {
   UserCard({
     Key? key,
     required this.user,
-    required this.isFollowed,
+    required this.didFollow,
     required this.myselfUid,
   }) : super(key: key);
 
   final User user;
-  bool isFollowed;
+  bool didFollow;
   final String myselfUid;
 
   @override
@@ -22,6 +22,7 @@ class UserCard extends StatefulWidget {
 }
 
 Future<String> _followUser(String followerUid, String followeeUid) async {
+  print("$followeeUid, $followerUid");
   Future<String> res =
       FirebaseFirestore.instance.collection('FOLLOW_FOLLOWER').add({
     "follower_id": followerUid,
@@ -41,13 +42,13 @@ Future<String> _unfollowUser(String followerUid, String followeeUid) async {
       .where('followee_id', isEqualTo: followeeUid)
       .get();
 
-  if (snapshot.docs.isEmpty || snapshot.docs.length != 1) return 'fail';
-
-  await FirebaseFirestore.instance
-      .collection("FOLLOW_FOLLOWER")
-      .doc(snapshot.docs[0].id)
-      .delete()
-      .catchError((e) => e);
+  for (QueryDocumentSnapshot doc in snapshot.docs) {
+    final String res = await doc.reference
+        .delete()
+        .then((_) => "success")
+        .catchError((_) => "fail");
+    if (res == "fail") return "fail";
+  }
   return 'success';
 }
 
@@ -117,7 +118,7 @@ class _UserCardState extends State<UserCard> {
             ],
           ),
           Spacer(),
-          widget.isFollowed
+          widget.didFollow
               ? Container(
                   width: 88,
                   height: 32,
@@ -140,10 +141,9 @@ class _UserCardState extends State<UserCard> {
                     onPressed: () {
                       setState(() {
                         // フォロー解除処理
-                        widget.isFollowed = false;
-                        _unfollowUser(widget.myselfUid,
-                            widget.user.uid ?? 'this must be followee uid');
+                        widget.didFollow = false;
                       });
+                      _unfollowUser(widget.user.uid!, widget.myselfUid);
                     },
                   ),
                 )
@@ -168,10 +168,9 @@ class _UserCardState extends State<UserCard> {
                     onPressed: () {
                       setState(() {
                         // フォロー処理
-                        widget.isFollowed = true;
-                        _followUser(widget.myselfUid,
-                            widget.user.uid ?? 'this must be followee uid');
+                        widget.didFollow = true;
                       });
+                      _followUser(widget.user.uid!, widget.myselfUid);
                     },
                   ),
                 ),

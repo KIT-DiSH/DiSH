@@ -293,58 +293,95 @@ class _PostScreenState extends State<PostScreen> {
             color: AppColor.kPinkColor,
           ),
           onPressed: () async {
-            // バリデーションをなくすために一旦コメントアウト
-            // if (_formKey.currentState!.validate()) {
-            //   Navigator.pop(context);
-            // }
+            if (!_formKey.currentState!.validate() ||
+                selectedImageFiles.isEmpty) return;
+            Navigator.pop(context);
 
             final List<String> URLs =
                 await _uploadImages(uid, selectedImageFiles);
-            final String res = await addNewPost(
-              uid,
-              _postTextController.value.text,
-              _restaurantNameController.value.text,
-              selectedLatLng,
-              {
+
+            final DateTime nowTime = DateTime.now();
+            final Map<String, dynamic> postDict = {
+              "uid": uid,
+              "content": _postTextController.value.text,
+              "restaurant_name": _restaurantNameController.value.text,
+              "location": selectedLatLng,
+              "evaluation": {
                 "cost": costRate,
                 "mood": atmRate,
                 "taste": foodRate,
               },
-              URLs,
-            );
-            if (res == "success") {
-              print("🍥 SUCCESS");
-            } else {
-              print("💣 Something went wrong => $res");
+              "image_paths": URLs,
+              "timestamp": nowTime,
+            };
+            final List<String> myFollowers = await _getMyFollower(uid);
+
+            final DocumentReference? postRef = await addNewPost(uid, postDict);
+            if (postRef == null) {
+              print("Reference is null");
+              return;
             }
+
+            final String result =
+                await _addPostToEach(myFollowers + [uid], postRef, nowTime);
+
+            if (result == "success")
+              print("🍥 SUCCESS");
+            else
+              print("💣 Something went wrong");
           },
         ),
       ],
     );
   }
 
-  Future<String> addNewPost(
-    String uid,
-    String content,
-    String restaurantName,
-    Map<String, double> location,
-    Map<String, double> evaluation,
-    List<String> imagePaths,
-  ) async {
+  Future<DocumentReference?> addNewPost(
+      String uid, Map<String, dynamic> postDict) async {
     CollectionReference<Map<String, dynamic>> collectionRef =
         FirebaseFirestore.instance.collection("POSTS");
-    Future<String> res = collectionRef
-        .add({
-          "uid": uid,
-          "content": content,
-          "restaurant_name": restaurantName,
-          "location": location,
-          "evaluation": evaluation,
-          "image_paths": imagePaths,
-          "timestamp": DateTime.now(),
-        })
-        .then((value) => "success")
-        .catchError((e) => "fail: $e");
-    return res;
+    Future<DocumentReference?> postRef =
+        collectionRef.add(postDict).then((ref) {
+      print("💮 Successed adding new post");
+      return ref;
+    }).catchError((error) {
+      print("💀 Failed adding new post");
+      print(error);
+    });
+    return postRef;
+  }
+
+  Future<List<String>> _getMyFollower(String uid) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+        .instance
+        .collection("FOLLOW_FOLLOWER")
+        .where("follower_id", isEqualTo: uid)
+        .get();
+
+    return snapshot.docs
+        .map((doc) => doc.data()["followee_id"] as String)
+        .toList();
+  }
+
+  Future<String> _addPostToEach(List<String> myFollwersUids,
+      DocumentReference postRef, DateTime nowTime) async {
+    String result = "success";
+    for (var uid in myFollwersUids) {
+      if (result != "success") return "fail";
+
+      CollectionReference<Map<String, dynamic>> collectionRef =
+          FirebaseFirestore.instance
+              .collection("USERS")
+              .doc(uid)
+              .collection("TIMELINE");
+      collectionRef.add({
+        "post_ref": postRef,
+        "timestamp": nowTime,
+      }).then((_) {
+        result = "success";
+      }).catchError((_) {
+        result = "fail";
+      });
+    }
+    return "success";
   }
 }

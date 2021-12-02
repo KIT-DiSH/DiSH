@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 
+import 'package:dish/models/Comment.dart';
 import 'package:dish/configs/constant_colors.dart';
 
 class CommentCard extends StatelessWidget {
-  final _userName = "UserName";
+  const CommentCard({
+    Key? key,
+    required this.commentInfo,
+  }) : super(key: key);
+
+  final Comment commentInfo;
   final _replyText = "返信する";
-  final _dateTime = "2021.08.07";
-  final _commentText =
-      "テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト";
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +37,7 @@ class CommentCard extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(50)),
               child: Image.network(
-                "https://i.pinimg.com/474x/9b/47/a0/9b47a023caf29f113237d61170f34ad9.jpg",
+                commentInfo.user.iconImageUrl,
                 fit: BoxFit.cover,
               ),
             ),
@@ -46,7 +49,7 @@ class CommentCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    _userName,
+                    commentInfo.user.userId,
                     style: TextStyle(
                       color: AppColor.kPrimaryTextColor,
                       fontWeight: FontWeight.bold,
@@ -55,7 +58,7 @@ class CommentCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    _commentText,
+                    commentInfo.content,
                     style: TextStyle(
                       fontSize: 12,
                       color: AppColor.kPrimaryTextColor,
@@ -94,7 +97,7 @@ class CommentCard extends StatelessWidget {
                       ),
                       const Spacer(),
                       Text(
-                        _dateTime,
+                        commentInfo.timestamp,
                         style: TextStyle(
                           color: AppColor.kPrimaryTextColor,
                           fontWeight: FontWeight.bold,

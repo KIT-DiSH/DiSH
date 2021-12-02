@@ -37,6 +37,7 @@ class _RouteWidgetState extends State<RouteWidget> {
     "Profile": GlobalKey<NavigatorState>(),
   };
   String _currentPage = "Home";
+  final String uid = FirebaseAuth.instance.currentUser!.uid;
 
   Future<void> _selectTab(String tabItem, int index) async {
     /* フッターを隠したいページは、bodyを切り替えずに直接pushする */
@@ -52,7 +53,6 @@ class _RouteWidgetState extends State<RouteWidget> {
       Position posi = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
-      String uid = FirebaseAuth.instance.currentUser!.uid;
       Navigator.push(
         context,
         MaterialPageRoute(

@@ -21,7 +21,7 @@ class FollowListScreen extends StatefulWidget {
 class _FollowListScreenState extends State<FollowListScreen> {
   final _title = "フォロー中";
   List<String> _followIdList = [];
-  List<User> _userList = [];
+  List<Map> _userList = [];
 
   @override
   Future<void> didChangeDependencies() async {
@@ -40,8 +40,8 @@ class _FollowListScreenState extends State<FollowListScreen> {
             if (index == _userList.length) return SimpleDivider(height: 1.0);
 
             return UserCard(
-              user: _userList[index],
-              isFollowed: true,
+              user: _userList[index]["user"],
+              didFollow: _userList[index]["didFollow"],
               myselfUid: widget.uid,
             );
           },
@@ -52,7 +52,7 @@ class _FollowListScreenState extends State<FollowListScreen> {
     );
   }
 
-  Future<User> _getUser(String uid) async {
+  Future<Map> _getUser(String uid) async {
     DocumentSnapshot<Map<String, dynamic>> snapshot =
         await FirebaseFirestore.instance.collection("USERS").doc(uid).get();
     final data = snapshot.data() as Map<String, dynamic>;
@@ -63,11 +63,12 @@ class _FollowListScreenState extends State<FollowListScreen> {
       userName: data["user_name"],
       profileText: data["profile_text"],
     );
-    return user;
+
+    return {"didFollow": true, "user": user};
   }
 
   Future<void> _setUserList(List<String> idList) async {
-    List<User> userList =
+    List<Map> userList =
         await Future.wait(idList.map((String id) => _getUser(id)));
     setState(() {
       _userList = userList;
@@ -110,16 +111,6 @@ class _FollowListScreenState extends State<FollowListScreen> {
           fontSize: 16,
         ),
       ),
-      actions: [
-        GestureDetector(
-          onTap: () {},
-          child: Icon(
-            Icons.more_horiz,
-            color: AppColor.kPrimaryTextColor,
-          ),
-        ),
-        const SizedBox(width: 12),
-      ],
     );
   }
 }

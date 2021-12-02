@@ -231,7 +231,12 @@ class _DishPostState extends State<DishPost> {
             print('コメント画面に遷移');
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => CommentScreen()),
+              MaterialPageRoute(
+                builder: (_) => CommentScreen(
+                  myUid: widget.uid,
+                  postId: widget.postInfo.id,
+                ),
+              ),
             );
           },
           child: Padding(

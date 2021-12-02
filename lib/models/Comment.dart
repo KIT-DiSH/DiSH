@@ -1,12 +1,12 @@
-// import 'package:dish/models/TimelineUser.dart';
+import 'package:dish/models/User.dart';
 
-// class Comment {
-//   final String id, content;
-//   final User user;
+class Comment {
+  final User user;
+  final String content, timestamp;
 
-//   Comment({
-//     required this.id,
-//     required this.content,
-//     required this.user,
-//   });
-// }
+  Comment({
+    required this.content,
+    required this.user,
+    required this.timestamp,
+  });
+}
