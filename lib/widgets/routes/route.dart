@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dish/screens/check_places_map.dart';
 import 'package:dish/screens/post_screen.dart';
 import 'package:dish/widgets/routes/tab_navigator.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class RouteWidget extends StatefulWidget {
   const RouteWidget({Key? key}) : super(key: key);
@@ -34,8 +37,9 @@ class _RouteWidgetState extends State<RouteWidget> {
     "Profile": GlobalKey<NavigatorState>(),
   };
   String _currentPage = "Home";
+  final String uid = FirebaseAuth.instance.currentUser!.uid;
 
-  void _selectTab(String tabItem, int index) {
+  Future<void> _selectTab(String tabItem, int index) async {
     /* フッターを隠したいページは、bodyを切り替えずに直接pushする */
     if (tabItem == "NewPost") {
       Navigator.push(
@@ -46,9 +50,21 @@ class _RouteWidgetState extends State<RouteWidget> {
       );
       return;
     } else if (tabItem == "Map") {
+      Position posi = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => CheckPlacesMap()),
+        MaterialPageRoute(
+          builder: (_) => CheckPlacesMap(
+            latLng: LatLng(
+              posi.latitude,
+              posi.longitude,
+            ),
+            uid: uid,
+            fromPost: false,
+          ),
+        ),
       );
       return;
     }
