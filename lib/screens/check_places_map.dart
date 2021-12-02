@@ -27,6 +27,8 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
   List<Marker> markers = [];
   // todo: initStateで変更した場所にカメラをフォーカス
   CameraPosition? currentPosition;
+  String? imagePath;
+  String? resName;
 
   Stream<List<PinModel>>? timeline;
 
@@ -41,6 +43,13 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
         );
       },
     );
+    // 初期Window表示
+    // if (widget.fromPost) {
+    //   setState(() {
+    //     imagePath = post.imageUrls[0];
+    //     resName = post.restName;
+    //   });
+    // }
     timeline = FirebaseFirestore.instance
         .collection("USERS")
         .doc(widget.uid)
@@ -56,7 +65,7 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
   }
 
   List<Marker> _generateMarker(List<PinModel> posts) {
-    List<Marker> markers = [];
+    // List<Marker> markers = [];
 
     for (PinModel post in posts) {
       if (widget.latLng == post.map && widget.fromPost) {
@@ -67,9 +76,12 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
             icon: BitmapDescriptor.defaultMarkerWithHue(
               BitmapDescriptor.hueBlue,
             ),
-            // onTap: () {
-            //   print(post.restName);
-            // },
+            onTap: () {
+              setState(() {
+                imagePath = post.imageUrls[0];
+                resName = post.restName;
+              });
+            },
           ),
         );
       } else {
@@ -78,6 +90,17 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
             markerId: MarkerId(post.id),
             position: post.map,
             onTap: () {
+              final index = posts.indexWhere((post2) => post2.id == post.id);
+              setState(() {
+                imagePath = post.imageUrls[0];
+                resName = post.restName;
+              });
+              setState(() {
+                markers[index] = markers[index].copyWith(
+                    iconParam: BitmapDescriptor.defaultMarkerWithHue(
+                  BitmapDescriptor.hueBlue,
+                ));
+              });
               // print(markers
               //     .where((item) => item.markerId == MarkerId(post.id))
               //     .toList()[0]
@@ -89,13 +112,6 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
               //     .restName);
               // print(posts.indexWhere((post2) => post2.id == post.id));
 
-              // final index = posts.indexWhere((post2) => post2.id == post.id);
-              // setState(() {
-              //   markers[index] = markers[index].copyWith(
-              //       iconParam: BitmapDescriptor.defaultMarkerWithHue(
-              //     BitmapDescriptor.hueBlue,
-              //   ));
-              // });
               // print("aaa");
             },
           ),
@@ -170,11 +186,12 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
               ),
             ),
           ),
-          DisplayImage(
-            imagePath:
-                "https://firebasestorage.googleapis.com/v0/b/dish-dev-af497.appspot.com/o/post_images%2FSf9Yz7ZrQhh1wNr5hiZTv5Vwth13%2FrN7McBnmwSnu?alt=media&token=58fb8a14-822f-4180-a4f1-9a6d2d0178f4",
-            resName: "叙々苑",
-          ),
+          imagePath != null
+              ? DisplayImage(
+                  imagePath: imagePath!,
+                  resName: resName!,
+                )
+              : Container(),
         ],
       ),
     );
