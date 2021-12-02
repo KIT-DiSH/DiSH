@@ -96,7 +96,7 @@ bool checkValue(place) {
 
 Future<List<Place>> execPlacesAPI({
   required LatLng latlng,
-  int radius = 100,
+  int radius = 500,
   String type = "restaurant",
   String language = "ja",
 }) async {
