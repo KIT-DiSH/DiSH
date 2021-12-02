@@ -170,7 +170,7 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
                             Container(
                               alignment: Alignment.bottomLeft,
                               child: Padding(
-                                padding: const EdgeInsets.only(left: 8),
+                                padding: const EdgeInsets.only(left: 12),
                                 child: Text(
                                   "叙々苑",
                                   style: TextStyle(
@@ -180,7 +180,6 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
                                 ),
                               ),
                               color: Colors.black.withOpacity(0.5),
-                              // height: double.infinity,
                             ),
                           ],
                         ),
