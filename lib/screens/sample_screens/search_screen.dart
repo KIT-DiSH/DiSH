@@ -19,7 +19,7 @@ class _SearchScreenState extends State<SearchScreen> {
         // The search area here
         title: Container(
           width: double.infinity,
-          height: 40,
+          height: 60,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(5),
@@ -59,7 +59,7 @@ class _SearchScreenState extends State<SearchScreen> {
     QuerySnapshot<Map<String, dynamic>> snapshots = await FirebaseFirestore
         .instance
         .collection("USERS")
-        .where("user_name", isEqualTo: searchText)
+        .where("user_id", isEqualTo: searchText)
         .get();
 
     return snapshots.docs.map((doc) {
