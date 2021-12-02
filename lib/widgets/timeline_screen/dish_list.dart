@@ -62,28 +62,34 @@ class _DiSHListState extends State<DiSHList> {
 
   Future<DishPost> _generateDiSHPost(
       QueryDocumentSnapshot<Map<String, dynamic>> doc) async {
-    Map<String, dynamic> data = doc.data();
-    User user = await _getUser(data["uid"]);
+    final Map<String, dynamic> data = doc.data();
+    final DocumentReference postRef = data["post_ref"];
+    final Map<String, dynamic> postRawData = await postRef
+        .get()
+        .then((snapshot) => snapshot.data() as Map<String, dynamic>);
+
+    User user = await _getUser(postRawData["uid"]);
+
     PostModel postInfo = PostModel(
-      id: doc.id,
-      content: data["content"],
-      restName: data["restaurant_name"],
-      imageUrls: data["image_paths"].cast<String>() as List<String>,
+      id: postRef.id,
+      content: postRawData["content"],
+      restName: postRawData["restaurant_name"],
+      imageUrls: postRawData["image_paths"].cast<String>() as List<String>,
       postUser: user,
-      date: DateFormat("yyyy/MM/dd").format(data["timestamp"].toDate()),
+      date: DateFormat("yyyy/MM/dd").format(postRawData["timestamp"].toDate()),
       favoUsers: [],
       comments: [],
       map: LatLng(
-        data["location"]["lat"] + 0.0,
-        data["location"]["lng"] + 0.0,
+        postRawData["location"]["lat"] + 0.0,
+        postRawData["location"]["lng"] + 0.0,
       ),
       stars: {
-        "cost": data["evaluation"]["cost"] + 0.0,
-        "mood": data["evaluation"]["mood"] + 0.0,
-        "taste": data["evaluation"]["taste"] + 0.0,
+        "cost": postRawData["evaluation"]["cost"] + 0.0,
+        "mood": postRawData["evaluation"]["mood"] + 0.0,
+        "taste": postRawData["evaluation"]["taste"] + 0.0,
       },
     );
-    return DishPost(uid: data["uid"], postInfo: postInfo);
+    return DishPost(uid: postRawData["uid"], postInfo: postInfo);
   }
 
   Future<User> _getUser(String uid) async {

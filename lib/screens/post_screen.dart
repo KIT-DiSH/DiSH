@@ -300,6 +300,7 @@ class _PostScreenState extends State<PostScreen> {
             final List<String> URLs =
                 await _uploadImages(uid, selectedImageFiles);
 
+            final DateTime nowTime = DateTime.now();
             final Map<String, dynamic> postDict = {
               "uid": uid,
               "content": _postTextController.value.text,
@@ -311,34 +312,42 @@ class _PostScreenState extends State<PostScreen> {
                 "taste": foodRate,
               },
               "image_paths": URLs,
-              "timestamp": DateTime.now(),
+              "timestamp": nowTime,
             };
-            final String res = await addNewPost(uid, postDict);
-
             final List<String> myFollowers = await _getMyFollower(uid);
 
-            final String result =
-                await _addPostToEach(myFollowers + [uid], postDict);
-
-            if (res == "success" && result == "success") {
-              print("🍥 SUCCESS");
-            } else {
-              print("💣 Something went wrong => $res");
+            final DocumentReference? postRef = await addNewPost(uid, postDict);
+            if (postRef == null) {
+              print("Reference is null");
+              return;
             }
+
+            final String result =
+                await _addPostToEach(myFollowers + [uid], postRef, nowTime);
+
+            if (result == "success")
+              print("🍥 SUCCESS");
+            else
+              print("💣 Something went wrong");
           },
         ),
       ],
     );
   }
 
-  Future<String> addNewPost(String uid, Map<String, dynamic> postDict) async {
+  Future<DocumentReference?> addNewPost(
+      String uid, Map<String, dynamic> postDict) async {
     CollectionReference<Map<String, dynamic>> collectionRef =
         FirebaseFirestore.instance.collection("POSTS");
-    Future<String> res = collectionRef
-        .add(postDict)
-        .then((value) => "success")
-        .catchError((e) => "fail: $e");
-    return res;
+    Future<DocumentReference?> postRef =
+        collectionRef.add(postDict).then((ref) {
+      print("💮 Successed adding new post");
+      return ref;
+    }).catchError((error) {
+      print("💀 Failed adding new post");
+      print(error);
+    });
+    return postRef;
   }
 
   Future<List<String>> _getMyFollower(String uid) async {
@@ -353,8 +362,8 @@ class _PostScreenState extends State<PostScreen> {
         .toList();
   }
 
-  Future<String> _addPostToEach(
-      List<String> myFollwersUids, Map<String, dynamic> postDict) async {
+  Future<String> _addPostToEach(List<String> myFollwersUids,
+      DocumentReference postRef, DateTime nowTime) async {
     String result = "success";
     for (var uid in myFollwersUids) {
       if (result != "success") return "fail";
@@ -364,7 +373,10 @@ class _PostScreenState extends State<PostScreen> {
               .collection("USERS")
               .doc(uid)
               .collection("TIMELINE");
-      collectionRef.add(postDict).then((_) {
+      collectionRef.add({
+        "post_ref": postRef,
+        "timestamp": nowTime,
+      }).then((_) {
         result = "success";
       }).catchError((_) {
         result = "fail";
