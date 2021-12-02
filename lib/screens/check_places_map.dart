@@ -90,12 +90,16 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
   Future<PinModel> _generatePinModel(
       QueryDocumentSnapshot<Map<String, dynamic>> doc) async {
     Map<String, dynamic> data = doc.data();
+    final DocumentReference postRef = data["post_ref"];
+    final Map<String, dynamic> postRawData = await postRef
+        .get()
+        .then((snapshot) => snapshot.data() as Map<String, dynamic>);
     PinModel postInfo = PinModel(
-      restName: data["restaurant_name"],
-      imageUrls: data["image_paths"].cast<String>() as List<String>,
+      restName: postRawData["restaurant_name"],
+      imageUrls: postRawData["image_paths"].cast<String>() as List<String>,
       map: LatLng(
-        data["location"]["lat"] + 0.0,
-        data["location"]["lng"] + 0.0,
+        postRawData["location"]["lat"] + 0.0,
+        postRawData["location"]["lng"] + 0.0,
       ),
     );
     return postInfo;
@@ -149,7 +153,7 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
           ),
           DisplayImage(
             imagePath:
-                "https://firebasestorage.googleapis.com/v0/b/dish-dev-af497.appspot.com/o/post_images%2FSf9Yz7ZrQhh1wNr5hiZTv5Vwth13%2FVpziEcZdAr2F?alt=media&token=97ce0c70-a08a-4815-8715-29acb3dcd1a0",
+                "https://firebasestorage.googleapis.com/v0/b/dish-dev-af497.appspot.com/o/post_images%2FSf9Yz7ZrQhh1wNr5hiZTv5Vwth13%2FrN7McBnmwSnu?alt=media&token=58fb8a14-822f-4180-a4f1-9a6d2d0178f4",
             resName: "叙々苑",
           ),
         ],
