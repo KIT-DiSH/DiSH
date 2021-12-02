@@ -300,6 +300,7 @@ class _PostScreenState extends State<PostScreen> {
             final List<String> URLs =
                 await _uploadImages(uid, selectedImageFiles);
 
+            final DateTime nowTime = DateTime.now();
             final Map<String, dynamic> postDict = {
               "uid": uid,
               "content": _postTextController.value.text,
@@ -311,7 +312,7 @@ class _PostScreenState extends State<PostScreen> {
                 "taste": foodRate,
               },
               "image_paths": URLs,
-              "timestamp": DateTime.now(),
+              "timestamp": nowTime,
             };
             final List<String> myFollowers = await _getMyFollower(uid);
 
@@ -322,7 +323,7 @@ class _PostScreenState extends State<PostScreen> {
             }
 
             final String result =
-                await _addPostToEach(myFollowers + [uid], postRef);
+                await _addPostToEach(myFollowers + [uid], postRef, nowTime);
 
             if (result == "success")
               print("🍥 SUCCESS");
@@ -361,8 +362,8 @@ class _PostScreenState extends State<PostScreen> {
         .toList();
   }
 
-  Future<String> _addPostToEach(
-      List<String> myFollwersUids, DocumentReference postRef) async {
+  Future<String> _addPostToEach(List<String> myFollwersUids,
+      DocumentReference postRef, DateTime nowTime) async {
     String result = "success";
     for (var uid in myFollwersUids) {
       if (result != "success") return "fail";
@@ -372,7 +373,10 @@ class _PostScreenState extends State<PostScreen> {
               .collection("USERS")
               .doc(uid)
               .collection("TIMELINE");
-      collectionRef.add({"post_ref": postRef}).then((_) {
+      collectionRef.add({
+        "post_ref": postRef,
+        "timestamp": nowTime,
+      }).then((_) {
         result = "success";
       }).catchError((_) {
         result = "fail";
