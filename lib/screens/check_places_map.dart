@@ -24,8 +24,6 @@ class CheckPlacesMap extends StatefulWidget {
 
 class CheckPlacesMapState extends State<CheckPlacesMap> {
   Completer<GoogleMapController> _controller = Completer();
-  List<Marker> markers = [];
-  List<bool> isSelectedPin = [];
   int blueIndex = -1;
   // todo: initStateで変更した場所にカメラをフォーカス
   CameraPosition? currentPosition;
@@ -67,12 +65,11 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
   }
 
   List<Marker> _generateMarker(List<PinModel> posts) {
-    // List<Marker> markers = [];
+    List<Marker> markers = [];
 
     for (PinModel post in posts) {
       final index = posts.indexWhere((post2) => post2.id == post.id);
 
-      isSelectedPin.add(false);
       if (widget.latLng == post.map && widget.fromPost) {
         markers.add(
           Marker(
@@ -89,7 +86,6 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
                 resName = post.restName;
               });
               setState(() {
-                // isSelectedPin[index] = true;
                 blueIndex = index;
               });
             },
@@ -112,27 +108,8 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
                 resName = post.restName;
               });
               setState(() {
-                // isSelectedPin[index] = true;
                 blueIndex = index;
               });
-              // setState(() {
-              //   markers[index] = markers[index].copyWith(
-              //       iconParam: BitmapDescriptor.defaultMarkerWithHue(
-              //     BitmapDescriptor.hueBlue,
-              //   ));
-              // });
-              // print(markers
-              //     .where((item) => item.markerId == MarkerId(post.id))
-              //     .toList()[0]
-              //     .position);
-
-              // print(posts
-              //     .where((post2) => post2.id == post.id)
-              //     .toList()[0]
-              //     .restName);
-              // print(posts.indexWhere((post2) => post2.id == post.id));
-
-              // print("aaa");
             },
           ),
         );
@@ -190,7 +167,6 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
                     setState(() {
                       blueIndex = -1;
                     });
-                    print("ピンじゃないよ！");
                   },
                   markers: _generateMarker(snapshot.data!).toSet(),
                   myLocationEnabled: true,
