@@ -50,6 +50,7 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
         backgroundColor: AppColor.kWhiteColor,
+        elevation: 0.0,
       ),
     );
   }
