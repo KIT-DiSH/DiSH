@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dish/widgets/check_places_map/display_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import 'package:dish/models/PostModel.dart';
+import 'package:dish/widgets/check_places_map/display_image.dart';
 import 'package:dish/models/PinModel.dart';
 
 class CheckPlacesMap extends StatefulWidget {
@@ -11,12 +12,12 @@ class CheckPlacesMap extends StatefulWidget {
     Key? key,
     required this.latLng,
     required this.uid,
-    required this.fromPost,
+    this.postInfo,
   });
   // のちにお店に修正
   final LatLng latLng;
   final String uid;
-  final bool fromPost;
+  PostModel? postInfo;
 
   @override
   State<CheckPlacesMap> createState() => CheckPlacesMapState();
@@ -24,8 +25,7 @@ class CheckPlacesMap extends StatefulWidget {
 
 class CheckPlacesMapState extends State<CheckPlacesMap> {
   Completer<GoogleMapController> _controller = Completer();
-  int blueIndex = -1;
-  // todo: initStateで変更した場所にカメラをフォーカス
+  int redIndex = -1;
   CameraPosition? currentPosition;
   String? imagePath;
   String? resName;
@@ -44,12 +44,12 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
       },
     );
     // 初期Window表示
-    // if (widget.fromPost) {
-    //   setState(() {
-    //     imagePath = post.imageUrls[0];
-    //     resName = post.restName;
-    //   });
-    // }
+    if (widget.postInfo != null) {
+      setState(() {
+        imagePath = widget.postInfo!.imageUrls[0];
+        resName = widget.postInfo!.restName;
+      });
+    }
     timeline = FirebaseFirestore.instance
         .collection("USERS")
         .doc(widget.uid)
@@ -69,51 +69,33 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
 
     for (PinModel post in posts) {
       final index = posts.indexWhere((post2) => post2.id == post.id);
+      bool initRedPin = false;
 
-      if (widget.latLng == post.map && widget.fromPost) {
-        markers.add(
-          Marker(
-            markerId: MarkerId(post.id),
-            position: post.map,
-            icon: blueIndex == index
-                ? BitmapDescriptor.defaultMarkerWithHue(
-                    BitmapDescriptor.hueBlue,
-                  )
-                : BitmapDescriptor.defaultMarker,
-            onTap: () {
-              setState(() {
-                imagePath = post.imageUrls[0];
-                resName = post.restName;
-              });
-              setState(() {
-                blueIndex = index;
-              });
-            },
-          ),
-        );
-      } else {
-        bool isSelected = blueIndex == index;
-        markers.add(
-          Marker(
-            alpha: isSelected ? 1 : 0.95,
-            markerId: MarkerId(post.id),
-            position: post.map,
-            icon: BitmapDescriptor.defaultMarkerWithHue(
-              isSelected ? BitmapDescriptor.hueRed : 20.0,
-            ),
-            onTap: () {
-              final index = posts.indexWhere((post2) => post2.id == post.id);
-              setState(() {
-                imagePath = post.imageUrls[0];
-                resName = post.restName;
-              });
-              setState(() {
-                blueIndex = index;
-              });
-            },
-          ),
-        );
+      // 投稿からマップに飛んだ時に、その投稿のピンを初期で赤ピンにする
+      // ほんとは[redIndex = index]としたいがここでsetStateがが使えないためこんな感じです。
+      if (widget.latLng == post.map && widget.postInfo != null) {
+        initRedPin = true;
       }
+      bool isSelected = redIndex == index;
+      markers.add(
+        Marker(
+          alpha: isSelected ? 1 : 0.95,
+          markerId: MarkerId(post.id),
+          position: post.map,
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            isSelected ? BitmapDescriptor.hueRed : 20.0,
+          ),
+          onTap: () {
+            setState(() {
+              imagePath = post.imageUrls[0];
+              resName = post.restName;
+            });
+            setState(() {
+              redIndex = index;
+            });
+          },
+        ),
+      );
     }
     return markers;
   }
@@ -165,7 +147,9 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
                   },
                   onTap: (_) {
                     setState(() {
-                      blueIndex = -1;
+                      redIndex = -1;
+                      imagePath = null;
+                      resName = null;
                     });
                   },
                   markers: _generateMarker(snapshot.data!).toSet(),
@@ -189,7 +173,7 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
               ),
             ),
           ),
-          blueIndex != -1
+          imagePath != null
               ? DisplayImage(
                   imagePath: imagePath!,
                   resName: resName!,

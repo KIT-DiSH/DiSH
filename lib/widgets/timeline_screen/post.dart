@@ -170,7 +170,7 @@ class _DishPostState extends State<DishPost> {
                         return CheckPlacesMap(
                           latLng: widget.postInfo.map,
                           uid: widget.uid,
-                          fromPost: true,
+                          postInfo: widget.postInfo,
                         );
                       }),
                     );

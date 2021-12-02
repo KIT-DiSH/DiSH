@@ -62,7 +62,6 @@ class _RouteWidgetState extends State<RouteWidget> {
               posi.longitude,
             ),
             uid: uid,
-            fromPost: false,
           ),
         ),
       );
