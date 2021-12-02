@@ -1,10 +1,23 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:dish/models/User.dart';
+import 'package:dish/models/Comment.dart';
 import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/common/simple_divider.dart';
 import 'package:dish/widgets/comment_screen/comment_card.dart';
 
 class CommentScreen extends StatefulWidget {
+  const CommentScreen({
+    Key? key,
+    required this.myUid,
+    required this.postId,
+  }) : super(key: key);
+
+  final String myUid;
+  final String postId;
+
   @override
   _CommentScreenState createState() => _CommentScreenState();
 }
@@ -14,11 +27,18 @@ class _CommentScreenState extends State<CommentScreen> {
   final _postButtonText = "投稿する";
   final _hintText = "コメントを追加";
   final _commentController = TextEditingController();
-  List _commentCards = [
-    CommentCard(),
-    CommentCard(),
-  ];
-  final _isMyComment = true;
+  Stream<List<CommentCard>>? commentStream;
+
+  @override
+  void initState() {
+    commentStream = FirebaseFirestore.instance
+        .collection("COMMENTS")
+        .where("post_id", isEqualTo: widget.postId)
+        .snapshots()
+        .asyncMap((snapshot) => Future.wait(
+            [for (var doc in snapshot.docs) _generateCommentCard(doc)]));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,108 +47,159 @@ class _CommentScreenState extends State<CommentScreen> {
       body: SafeArea(
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: _commentCards.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    // 便宜上 _isMyComment という変数を用いている
-                    // データ構造に基づいて後々変更する
-                    return _isMyComment
-                        ? Dismissible(
-                            child: _commentCards[index],
-                            background: Container(
-                              alignment: Alignment.centerRight,
-                              padding: EdgeInsets.symmetric(horizontal: 30),
-                              color: Colors.redAccent,
-                              child: Icon(
-                                Icons.delete,
-                                color: Colors.white,
-                              ),
+          child: SafeArea(
+            child: Column(
+              children: [
+                Expanded(
+                  child: StreamBuilder<List<CommentCard>>(
+                    stream: commentStream,
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<CommentCard>> snapshot) {
+                      if (snapshot.data == null) {
+                        print("📝 Fetch comment now...");
+                        return Center(child: CircularProgressIndicator());
+                      }
+
+                      final List<CommentCard> commentCardList = snapshot.data!;
+                      if (commentCardList.length < 1) {
+                        return Center(
+                          child: Text("コメントを書いてみましょう"),
+                        );
+                      }
+
+                      return ListView.separated(
+                        itemCount: commentCardList.length + 1,
+                        separatorBuilder: (_, __) => SimpleDivider(height: 1.0),
+                        itemBuilder: (context, index) {
+                          if (index == commentCardList.length)
+                            return SimpleDivider(height: 1.0);
+
+                          return widget.myUid ==
+                                  commentCardList[index].commentInfo.user.uid
+                              ? Dismissible(
+                                  child: commentCardList[index],
+                                  background: Container(
+                                    alignment: Alignment.centerRight,
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 30),
+                                    color: Colors.redAccent,
+                                    child: Icon(
+                                      Icons.delete,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  direction: DismissDirection.endToStart,
+                                  key: ValueKey<CommentCard>(
+                                      commentCardList[index]),
+                                  onDismissed: (DismissDirection direction) {
+                                    setState(() {
+                                      commentCardList.removeAt(index);
+                                    });
+                                  },
+                                  confirmDismiss: _confirmDelete,
+                                )
+                              : commentCardList[index];
+                        },
+                      );
+                    },
+                  ),
+                ),
+                SimpleDivider(height: 1.0),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 16,
+                  ),
+                  height: 70,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _commentController,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 8,
+                          maxLength: 100,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.all(0),
+                            hintText: _hintText,
+                            hintStyle: TextStyle(
+                              color:
+                                  AppColor.kPrimaryTextColor.withOpacity(0.6),
                             ),
-                            direction: DismissDirection.endToStart,
-                            key: ValueKey<CommentCard>(_commentCards[index]),
-                            onDismissed: (DismissDirection direction) {
-                              setState(() {
-                                _commentCards.removeAt(index);
-                              });
-                            },
-                            confirmDismiss: _confirmDelete,
-                          )
-                        : _commentCards[index];
-                  },
-                ),
-              ),
-              SimpleDivider(height: 1.0),
-              Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 16,
-                ),
-                height: 70,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _commentController,
-                        keyboardType: TextInputType.multiline,
-                        maxLines: 8,
-                        maxLength: 100,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.all(0),
-                          hintText: _hintText,
-                          hintStyle: TextStyle(
-                            color: AppColor.kPrimaryTextColor.withOpacity(0.6),
+                            counterText: "",
                           ),
-                          counterText: "",
+                          style: TextStyle(fontSize: 12),
                         ),
-                        style: TextStyle(fontSize: 12),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    SizedBox(
-                      height: 35,
-                      width: 70,
-                      child: TextButton(
-                        child: Text(
-                          _postButtonText,
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.white,
+                      const SizedBox(width: 8),
+                      SizedBox(
+                        height: 35,
+                        width: 70,
+                        child: TextButton(
+                          child: Text(
+                            _postButtonText,
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.white,
+                            ),
                           ),
+                          style: TextButton.styleFrom(
+                            primary: Colors.white,
+                            backgroundColor: _commentController.text != ""
+                                ? AppColor.kPinkColor
+                                : AppColor.kPinkColor.withOpacity(0.6),
+                            padding: EdgeInsets.all(0),
+                          ),
+                          onPressed: _commentController.text != ""
+                              ? () {
+                                  // コメント投稿処理を記述
+                                  setState(() {
+                                    // 仮のコード
+                                  });
+                                  print("Add new comment: " +
+                                      _commentController.text);
+                                  _commentController.text = "";
+                                  FocusScope.of(context).unfocus();
+                                }
+                              : null,
                         ),
-                        style: TextButton.styleFrom(
-                          primary: Colors.white,
-                          backgroundColor: _commentController.text != ""
-                              ? AppColor.kPinkColor
-                              : AppColor.kPinkColor.withOpacity(0.6),
-                          padding: EdgeInsets.all(0),
-                        ),
-                        onPressed: _commentController.text != ""
-                            ? () {
-                                // コメント投稿処理を記述
-                                setState(() {
-                                  // 仮のコード
-                                  _commentCards.add(CommentCard());
-                                });
-                                print("Add new comment: " +
-                                    _commentController.text);
-                                _commentController.text = "";
-                                FocusScope.of(context).unfocus();
-                              }
-                            : null,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  Future<CommentCard> _generateCommentCard(
+      QueryDocumentSnapshot<Map<String, dynamic>> doc) async {
+    final data = doc.data();
+    final User user = await _getUser(data["uid"]);
+    final Comment commentInfo = Comment(
+      user: user,
+      content: data["content"],
+      timestamp: DateFormat("yyyy/MM/dd").format(data["timestamp"].toDate()),
+    );
+    return CommentCard(commentInfo: commentInfo);
+  }
+
+  Future<User> _getUser(String uid) async {
+    DocumentSnapshot<Map<String, dynamic>> snapshot =
+        await FirebaseFirestore.instance.collection("USERS").doc(uid).get();
+    final data = snapshot.data() as Map<String, dynamic>;
+    User user = User(
+      uid: uid,
+      iconImageUrl: data["icon_path"],
+      userId: data["user_id"],
+      userName: data["user_name"],
+      profileText: data["profile_text"],
+    );
+    return user;
   }
 
   Future<bool> _confirmDelete(DismissDirection direction) async {
