@@ -25,6 +25,8 @@ class CheckPlacesMap extends StatefulWidget {
 class CheckPlacesMapState extends State<CheckPlacesMap> {
   Completer<GoogleMapController> _controller = Completer();
   List<Marker> markers = [];
+  List<bool> isSelectedPin = [];
+  int blueIndex = -1;
   // todo: initStateで変更した場所にカメラをフォーカス
   CameraPosition? currentPosition;
   String? imagePath;
@@ -68,27 +70,41 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
     // List<Marker> markers = [];
 
     for (PinModel post in posts) {
+      final index = posts.indexWhere((post2) => post2.id == post.id);
+
+      isSelectedPin.add(false);
       if (widget.latLng == post.map && widget.fromPost) {
         markers.add(
           Marker(
             markerId: MarkerId(post.id),
             position: post.map,
-            icon: BitmapDescriptor.defaultMarkerWithHue(
-              BitmapDescriptor.hueBlue,
-            ),
+            icon: blueIndex == index
+                ? BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueBlue,
+                  )
+                : BitmapDescriptor.defaultMarker,
             onTap: () {
               setState(() {
                 imagePath = post.imageUrls[0];
                 resName = post.restName;
               });
+              setState(() {
+                // isSelectedPin[index] = true;
+                blueIndex = index;
+              });
             },
           ),
         );
       } else {
+        bool isSelected = blueIndex == index;
         markers.add(
           Marker(
+            alpha: isSelected ? 1 : 0.95,
             markerId: MarkerId(post.id),
             position: post.map,
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+              isSelected ? BitmapDescriptor.hueRed : 20.0,
+            ),
             onTap: () {
               final index = posts.indexWhere((post2) => post2.id == post.id);
               setState(() {
@@ -96,11 +112,15 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
                 resName = post.restName;
               });
               setState(() {
-                markers[index] = markers[index].copyWith(
-                    iconParam: BitmapDescriptor.defaultMarkerWithHue(
-                  BitmapDescriptor.hueBlue,
-                ));
+                // isSelectedPin[index] = true;
+                blueIndex = index;
               });
+              // setState(() {
+              //   markers[index] = markers[index].copyWith(
+              //       iconParam: BitmapDescriptor.defaultMarkerWithHue(
+              //     BitmapDescriptor.hueBlue,
+              //   ));
+              // });
               // print(markers
               //     .where((item) => item.markerId == MarkerId(post.id))
               //     .toList()[0]
@@ -162,8 +182,15 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
                 return GoogleMap(
                   mapType: MapType.normal,
                   initialCameraPosition: currentPosition!,
+                  myLocationButtonEnabled: false,
                   onMapCreated: (GoogleMapController controller) {
                     _controller.complete(controller);
+                  },
+                  onTap: (_) {
+                    setState(() {
+                      blueIndex = -1;
+                    });
+                    print("ピンじゃないよ！");
                   },
                   markers: _generateMarker(snapshot.data!).toSet(),
                   myLocationEnabled: true,
@@ -186,7 +213,7 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
               ),
             ),
           ),
-          imagePath != null
+          blueIndex != -1
               ? DisplayImage(
                   imagePath: imagePath!,
                   resName: resName!,
