@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dish/widgets/check_places_map/display_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -146,58 +147,10 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
               ),
             ),
           ),
-          DisplayImage(),
-        ],
-      ),
-    );
-  }
-}
-
-class DisplayImage extends StatelessWidget {
-  const DisplayImage({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            child: Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12.0),
-                  child: Stack(
-                    children: [
-                      AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: Image.network(
-                          "https://firebasestorage.googleapis.com/v0/b/dish-dev-af497.appspot.com/o/post_images%2FSf9Yz7ZrQhh1wNr5hiZTv5Vwth13%2FVpziEcZdAr2F?alt=media&token=97ce0c70-a08a-4815-8715-29acb3dcd1a0",
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.bottomLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 12),
-                          child: Text(
-                            "叙々苑",
-                            style: TextStyle(
-                              fontSize: 24,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        color: Colors.black.withOpacity(0.5),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+          DisplayImage(
+            imagePath:
+                "https://firebasestorage.googleapis.com/v0/b/dish-dev-af497.appspot.com/o/post_images%2FSf9Yz7ZrQhh1wNr5hiZTv5Vwth13%2FVpziEcZdAr2F?alt=media&token=97ce0c70-a08a-4815-8715-29acb3dcd1a0",
+            resName: "叙々苑",
           ),
         ],
       ),
