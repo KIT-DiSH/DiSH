@@ -62,7 +62,7 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
       if (widget.latLng == post.map && widget.fromPost) {
         markers.add(
           Marker(
-            markerId: MarkerId(markers.length.toString()),
+            markerId: MarkerId(post.id),
             position: post.map,
             icon: BitmapDescriptor.defaultMarkerWithHue(
               BitmapDescriptor.hueBlue,
@@ -75,11 +75,29 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
       } else {
         markers.add(
           Marker(
-            markerId: MarkerId((markers.length).toString()),
+            markerId: MarkerId(post.id),
             position: post.map,
-            // onTap: () {
-            //   print(post.restName);
-            // },
+            onTap: () {
+              // print(markers
+              //     .where((item) => item.markerId == MarkerId(post.id))
+              //     .toList()[0]
+              //     .position);
+
+              // print(posts
+              //     .where((post2) => post2.id == post.id)
+              //     .toList()[0]
+              //     .restName);
+              // print(posts.indexWhere((post2) => post2.id == post.id));
+
+              // final index = posts.indexWhere((post2) => post2.id == post.id);
+              // setState(() {
+              //   markers[index] = markers[index].copyWith(
+              //       iconParam: BitmapDescriptor.defaultMarkerWithHue(
+              //     BitmapDescriptor.hueBlue,
+              //   ));
+              // });
+              // print("aaa");
+            },
           ),
         );
       }
@@ -95,6 +113,7 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
         .get()
         .then((snapshot) => snapshot.data() as Map<String, dynamic>);
     PinModel postInfo = PinModel(
+      id: postRef.id,
       restName: postRawData["restaurant_name"],
       imageUrls: postRawData["image_paths"].cast<String>() as List<String>,
       map: LatLng(
