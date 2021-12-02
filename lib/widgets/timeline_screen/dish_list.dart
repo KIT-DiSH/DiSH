@@ -65,7 +65,7 @@ class _DiSHListState extends State<DiSHList> {
     Map<String, dynamic> data = doc.data();
     User user = await _getUser(data["uid"]);
     PostModel postInfo = PostModel(
-      id: "item.id",
+      id: doc.id,
       content: data["content"],
       restName: data["restaurant_name"],
       imageUrls: data["image_paths"].cast<String>() as List<String>,
