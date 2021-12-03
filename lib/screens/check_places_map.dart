@@ -25,7 +25,7 @@ class CheckPlacesMap extends StatefulWidget {
 
 class CheckPlacesMapState extends State<CheckPlacesMap> {
   Completer<GoogleMapController> _controller = Completer();
-  int redIndex = -1;
+  int redIndex = -2;
   CameraPosition? currentPosition;
   String? imagePath;
   String? resName;
@@ -76,7 +76,8 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
       if (widget.latLng == post.map && widget.postInfo != null) {
         initRedPin = true;
       }
-      bool isSelected = redIndex == index;
+      bool isInitRedPin = initRedPin && redIndex == -2;
+      bool isSelected = (redIndex == index) || isInitRedPin;
       markers.add(
         Marker(
           alpha: isSelected ? 1 : 0.95,
@@ -89,8 +90,6 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
             setState(() {
               imagePath = post.imageUrls[0];
               resName = post.restName;
-            });
-            setState(() {
               redIndex = index;
             });
           },
