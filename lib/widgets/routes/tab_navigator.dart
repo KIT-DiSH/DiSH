@@ -5,7 +5,7 @@ import 'package:dish/screens/post_screen.dart';
 import 'package:dish/screens/profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dish/screens/timeline_screen.dart';
-import 'package:dish/screens/sample_screens/search_screen.dart';
+import 'package:dish/screens/search_screen.dart';
 
 class TabNavigator extends StatelessWidget {
   TabNavigator({
