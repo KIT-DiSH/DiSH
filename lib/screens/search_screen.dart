@@ -14,42 +14,49 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        // The search area here
-        title: Container(
-          width: double.infinity,
-          height: 40,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: Center(
-            child: TextField(
-              controller: _searchController,
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(
-                prefixIcon: IconButton(
-                  icon: Icon(Icons.search),
-                  onPressed: () async {
-                    print("🔍searching user...");
-                    final result = await _searchUser(_searchController.text);
-                    print(result);
-                  },
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          // The search area here
+          title: Container(
+            width: double.infinity,
+            height: 40,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Center(
+              child: TextField(
+                controller: _searchController,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                  prefixIcon: IconButton(
+                    icon: Icon(Icons.search),
+                    splashColor: AppColor.kWhiteColor,
+                    highlightColor: AppColor.kWhiteColor,
+                    onPressed: () async {
+                      print("🔍searching user...");
+                      final result = await _searchUser(_searchController.text);
+                      print(result);
+                    },
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.clear),
+                    splashColor: AppColor.kWhiteColor,
+                    highlightColor: AppColor.kWhiteColor,
+                    onPressed: () {
+                      _searchController.text = "";
+                    },
+                  ),
+                  hintText: 'ユーザーを検索',
+                  border: InputBorder.none,
                 ),
-                suffixIcon: IconButton(
-                  icon: Icon(Icons.clear),
-                  onPressed: () {
-                    _searchController.text = "";
-                  },
-                ),
-                hintText: 'ユーザーを検索',
-                border: InputBorder.none,
               ),
             ),
           ),
+          backgroundColor: AppColor.kWhiteColor,
         ),
-        backgroundColor: AppColor.kWhiteColor,
       ),
     );
   }
