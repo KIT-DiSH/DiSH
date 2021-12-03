@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import 'package:dish/models/PostModel.dart';
+import 'package:dish/widgets/check_places_map/display_image.dart';
 import 'package:dish/models/PinModel.dart';
 
 class CheckPlacesMap extends StatefulWidget {
@@ -10,12 +12,12 @@ class CheckPlacesMap extends StatefulWidget {
     Key? key,
     required this.latLng,
     required this.uid,
-    required this.fromPost,
+    this.postInfo,
   });
   // のちにお店に修正
   final LatLng latLng;
   final String uid;
-  final bool fromPost;
+  PostModel? postInfo;
 
   @override
   State<CheckPlacesMap> createState() => CheckPlacesMapState();
@@ -23,9 +25,10 @@ class CheckPlacesMap extends StatefulWidget {
 
 class CheckPlacesMapState extends State<CheckPlacesMap> {
   Completer<GoogleMapController> _controller = Completer();
-  List<Marker> markers = [];
-  // todo: initStateで変更した場所にカメラをフォーカス
+  int redIndex = -2;
   CameraPosition? currentPosition;
+  String? imagePath;
+  String? resName;
 
   Stream<List<PinModel>>? timeline;
 
@@ -40,6 +43,13 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
         );
       },
     );
+    // 初期Window表示
+    if (widget.postInfo != null) {
+      setState(() {
+        imagePath = widget.postInfo!.imageUrls[0];
+        resName = widget.postInfo!.restName;
+      });
+    }
     timeline = FirebaseFirestore.instance
         .collection("USERS")
         .doc(widget.uid)
@@ -52,32 +62,37 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
             [for (var doc in snapshot.docs) _generatePinModel(doc)],
           ),
         );
-    print(timeline);
   }
 
-  List<Marker> _generateMarker(List<PinModel> post) {
+  List<Marker> _generateMarker(List<PinModel> posts) {
     List<Marker> markers = [];
 
-    print("post:");
-    print(post);
+    for (PinModel post in posts) {
+      final index = posts.indexWhere((post2) => post2.id == post.id);
+      bool initRedPin = false;
 
-    if (widget.fromPost) {
+      // 投稿からマップに飛んだ時に、その投稿のピンを初期で赤ピンにする
+      // ほんとは[redIndex = index]としたいがここでsetStateがが使えないためこんな感じです。
+      if (widget.latLng == post.map && widget.postInfo != null) {
+        initRedPin = true;
+      }
+      bool isInitRedPin = initRedPin && redIndex == -2;
+      bool isSelected = (redIndex == index) || isInitRedPin;
       markers.add(
         Marker(
-          markerId: MarkerId(markers.length.toString()),
-          position: widget.latLng,
+          alpha: isSelected ? 1 : 0.95,
+          markerId: MarkerId(post.id),
+          position: post.map,
           icon: BitmapDescriptor.defaultMarkerWithHue(
-            BitmapDescriptor.hueBlue,
+            isSelected ? BitmapDescriptor.hueRed : 20.0,
           ),
-        ),
-      );
-    }
-    for (int i = 0; i < post.length; i++) {
-      if (widget.latLng == post[i].map) continue;
-      markers.add(
-        Marker(
-          markerId: MarkerId((markers.length + i + 1).toString()),
-          position: post[i].map,
+          onTap: () {
+            setState(() {
+              imagePath = post.imageUrls[0];
+              resName = post.restName;
+              redIndex = index;
+            });
+          },
         ),
       );
     }
@@ -87,12 +102,17 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
   Future<PinModel> _generatePinModel(
       QueryDocumentSnapshot<Map<String, dynamic>> doc) async {
     Map<String, dynamic> data = doc.data();
+    final DocumentReference postRef = data["post_ref"];
+    final Map<String, dynamic> postRawData = await postRef
+        .get()
+        .then((snapshot) => snapshot.data() as Map<String, dynamic>);
     PinModel postInfo = PinModel(
-      restName: data["restaurant_name"],
-      imageUrls: data["image_paths"].cast<String>() as List<String>,
+      id: postRef.id,
+      restName: postRawData["restaurant_name"],
+      imageUrls: postRawData["image_paths"].cast<String>() as List<String>,
       map: LatLng(
-        data["location"]["lat"] + 0.0,
-        data["location"]["lng"] + 0.0,
+        postRawData["location"]["lat"] + 0.0,
+        postRawData["location"]["lng"] + 0.0,
       ),
     );
     return postInfo;
@@ -120,8 +140,16 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
                 return GoogleMap(
                   mapType: MapType.normal,
                   initialCameraPosition: currentPosition!,
+                  myLocationButtonEnabled: false,
                   onMapCreated: (GoogleMapController controller) {
                     _controller.complete(controller);
+                  },
+                  onTap: (_) {
+                    setState(() {
+                      redIndex = -1;
+                      imagePath = null;
+                      resName = null;
+                    });
                   },
                   markers: _generateMarker(snapshot.data!).toSet(),
                   myLocationEnabled: true,
@@ -144,6 +172,12 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
               ),
             ),
           ),
+          imagePath != null
+              ? DisplayImage(
+                  imagePath: imagePath!,
+                  resName: resName!,
+                )
+              : Container(),
         ],
       ),
     );
