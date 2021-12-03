@@ -14,66 +14,67 @@ class UserCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 28,
-        vertical: 12,
-      ),
-      decoration: BoxDecoration(color: Color(0xFFFBFBFB)),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (_) => ProfileScreen(uid: user.uid!)),
-              );
-            },
-            child: Container(
-              height: 45,
-              width: 45,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: AppColor.kPinkColor,
-                  width: 2,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => ProfileScreen(uid: user.uid!)),
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: 28,
+          vertical: 12,
+        ),
+        decoration: BoxDecoration(color: Color(0xFFFBFBFB)),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              child: Container(
+                height: 45,
+                width: 45,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColor.kPinkColor,
+                    width: 2,
+                  ),
                 ),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(50)),
-                child: Image.network(
-                  user.iconImageUrl,
-                  fit: BoxFit.cover,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(50)),
+                  child: Image.network(
+                    user.iconImageUrl,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                user.userName,
-                style: TextStyle(
-                  color: AppColor.kPrimaryTextColor,
-                  fontSize: 12,
+            const SizedBox(width: 12),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  user.userName,
+                  style: TextStyle(
+                    color: AppColor.kPrimaryTextColor,
+                    fontSize: 12,
+                  ),
                 ),
-              ),
-              Text(
-                user.userId,
-                style: TextStyle(
-                  color: AppColor.kPrimaryTextColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
+                Text(
+                  user.userId,
+                  style: TextStyle(
+                    color: AppColor.kPrimaryTextColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
