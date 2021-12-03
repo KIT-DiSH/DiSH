@@ -42,14 +42,18 @@ class PostCard extends StatelessWidget {
         child: Column(
           children: [
             // 投稿画像
-            ClipRRect(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(12),
-                topRight: Radius.circular(12),
-              ),
-              child: Image.network(
-                post.postImageUrls[0],
-                fit: BoxFit.cover,
+            SizedBox(
+              height: _cardWidth,
+              width: _cardWidth,
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
+                ),
+                child: Image.network(
+                  post.postImageUrls[0],
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             const SizedBox(height: 8),
