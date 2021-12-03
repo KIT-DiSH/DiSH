@@ -116,7 +116,8 @@ class _DishPostState extends State<DishPost> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (_) => ProfileScreen(uid: widget.uid)),
+                      builder: (_) => ProfileScreen(uid: widget.uid),
+                    ),
                   );
                 },
                 child: Container(
