@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dish/configs/constant_colors.dart';
 
+import 'package:dish/models/User.dart';
+import 'package:dish/widgets/common/simple_divider.dart';
+import 'package:dish/widgets/search_screen/user_card.dart';
+
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
 
@@ -11,6 +15,7 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final _searchController = TextEditingController();
+  List<User> _searchResult = [];
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +43,9 @@ class _SearchScreenState extends State<SearchScreen> {
                     onPressed: () async {
                       print("🔍searching user...");
                       final result = await _searchUser(_searchController.text);
-                      print(result);
+                      setState(() {
+                        _searchResult = result;
+                      });
                     },
                   ),
                   suffixIcon: IconButton(
@@ -47,6 +54,9 @@ class _SearchScreenState extends State<SearchScreen> {
                     highlightColor: AppColor.kWhiteColor,
                     onPressed: () {
                       _searchController.text = "";
+                      setState(() {
+                        _searchResult = [];
+                      });
                     },
                   ),
                   hintText: 'ユーザーを検索',
@@ -58,11 +68,25 @@ class _SearchScreenState extends State<SearchScreen> {
           backgroundColor: AppColor.kWhiteColor,
           elevation: 0.0,
         ),
+        body: SafeArea(
+          child: ListView.separated(
+            itemBuilder: (context, index) {
+              if (index == _searchResult.length)
+                return SimpleDivider(height: 1.0);
+
+              return UserCard(
+                user: _searchResult[index],
+              );
+            },
+            separatorBuilder: (_, __) => SimpleDivider(height: 1.0),
+            itemCount: _searchResult.length + 1,
+          ),
+        ),
       ),
     );
   }
 
-  Future<List<String>> _searchUser(String searchText) async {
+  Future<List<User>> _searchUser(String searchText) async {
     QuerySnapshot<Map<String, dynamic>> snapshots = await FirebaseFirestore
         .instance
         .collection("USERS")
@@ -70,8 +94,13 @@ class _SearchScreenState extends State<SearchScreen> {
         .get();
 
     return snapshots.docs.map((doc) {
-      // 将来的にはユーザーの情報を返す感じになる
-      return doc.data()["user_name"] as String;
+      return User(
+        uid: doc.id,
+        userId: doc.data()["user_id"],
+        userName: doc.data()["user_name"],
+        profileText: doc.data()["profile_text"],
+        iconImageUrl: doc.data()["icon_path"],
+      );
     }).toList();
   }
 }
