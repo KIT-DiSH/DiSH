@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:dish/models/Comment.dart';
+import 'package:dish/screens/profile_screen.dart';
 import 'package:dish/configs/constant_colors.dart';
 
 class CommentCard extends StatelessWidget {
@@ -23,22 +24,32 @@ class CommentCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // アイコン
-          Container(
-            height: 35,
-            width: 35,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColor.kPinkColor,
-                width: 2,
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) =>
+                      ProfileScreen(uid: commentInfo.user.uid!),
+                ),
+              );
+            },
+            child: Container(
+              height: 35,
+              width: 35,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: AppColor.kPinkColor,
+                  width: 2,
+                ),
               ),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(50)),
-              child: Image.network(
-                commentInfo.user.iconImageUrl,
-                fit: BoxFit.cover,
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(50)),
+                child: Image.network(
+                  commentInfo.user.iconImageUrl,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
