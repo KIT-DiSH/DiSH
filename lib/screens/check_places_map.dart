@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dish/models/User.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -29,6 +30,8 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
   CameraPosition? currentPosition;
   String? imagePath;
   String? resName;
+  String? postId;
+  User? postUser;
 
   Stream<List<PinModel>>? timeline;
 
@@ -48,6 +51,8 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
       setState(() {
         imagePath = widget.postInfo!.imageUrls[0];
         resName = widget.postInfo!.restName;
+        postId = widget.postInfo!.id;
+        postUser = widget.postInfo!.postUser;
       });
     }
     timeline = FirebaseFirestore.instance
@@ -172,10 +177,12 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
               ),
             ),
           ),
-          imagePath != null
+          postUser != null
               ? DisplayImage(
                   imagePath: imagePath!,
                   resName: resName!,
+                  postId: postId!,
+                  postUser: postUser!,
                 )
               : Container(),
         ],
