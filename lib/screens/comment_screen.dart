@@ -91,10 +91,16 @@ class _CommentScreenState extends State<CommentScreen> {
                                 direction: DismissDirection.endToStart,
                                 key: ValueKey<CommentCard>(
                                     commentCardList[index]),
-                                onDismissed: (DismissDirection direction) {
-                                  setState(() {
-                                    commentCardList.removeAt(index);
-                                  });
+                                onDismissed:
+                                    (DismissDirection direction) async {
+                                  final String res = await _deleteComment(
+                                    commentCardList[index].commentInfo.id,
+                                  );
+
+                                  if (res == "success")
+                                    print("💮 Successed delete comment");
+                                  else
+                                    print("🤧 Failed delete comment");
                                 },
                                 confirmDismiss: _confirmDelete,
                               )
@@ -207,11 +213,22 @@ class _CommentScreenState extends State<CommentScreen> {
     return res;
   }
 
+  Future<String> _deleteComment(String commentId) async {
+    final String res = await FirebaseFirestore.instance
+        .collection("COMMENTS")
+        .doc(commentId)
+        .delete()
+        .then((_) => "success")
+        .catchError((_) => "fail");
+    return res;
+  }
+
   Future<CommentCard> _generateCommentCard(
       QueryDocumentSnapshot<Map<String, dynamic>> doc) async {
     final data = doc.data();
     final User user = await _getUser(data["uid"]);
     final Comment commentInfo = Comment(
+      id: doc.id,
       user: user,
       content: data["content"],
       timestamp: DateFormat("yyyy/MM/dd").format(data["timestamp"].toDate()),
