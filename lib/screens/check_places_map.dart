@@ -95,6 +95,8 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
             setState(() {
               imagePath = post.imageUrls[0];
               resName = post.restName;
+              postId = post.id;
+              postUser = post.user;
               redIndex = index;
             });
           },
@@ -111,6 +113,9 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
     final Map<String, dynamic> postRawData = await postRef
         .get()
         .then((snapshot) => snapshot.data() as Map<String, dynamic>);
+
+    final user = await _getUser(postRawData["uid"]);
+
     PinModel postInfo = PinModel(
       id: postRef.id,
       restName: postRawData["restaurant_name"],
@@ -119,8 +124,29 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
         postRawData["location"]["lat"] + 0.0,
         postRawData["location"]["lng"] + 0.0,
       ),
+      user: user,
     );
     return postInfo;
+  }
+
+  Future<User> _getUser(String uid) async {
+    DocumentReference userRef =
+        FirebaseFirestore.instance.collection("USERS").doc(uid);
+    DocumentSnapshot snapshot = await userRef.get();
+
+    if (!snapshot.exists) {
+      print("💣 Something went wrong");
+    }
+
+    Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+    User user = User(
+      uid: uid,
+      userId: data["user_id"],
+      userName: data["user_name"],
+      profileText: data["profile_text"],
+      iconImageUrl: data["icon_path"],
+    );
+    return user;
   }
 
   @override
