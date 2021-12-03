@@ -57,7 +57,10 @@ class _DishPostState extends State<DishPost> {
                   itemCount: widget.postInfo.imageUrls.length,
                   itemBuilder: (context, index, realIndex) {
                     final url = widget.postInfo.imageUrls[index];
-                    return buildImage(context, url, index);
+                    return SizedBox(
+                      width: _width,
+                      child: buildImage(context, url, index),
+                    );
                   },
                 ),
                 Positioned(
