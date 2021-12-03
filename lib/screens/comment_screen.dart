@@ -27,6 +27,7 @@ class _CommentScreenState extends State<CommentScreen> {
   final _postButtonText = "投稿する";
   final _hintText = "コメントを追加";
   final _commentController = TextEditingController();
+  bool _isEmptyComment = true;
   Stream<List<CommentCard>>? commentStream;
 
   @override
@@ -34,6 +35,7 @@ class _CommentScreenState extends State<CommentScreen> {
     commentStream = FirebaseFirestore.instance
         .collection("COMMENTS")
         .where("post_id", isEqualTo: widget.postId)
+        .orderBy("timestamp", descending: false)
         .snapshots()
         .asyncMap((snapshot) => Future.wait(
             [for (var doc in snapshot.docs) _generateCommentCard(doc)]));
@@ -44,136 +46,165 @@ class _CommentScreenState extends State<CommentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(context),
-      body: SafeArea(
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: SafeArea(
-            child: Column(
-              children: [
-                Expanded(
-                  child: StreamBuilder<List<CommentCard>>(
-                    stream: commentStream,
-                    builder: (BuildContext context,
-                        AsyncSnapshot<List<CommentCard>> snapshot) {
-                      if (snapshot.data == null) {
-                        print("📝 Fetch comment now...");
-                        return Center(child: CircularProgressIndicator());
-                      }
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: StreamBuilder<List<CommentCard>>(
+                  stream: commentStream,
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<CommentCard>> snapshot) {
+                    if (snapshot.data == null) {
+                      print("📝 Fetch comment now...");
+                      return Center(child: CircularProgressIndicator());
+                    }
 
-                      final List<CommentCard> commentCardList = snapshot.data!;
-                      if (commentCardList.length < 1) {
-                        return Center(
-                          child: Text("コメントを書いてみましょう"),
-                        );
-                      }
-
-                      return ListView.separated(
-                        itemCount: commentCardList.length + 1,
-                        separatorBuilder: (_, __) => SimpleDivider(height: 1.0),
-                        itemBuilder: (context, index) {
-                          if (index == commentCardList.length)
-                            return SimpleDivider(height: 1.0);
-
-                          return widget.myUid ==
-                                  commentCardList[index].commentInfo.user.uid
-                              ? Dismissible(
-                                  child: commentCardList[index],
-                                  background: Container(
-                                    alignment: Alignment.centerRight,
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 30),
-                                    color: Colors.redAccent,
-                                    child: Icon(
-                                      Icons.delete,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  direction: DismissDirection.endToStart,
-                                  key: ValueKey<CommentCard>(
-                                      commentCardList[index]),
-                                  onDismissed: (DismissDirection direction) {
-                                    setState(() {
-                                      commentCardList.removeAt(index);
-                                    });
-                                  },
-                                  confirmDismiss: _confirmDelete,
-                                )
-                              : commentCardList[index];
-                        },
+                    final List<CommentCard> commentCardList = snapshot.data!;
+                    if (commentCardList.length < 1) {
+                      return Center(
+                        child: Text("コメントを書いてみましょう"),
                       );
-                    },
-                  ),
-                ),
-                SimpleDivider(height: 1.0),
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 16,
-                  ),
-                  height: 70,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _commentController,
-                          keyboardType: TextInputType.multiline,
-                          maxLines: 8,
-                          maxLength: 100,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.all(0),
-                            hintText: _hintText,
-                            hintStyle: TextStyle(
-                              color:
-                                  AppColor.kPrimaryTextColor.withOpacity(0.6),
-                            ),
-                            counterText: "",
-                          ),
-                          style: TextStyle(fontSize: 12),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      SizedBox(
-                        height: 35,
-                        width: 70,
-                        child: TextButton(
-                          child: Text(
-                            _postButtonText,
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: Colors.white,
-                            ),
-                          ),
-                          style: TextButton.styleFrom(
-                            primary: Colors.white,
-                            backgroundColor: _commentController.text != ""
-                                ? AppColor.kPinkColor
-                                : AppColor.kPinkColor.withOpacity(0.6),
-                            padding: EdgeInsets.all(0),
-                          ),
-                          onPressed: _commentController.text != ""
-                              ? () {
-                                  // コメント投稿処理を記述
+                    }
+
+                    return ListView.separated(
+                      itemCount: commentCardList.length + 1,
+                      separatorBuilder: (_, __) => SimpleDivider(height: 1.0),
+                      itemBuilder: (context, index) {
+                        if (index == commentCardList.length)
+                          return SimpleDivider(height: 1.0);
+
+                        return widget.myUid ==
+                                commentCardList[index].commentInfo.user.uid
+                            ? Dismissible(
+                                child: commentCardList[index],
+                                background: Container(
+                                  alignment: Alignment.centerRight,
+                                  padding: EdgeInsets.symmetric(horizontal: 30),
+                                  color: Colors.redAccent,
+                                  child: Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                direction: DismissDirection.endToStart,
+                                key: ValueKey<CommentCard>(
+                                    commentCardList[index]),
+                                onDismissed: (DismissDirection direction) {
                                   setState(() {
-                                    // 仮のコード
+                                    commentCardList.removeAt(index);
                                   });
-                                  print("Add new comment: " +
-                                      _commentController.text);
-                                  _commentController.text = "";
-                                  FocusScope.of(context).unfocus();
-                                }
-                              : null,
-                        ),
-                      ),
-                    ],
-                  ),
+                                },
+                                confirmDismiss: _confirmDelete,
+                              )
+                            : commentCardList[index];
+                      },
+                    );
+                  },
                 ),
-              ],
-            ),
+              ),
+              SimpleDivider(height: 1.0),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 16,
+                ),
+                height: 70,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _commentController,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 8,
+                        maxLength: 100,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.all(0),
+                          hintText: _hintText,
+                          hintStyle: TextStyle(
+                            color: AppColor.kPrimaryTextColor.withOpacity(0.6),
+                          ),
+                          counterText: "",
+                        ),
+                        onChanged: (text) {
+                          setState(() {
+                            _isEmptyComment = text.isEmpty;
+                          });
+                        },
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    SizedBox(
+                      height: 35,
+                      width: 70,
+                      child: TextButton(
+                        child: Text(
+                          _postButtonText,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                          primary: Colors.white,
+                          backgroundColor: !_isEmptyComment
+                              ? AppColor.kPinkColor
+                              : AppColor.kPinkColor.withOpacity(0.6),
+                          padding: EdgeInsets.all(0),
+                        ),
+                        onPressed: !_isEmptyComment
+                            ? () async {
+                                final String res = await _addNewComment(
+                                  widget.myUid,
+                                  widget.postId,
+                                  _commentController.text,
+                                );
+
+                                FocusScope.of(context).unfocus();
+
+                                if (res == "fail") {
+                                  print("💣 Failed add comment");
+                                  return;
+                                }
+
+                                print("👼 SUCCESSED ADD COMMENT");
+                                _commentController.text = "";
+                                setState(() {
+                                  _isEmptyComment = true;
+                                });
+                              }
+                            : null,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
+  }
+
+  Future<String> _addNewComment(
+    String uid,
+    String postId,
+    String content,
+  ) async {
+    final String res = await FirebaseFirestore.instance
+        .collection("COMMENTS")
+        .add({
+          "post_id": postId,
+          "uid": uid,
+          "content": content,
+          "timestamp": DateTime.now(),
+        })
+        .then((_) => "success")
+        .catchError((_) => "fail");
+    return res;
   }
 
   Future<CommentCard> _generateCommentCard(
@@ -228,28 +259,25 @@ class _CommentScreenState extends State<CommentScreen> {
     );
   }
 
-  PreferredSize _buildAppBar(BuildContext context) {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(50.0),
-      child: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 1.0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      centerTitle: true,
+      backgroundColor: Colors.white,
+      elevation: 1.0,
+      leading: IconButton(
+        icon: const Icon(
+          Icons.arrow_back_ios,
+          color: Colors.black,
         ),
-        title: Text(
-          _title,
-          style: TextStyle(
-            color: AppColor.kPrimaryTextColor,
-            fontSize: 16,
-          ),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
+      title: Text(
+        _title,
+        style: TextStyle(
+          color: AppColor.kPrimaryTextColor,
+          fontSize: 16,
         ),
       ),
     );

@@ -24,8 +24,8 @@ class CommentCard extends StatelessWidget {
         children: [
           // アイコン
           Container(
-            height: 30,
-            width: 30,
+            height: 35,
+            width: 35,
             decoration: BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
@@ -42,7 +42,7 @@ class CommentCard extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 12),
           Flexible(
             child: Container(
               child: Column(
@@ -53,14 +53,14 @@ class CommentCard extends StatelessWidget {
                     style: TextStyle(
                       color: AppColor.kPrimaryTextColor,
                       fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                      fontSize: 13,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     commentInfo.content,
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 14,
                       color: AppColor.kPrimaryTextColor,
                     ),
                   ),
@@ -101,7 +101,7 @@ class CommentCard extends StatelessWidget {
                         style: TextStyle(
                           color: AppColor.kPrimaryTextColor,
                           fontWeight: FontWeight.bold,
-                          fontSize: 11,
+                          fontSize: 12,
                         ),
                       ),
                     ],
