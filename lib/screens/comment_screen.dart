@@ -27,6 +27,7 @@ class _CommentScreenState extends State<CommentScreen> {
   final _postButtonText = "投稿する";
   final _hintText = "コメントを追加";
   final _commentController = TextEditingController();
+  bool _isEmptyComment = true;
   Stream<List<CommentCard>>? commentStream;
 
   @override
@@ -34,6 +35,7 @@ class _CommentScreenState extends State<CommentScreen> {
     commentStream = FirebaseFirestore.instance
         .collection("COMMENTS")
         .where("post_id", isEqualTo: widget.postId)
+        .orderBy("timestamp", descending: false)
         .snapshots()
         .asyncMap((snapshot) => Future.wait(
             [for (var doc in snapshot.docs) _generateCommentCard(doc)]));
@@ -126,6 +128,11 @@ class _CommentScreenState extends State<CommentScreen> {
                           ),
                           counterText: "",
                         ),
+                        onChanged: (text) {
+                          setState(() {
+                            _isEmptyComment = text.isEmpty;
+                          });
+                        },
                         style: TextStyle(fontSize: 14),
                       ),
                     ),
@@ -143,12 +150,12 @@ class _CommentScreenState extends State<CommentScreen> {
                         ),
                         style: TextButton.styleFrom(
                           primary: Colors.white,
-                          backgroundColor: _commentController.text != ""
+                          backgroundColor: !_isEmptyComment
                               ? AppColor.kPinkColor
                               : AppColor.kPinkColor.withOpacity(0.6),
                           padding: EdgeInsets.all(0),
                         ),
-                        onPressed: _commentController.text != ""
+                        onPressed: !_isEmptyComment
                             ? () async {
                                 final String res = await _addNewComment(
                                   widget.myUid,
@@ -165,6 +172,9 @@ class _CommentScreenState extends State<CommentScreen> {
 
                                 print("👼 SUCCESSED ADD COMMENT");
                                 _commentController.text = "";
+                                setState(() {
+                                  _isEmptyComment = true;
+                                });
                               }
                             : null,
                       ),
