@@ -51,6 +51,11 @@ class _DiSHListState extends State<DiSHList> {
               if (posts.data == null) {
                 print("⌚ Fetch data now...");
                 return Center(child: CircularProgressIndicator());
+              } else if (posts.data!.length < 1) {
+                print("Nothing posts");
+                return Center(
+                  child: Text("知り合いをフォローしてみましょう！"),
+                );
               }
               return ListView(children: posts.data!);
             },
