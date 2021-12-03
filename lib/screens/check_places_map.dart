@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dish/models/User.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -29,6 +30,8 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
   CameraPosition? currentPosition;
   String? imagePath;
   String? resName;
+  String? postId;
+  User? postUser;
 
   Stream<List<PinModel>>? timeline;
 
@@ -48,6 +51,8 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
       setState(() {
         imagePath = widget.postInfo!.imageUrls[0];
         resName = widget.postInfo!.restName;
+        postId = widget.postInfo!.id;
+        postUser = widget.postInfo!.postUser;
       });
     }
     timeline = FirebaseFirestore.instance
@@ -90,6 +95,8 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
             setState(() {
               imagePath = post.imageUrls[0];
               resName = post.restName;
+              postId = post.id;
+              postUser = post.user;
               redIndex = index;
             });
           },
@@ -106,6 +113,9 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
     final Map<String, dynamic> postRawData = await postRef
         .get()
         .then((snapshot) => snapshot.data() as Map<String, dynamic>);
+
+    final user = await _getUser(postRawData["uid"]);
+
     PinModel postInfo = PinModel(
       id: postRef.id,
       restName: postRawData["restaurant_name"],
@@ -114,8 +124,29 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
         postRawData["location"]["lat"] + 0.0,
         postRawData["location"]["lng"] + 0.0,
       ),
+      user: user,
     );
     return postInfo;
+  }
+
+  Future<User> _getUser(String uid) async {
+    DocumentReference userRef =
+        FirebaseFirestore.instance.collection("USERS").doc(uid);
+    DocumentSnapshot snapshot = await userRef.get();
+
+    if (!snapshot.exists) {
+      print("💣 Something went wrong");
+    }
+
+    Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+    User user = User(
+      uid: uid,
+      userId: data["user_id"],
+      userName: data["user_name"],
+      profileText: data["profile_text"],
+      iconImageUrl: data["icon_path"],
+    );
+    return user;
   }
 
   @override
@@ -172,10 +203,12 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
               ),
             ),
           ),
-          imagePath != null
+          postUser != null
               ? DisplayImage(
                   imagePath: imagePath!,
                   resName: resName!,
+                  postId: postId!,
+                  postUser: postUser!,
                 )
               : Container(),
         ],
