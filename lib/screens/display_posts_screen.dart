@@ -52,7 +52,7 @@ class _DisplayPostsScreenState extends State<DisplayPostsScreen> {
     final data = snapshot.data() as Map<String, dynamic>;
     print(data.toString());
     final postInfo = PostModel(
-      id: "item.id",
+      id: postId,
       content: data["content"],
       restName: data["restaurant_name"],
       imageUrls: data["image_paths"].cast<String>() as List<String>,
