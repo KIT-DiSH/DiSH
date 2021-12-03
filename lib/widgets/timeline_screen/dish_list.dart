@@ -108,6 +108,7 @@ class _DiSHListState extends State<DiSHList> {
 
     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
     User user = User(
+      uid: uid,
       userId: data["user_id"],
       userName: data["user_name"],
       profileText: data["profile_text"],
