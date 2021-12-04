@@ -12,10 +12,14 @@ class ProfileField extends StatefulWidget {
     Key? key,
     required this.uid,
     required this.user,
+    required this.openFooter,
+    required this.closeFooter,
   });
 
   final String uid;
   final User user;
+  final VoidCallback openFooter;
+  final VoidCallback closeFooter;
 
   @override
   _ProfileFieldState createState() => _ProfileFieldState();
@@ -99,7 +103,11 @@ class _ProfileFieldState extends State<ProfileField> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) {
-                          return FollowerListScreen(uid: widget.uid);
+                          return FollowerListScreen(
+                            uid: widget.uid,
+                            openFooter: widget.openFooter,
+                            closeFooter: widget.closeFooter,
+                          );
                         }),
                       );
                     },
@@ -119,7 +127,11 @@ class _ProfileFieldState extends State<ProfileField> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) {
-                          return FollowListScreen(uid: widget.uid);
+                          return FollowListScreen(
+                            uid: widget.uid,
+                            openFooter: widget.openFooter,
+                            closeFooter: widget.closeFooter,
+                          );
                         }),
                       );
                     },

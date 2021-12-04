@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,7 +7,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dish/widgets/timeline_screen/dish_list.dart';
 
 class Timeline extends StatefulWidget {
-  const Timeline({Key? key}) : super(key: key);
+  const Timeline({
+    Key? key,
+    required this.openFooter,
+    required this.closeFooter,
+  }) : super(key: key);
+
+  final VoidCallback openFooter;
+  final VoidCallback closeFooter;
 
   @override
   _TimelineState createState() => _TimelineState();
@@ -26,7 +35,11 @@ class _TimelineState extends State<Timeline> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: _buildAppBar(_userIconPath),
-      body: DiSHList(uid: uid!),
+      body: DiSHList(
+        uid: uid!,
+        openFooter: widget.openFooter,
+        closeFooter: widget.closeFooter,
+      ),
     );
   }
 

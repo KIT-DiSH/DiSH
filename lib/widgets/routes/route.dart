@@ -55,11 +55,10 @@ class _RouteWidgetState extends State<RouteWidget> {
   Future<void> _selectTab(String tabItem, int index) async {
     /* フッターを隠したいページは、bodyを切り替えずに直接pushする */
     if (tabItem == "NewPost") {
-      closeFooter();
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => PostScreen(openFooter: openFooter),
+          builder: (_) => PostScreen(),
         ),
       );
       return;
@@ -71,11 +70,13 @@ class _RouteWidgetState extends State<RouteWidget> {
         context,
         MaterialPageRoute(
           builder: (_) => CheckPlacesMap(
+            uid: uid,
             latLng: LatLng(
               posi.latitude,
               posi.longitude,
             ),
-            uid: uid,
+            openFooter: openFooter,
+            closeFooter: closeFooter,
           ),
         ),
       );
@@ -119,6 +120,8 @@ class _RouteWidgetState extends State<RouteWidget> {
           children: _pageKeys
               .map(
                 (key) => TabNavigator(
+                  openFooter: openFooter,
+                  closeFooter: closeFooter,
                   popUntilFirstScreen: popUntilFirstScreen,
                   navigatorKey: _navigatorKeys[key]!,
                   tabItem: key,

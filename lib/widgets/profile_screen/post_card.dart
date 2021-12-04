@@ -11,10 +11,14 @@ class PostCard extends StatelessWidget {
     Key? key,
     required this.user,
     required this.post,
+    required this.openFooter,
+    required this.closeFooter,
   }) : super(key: key);
 
   final User user;
   final Post post;
+  final VoidCallback openFooter;
+  final VoidCallback closeFooter;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +36,8 @@ class PostCard extends StatelessWidget {
             return DisplayPostsScreen(
               user: user,
               postId: post.postId,
+              openFooter: openFooter,
+              closeFooter: closeFooter,
             );
           }),
         );

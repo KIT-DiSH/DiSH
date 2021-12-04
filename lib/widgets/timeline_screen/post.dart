@@ -18,7 +18,12 @@ class DishPost extends StatefulWidget {
     Key? key,
     required this.uid,
     required this.postInfo,
+    required this.openFooter,
+    required this.closeFooter,
   });
+
+  final VoidCallback openFooter;
+  final VoidCallback closeFooter;
 
   @override
   _DishPostState createState() => _DishPostState();
@@ -119,7 +124,11 @@ class _DishPostState extends State<DishPost> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => ProfileScreen(uid: widget.uid),
+                      builder: (_) => ProfileScreen(
+                        uid: widget.uid,
+                        openFooter: widget.openFooter,
+                        closeFooter: widget.closeFooter,
+                      ),
                     ),
                   );
                 },
@@ -175,6 +184,8 @@ class _DishPostState extends State<DishPost> {
                           latLng: widget.postInfo.map,
                           uid: widget.uid,
                           postInfo: widget.postInfo,
+                          openFooter: widget.openFooter,
+                          closeFooter: widget.closeFooter,
                         );
                       }),
                     );
@@ -239,6 +250,8 @@ class _DishPostState extends State<DishPost> {
                 builder: (_) => CommentScreen(
                   myUid: widget.uid,
                   postId: widget.postInfo.id,
+                  openFooter: widget.openFooter,
+                  closeFooter: widget.closeFooter,
                 ),
               ),
             );

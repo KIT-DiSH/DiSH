@@ -11,13 +11,17 @@ import 'package:dish/models/PinModel.dart';
 class CheckPlacesMap extends StatefulWidget {
   CheckPlacesMap({
     Key? key,
-    required this.latLng,
     required this.uid,
+    required this.latLng,
+    required this.openFooter,
+    required this.closeFooter,
     this.postInfo,
   });
   // のちにお店に修正
-  final LatLng latLng;
   final String uid;
+  final LatLng latLng;
+  final VoidCallback openFooter;
+  final VoidCallback closeFooter;
   PostModel? postInfo;
 
   @override
@@ -209,6 +213,8 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
                   resName: resName!,
                   postId: postId!,
                   postUser: postUser!,
+                  openFooter: widget.openFooter,
+                  closeFooter: widget.closeFooter,
                 )
               : Container(),
         ],

@@ -16,12 +16,7 @@ import 'package:dish/widgets/post_screen/star_review.dart';
 import 'package:dish/configs/constant_colors.dart';
 
 class PostScreen extends StatefulWidget {
-  const PostScreen({
-    Key? key,
-    required this.openFooter,
-  }) : super(key: key);
-
-  final VoidCallback openFooter;
+  const PostScreen({Key? key}) : super(key: key);
 
   @override
   _PostScreenState createState() => _PostScreenState();
@@ -277,11 +272,9 @@ class _PostScreenState extends State<PostScreen> {
             );
             if (result) {
               // 途中の投稿を保存する処理
-              widget.openFooter();
               Navigator.pop(context);
             }
           } else {
-            widget.openFooter();
             Navigator.pop(context);
           }
         },
@@ -302,7 +295,6 @@ class _PostScreenState extends State<PostScreen> {
           onPressed: () async {
             if (!_formKey.currentState!.validate() ||
                 selectedImageFiles.isEmpty) return;
-            widget.openFooter();
             Navigator.pop(context);
 
             final List<String> URLs =

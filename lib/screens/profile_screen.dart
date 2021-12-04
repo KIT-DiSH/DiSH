@@ -14,10 +14,14 @@ class ProfileScreen extends StatefulWidget {
   const ProfileScreen({
     Key? key,
     required this.uid,
+    required this.openFooter,
+    required this.closeFooter,
     this.popUntilFirstScreen,
   }) : super(key: key);
 
   final String uid;
+  final VoidCallback openFooter;
+  final VoidCallback closeFooter;
   final VoidCallback? popUntilFirstScreen;
 
   @override
@@ -116,7 +120,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     print("⌚ Fetch data now...");
                     return Center(child: CircularProgressIndicator());
                   }
-                  return ProfileField(uid: widget.uid, user: user.data!);
+                  return ProfileField(
+                    uid: widget.uid,
+                    user: user.data!,
+                    openFooter: widget.openFooter,
+                    closeFooter: widget.closeFooter,
+                  );
                 },
               ),
               const SizedBox(height: 24),
@@ -130,7 +139,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     print("⌚ Fetch data now...");
                     return Center(child: CircularProgressIndicator());
                   }
-                  return PostsField(user: _myself!, posts: posts.data!);
+                  return PostsField(
+                    user: _myself!,
+                    posts: posts.data!,
+                    openFooter: widget.openFooter,
+                    closeFooter: widget.closeFooter,
+                  );
                 },
               ),
             ],

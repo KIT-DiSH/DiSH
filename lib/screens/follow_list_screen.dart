@@ -10,9 +10,13 @@ class FollowListScreen extends StatefulWidget {
   const FollowListScreen({
     Key? key,
     required this.uid,
+    required this.openFooter,
+    required this.closeFooter,
   }) : super(key: key);
 
   final String uid;
+  final VoidCallback openFooter;
+  final VoidCallback closeFooter;
 
   @override
   _FollowListScreenState createState() => _FollowListScreenState();
@@ -43,6 +47,8 @@ class _FollowListScreenState extends State<FollowListScreen> {
               user: _userList[index]["user"],
               didFollow: _userList[index]["didFollow"],
               myselfUid: widget.uid,
+              openFooter: widget.openFooter,
+              closeFooter: widget.closeFooter,
             );
           },
           separatorBuilder: (_, __) => SimpleDivider(height: 1.0),

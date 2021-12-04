@@ -7,7 +7,14 @@ import 'package:dish/widgets/common/simple_divider.dart';
 import 'package:dish/widgets/search_screen/user_card.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key? key}) : super(key: key);
+  const SearchScreen({
+    Key? key,
+    required this.openFooter,
+    required this.closeFooter,
+  }) : super(key: key);
+
+  final VoidCallback openFooter;
+  final VoidCallback closeFooter;
 
   @override
   _SearchScreenState createState() => _SearchScreenState();
@@ -76,6 +83,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
               return UserCard(
                 user: _searchResult[index],
+                openFooter: widget.openFooter,
+                closeFooter: widget.closeFooter,
               );
             },
             separatorBuilder: (_, __) => SimpleDivider(height: 1.0),

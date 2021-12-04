@@ -9,12 +9,16 @@ class DisplayImage extends StatelessWidget {
     required this.resName,
     required this.postId,
     required this.postUser,
+    required this.openFooter,
+    required this.closeFooter,
   }) : super(key: key);
 
   final String imagePath;
   final String resName;
   final String postId;
   final User postUser;
+  final VoidCallback openFooter;
+  final VoidCallback closeFooter;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +37,8 @@ class DisplayImage extends StatelessWidget {
                     builder: (_) => DisplayPostsScreen(
                       postId: postId,
                       user: postUser,
+                      openFooter: openFooter,
+                      closeFooter: closeFooter,
                     ),
                   ),
                 );

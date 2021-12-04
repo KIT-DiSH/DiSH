@@ -9,11 +9,15 @@ import 'package:dish/screens/search_screen.dart';
 
 class TabNavigator extends StatelessWidget {
   TabNavigator({
+    required this.openFooter,
+    required this.closeFooter,
     required this.popUntilFirstScreen,
     required this.navigatorKey,
     required this.tabItem,
   });
 
+  final VoidCallback openFooter;
+  final VoidCallback closeFooter;
   final VoidCallback popUntilFirstScreen;
   final GlobalKey<NavigatorState> navigatorKey;
   final String tabItem;
@@ -25,10 +29,16 @@ class TabNavigator extends StatelessWidget {
 
     switch (tabItem) {
       case "Home":
-        child = Timeline();
+        child = Timeline(
+          openFooter: openFooter,
+          closeFooter: closeFooter,
+        );
         break;
       case "Search":
-        child = SearchScreen();
+        child = SearchScreen(
+          openFooter: openFooter,
+          closeFooter: closeFooter,
+        );
         break;
       // case "NewPost":
       //   child = PostScreen();
@@ -40,6 +50,8 @@ class TabNavigator extends StatelessWidget {
         child = ProfileScreen(
           uid: uid,
           popUntilFirstScreen: popUntilFirstScreen,
+          openFooter: openFooter,
+          closeFooter: closeFooter,
         );
         break;
       default:
