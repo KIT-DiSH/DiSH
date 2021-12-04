@@ -295,6 +295,7 @@ class _CommentScreenState extends State<CommentScreen> {
           color: Colors.black,
         ),
         onPressed: () {
+          widget.openFooter();
           Navigator.pop(context);
         },
       ),

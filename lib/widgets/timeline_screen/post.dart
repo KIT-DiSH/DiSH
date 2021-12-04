@@ -244,6 +244,7 @@ class _DishPostState extends State<DishPost> {
             // コメント画面に遷移
             // 実際はコメントの情報を引数として渡す
             print('コメント画面に遷移');
+            widget.closeFooter();
             Navigator.push(
               context,
               MaterialPageRoute(
