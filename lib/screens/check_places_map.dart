@@ -178,8 +178,10 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
                   onTap: (_) {
                     setState(() {
                       redIndex = -1;
+                      postUser = null;
                       imagePath = null;
                       resName = null;
+                      postId = null;
                     });
                   },
                   markers: _generateMarker(snapshot.data!).toSet(),
