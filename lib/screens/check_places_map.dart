@@ -202,6 +202,7 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
                   color: Colors.black,
                 ),
                 onPressed: () {
+                  widget.openFooter();
                   Navigator.pop(context);
                 },
               ),

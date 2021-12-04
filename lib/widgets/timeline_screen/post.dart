@@ -177,6 +177,7 @@ class _DishPostState extends State<DishPost> {
                     onPrimary: Colors.white,
                   ),
                   onPressed: () {
+                    widget.closeFooter();
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) {
