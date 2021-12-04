@@ -37,9 +37,11 @@ class _DisplayPostsScreenState extends State<DisplayPostsScreen> {
       appBar: _buildAppBar(context),
       body: _postInfo != null
           ? SafeArea(
-              child: DishPost(
-                postInfo: _postInfo!,
-                uid: widget.user.uid!,
+              child: SingleChildScrollView(
+                child: DishPost(
+                  postInfo: _postInfo!,
+                  uid: widget.user.uid!,
+                ),
               ),
             )
           : Center(child: CircularProgressIndicator()),
