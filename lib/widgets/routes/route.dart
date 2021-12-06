@@ -37,7 +37,20 @@ class _RouteWidgetState extends State<RouteWidget> {
     "Profile": GlobalKey<NavigatorState>(),
   };
   String _currentPage = "Home";
+  bool isOpenFooter = true;
   final String uid = FirebaseAuth.instance.currentUser!.uid;
+
+  void openFooter() {
+    setState(() {
+      isOpenFooter = true;
+    });
+  }
+
+  void closeFooter() {
+    setState(() {
+      isOpenFooter = false;
+    });
+  }
 
   Future<void> _selectTab(String tabItem, int index) async {
     /* フッターを隠したいページは、bodyを切り替えずに直接pushする */
@@ -57,11 +70,13 @@ class _RouteWidgetState extends State<RouteWidget> {
         context,
         MaterialPageRoute(
           builder: (_) => CheckPlacesMap(
+            uid: uid,
             latLng: LatLng(
               posi.latitude,
               posi.longitude,
             ),
-            uid: uid,
+            openFooter: openFooter,
+            closeFooter: closeFooter,
           ),
         ),
       );
@@ -105,6 +120,8 @@ class _RouteWidgetState extends State<RouteWidget> {
           children: _pageKeys
               .map(
                 (key) => TabNavigator(
+                  openFooter: openFooter,
+                  closeFooter: closeFooter,
                   popUntilFirstScreen: popUntilFirstScreen,
                   navigatorKey: _navigatorKeys[key]!,
                   tabItem: key,
@@ -112,26 +129,28 @@ class _RouteWidgetState extends State<RouteWidget> {
               )
               .toList(),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          unselectedItemColor: Colors.black45,
-          selectedItemColor: Colors.black87,
-          showUnselectedLabels: false,
-          showSelectedLabels: false,
-          onTap: (index) {
-            _selectTab(_pageKeys[index], index);
-          },
-          currentIndex: _pageKeys.indexOf(_currentPage),
-          items: _pageKeys
-              .map(
-                (key) => BottomNavigationBarItem(
-                  icon: Icon(_bottomNaviItems[key]),
-                  label: "",
-                  tooltip: "",
-                ),
+        bottomNavigationBar: isOpenFooter
+            ? BottomNavigationBar(
+                unselectedItemColor: Colors.black45,
+                selectedItemColor: Colors.black87,
+                showUnselectedLabels: false,
+                showSelectedLabels: false,
+                onTap: (index) {
+                  _selectTab(_pageKeys[index], index);
+                },
+                currentIndex: _pageKeys.indexOf(_currentPage),
+                items: _pageKeys
+                    .map(
+                      (key) => BottomNavigationBarItem(
+                        icon: Icon(_bottomNaviItems[key]),
+                        label: "",
+                        tooltip: "",
+                      ),
+                    )
+                    .toList(),
+                type: BottomNavigationBarType.fixed,
               )
-              .toList(),
-          type: BottomNavigationBarType.fixed,
-        ),
+            : null,
       ),
     );
   }

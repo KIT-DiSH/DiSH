@@ -11,11 +11,15 @@ class UserCard extends StatefulWidget {
     required this.user,
     required this.didFollow,
     required this.myselfUid,
+    required this.openFooter,
+    required this.closeFooter,
   }) : super(key: key);
 
   final User user;
   bool didFollow;
   final String myselfUid;
+  final VoidCallback openFooter;
+  final VoidCallback closeFooter;
 
   @override
   _UserCardState createState() => _UserCardState();
@@ -72,7 +76,11 @@ class _UserCardState extends State<UserCard> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (_) => ProfileScreen(uid: widget.user.uid!)),
+                    builder: (_) => ProfileScreen(
+                          uid: widget.user.uid!,
+                          openFooter: widget.openFooter,
+                          closeFooter: widget.closeFooter,
+                        )),
               );
             },
             child: Container(

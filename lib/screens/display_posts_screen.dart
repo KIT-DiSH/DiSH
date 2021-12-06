@@ -13,10 +13,14 @@ class DisplayPostsScreen extends StatefulWidget {
     Key? key,
     required this.user,
     required this.postId,
+    required this.openFooter,
+    required this.closeFooter,
   }) : super(key: key);
 
   final User user;
   final String postId;
+  final VoidCallback openFooter;
+  final VoidCallback closeFooter;
 
   @override
   _DisplayPostsScreenState createState() => _DisplayPostsScreenState();
@@ -41,6 +45,8 @@ class _DisplayPostsScreenState extends State<DisplayPostsScreen> {
                 child: DishPost(
                   postInfo: _postInfo!,
                   uid: widget.user.uid!,
+                  openFooter: widget.openFooter,
+                  closeFooter: widget.closeFooter,
                 ),
               ),
             )

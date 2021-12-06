@@ -11,9 +11,13 @@ class DiSHList extends StatefulWidget {
   const DiSHList({
     Key? key,
     required this.uid,
+    required this.openFooter,
+    required this.closeFooter,
   }) : super(key: key);
 
   final String uid;
+  final VoidCallback openFooter;
+  final VoidCallback closeFooter;
 
   @override
   _DiSHListState createState() => _DiSHListState();
@@ -94,7 +98,12 @@ class _DiSHListState extends State<DiSHList> {
         "taste": postRawData["evaluation"]["taste"] + 0.0,
       },
     );
-    return DishPost(uid: postRawData["uid"], postInfo: postInfo);
+    return DishPost(
+      uid: postRawData["uid"],
+      postInfo: postInfo,
+      openFooter: widget.openFooter,
+      closeFooter: widget.closeFooter,
+    );
   }
 
   Future<User> _getUser(String uid) async {

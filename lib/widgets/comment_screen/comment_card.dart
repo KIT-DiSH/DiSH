@@ -8,9 +8,13 @@ class CommentCard extends StatelessWidget {
   const CommentCard({
     Key? key,
     required this.commentInfo,
+    required this.openFooter,
+    required this.closeFooter,
   }) : super(key: key);
 
   final Comment commentInfo;
+  final VoidCallback openFooter;
+  final VoidCallback closeFooter;
   final _replyText = "返信する";
 
   @override
@@ -28,8 +32,11 @@ class CommentCard extends StatelessWidget {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute<void>(
-                  builder: (BuildContext context) =>
-                      ProfileScreen(uid: commentInfo.user.uid!),
+                  builder: (BuildContext context) => ProfileScreen(
+                    uid: commentInfo.user.uid!,
+                    openFooter: openFooter,
+                    closeFooter: closeFooter,
+                  ),
                 ),
               );
             },

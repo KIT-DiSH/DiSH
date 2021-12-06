@@ -10,10 +10,14 @@ class PostsField extends StatelessWidget {
     Key? key,
     required this.user,
     required this.posts,
+    required this.openFooter,
+    required this.closeFooter,
   });
 
   final List<Post> posts;
   final User user;
+  final VoidCallback openFooter;
+  final VoidCallback closeFooter;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +28,12 @@ class PostsField extends StatelessWidget {
         alignment: WrapAlignment.spaceBetween,
         spacing: 8,
         children: posts.map((post) {
-          return PostCard(user: user, post: post);
+          return PostCard(
+            user: user,
+            post: post,
+            openFooter: openFooter,
+            closeFooter: closeFooter,
+          );
         }).toList(),
       );
     } else {

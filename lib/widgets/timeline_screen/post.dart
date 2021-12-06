@@ -18,7 +18,12 @@ class DishPost extends StatefulWidget {
     Key? key,
     required this.uid,
     required this.postInfo,
+    required this.openFooter,
+    required this.closeFooter,
   });
+
+  final VoidCallback openFooter;
+  final VoidCallback closeFooter;
 
   @override
   _DishPostState createState() => _DishPostState();
@@ -119,7 +124,11 @@ class _DishPostState extends State<DishPost> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => ProfileScreen(uid: widget.uid),
+                      builder: (_) => ProfileScreen(
+                        uid: widget.uid,
+                        openFooter: widget.openFooter,
+                        closeFooter: widget.closeFooter,
+                      ),
                     ),
                   );
                 },
@@ -168,6 +177,7 @@ class _DishPostState extends State<DishPost> {
                     onPrimary: Colors.white,
                   ),
                   onPressed: () {
+                    widget.closeFooter();
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) {
@@ -175,6 +185,8 @@ class _DishPostState extends State<DishPost> {
                           latLng: widget.postInfo.map,
                           uid: widget.uid,
                           postInfo: widget.postInfo,
+                          openFooter: widget.openFooter,
+                          closeFooter: widget.closeFooter,
                         );
                       }),
                     );
@@ -233,12 +245,15 @@ class _DishPostState extends State<DishPost> {
             // コメント画面に遷移
             // 実際はコメントの情報を引数として渡す
             print('コメント画面に遷移');
+            widget.closeFooter();
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (_) => CommentScreen(
                   myUid: widget.uid,
                   postId: widget.postInfo.id,
+                  openFooter: widget.openFooter,
+                  closeFooter: widget.closeFooter,
                 ),
               ),
             );

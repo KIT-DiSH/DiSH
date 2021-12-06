@@ -8,9 +8,13 @@ class UserCard extends StatelessWidget {
   const UserCard({
     Key? key,
     required this.user,
+    required this.openFooter,
+    required this.closeFooter,
   }) : super(key: key);
 
   final User user;
+  final VoidCallback openFooter;
+  final VoidCallback closeFooter;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +22,12 @@ class UserCard extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => ProfileScreen(uid: user.uid!)),
+          MaterialPageRoute(
+              builder: (_) => ProfileScreen(
+                    uid: user.uid!,
+                    openFooter: openFooter,
+                    closeFooter: closeFooter,
+                  )),
         );
       },
       child: Container(

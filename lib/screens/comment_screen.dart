@@ -13,10 +13,14 @@ class CommentScreen extends StatefulWidget {
     Key? key,
     required this.myUid,
     required this.postId,
+    required this.openFooter,
+    required this.closeFooter,
   }) : super(key: key);
 
   final String myUid;
   final String postId;
+  final VoidCallback openFooter;
+  final VoidCallback closeFooter;
 
   @override
   _CommentScreenState createState() => _CommentScreenState();
@@ -233,7 +237,11 @@ class _CommentScreenState extends State<CommentScreen> {
       content: data["content"],
       timestamp: DateFormat("yyyy/MM/dd").format(data["timestamp"].toDate()),
     );
-    return CommentCard(commentInfo: commentInfo);
+    return CommentCard(
+      commentInfo: commentInfo,
+      openFooter: widget.openFooter,
+      closeFooter: widget.closeFooter,
+    );
   }
 
   Future<User> _getUser(String uid) async {
@@ -287,6 +295,7 @@ class _CommentScreenState extends State<CommentScreen> {
           color: Colors.black,
         ),
         onPressed: () {
+          widget.openFooter();
           Navigator.pop(context);
         },
       ),
