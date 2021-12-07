@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dish/models/User.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:cached_network_marker/cached_network_marker.dart';
 
 import 'package:dish/models/PostModel.dart';
 import 'package:dish/widgets/check_places_map/display_image.dart';
@@ -73,7 +74,7 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
         );
   }
 
-  List<Marker> _generateMarker(List<PinModel> posts) {
+  Future<List<Marker>> _generateMarker(List<PinModel> posts) async {
     List<Marker> markers = [];
 
     for (PinModel post in posts) {
@@ -85,6 +86,14 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
       if (widget.latLng == post.map && widget.postInfo != null) {
         initRedPin = true;
       }
+      final generator = CachedNetworkMarker(
+        url: post.user.iconImageUrl,
+        dpr: MediaQuery.of(context).devicePixelRatio,
+      );
+
+      // generate bitmap
+      final bitmap = await generator
+          .circleAvatar(CircleAvatarParams(color: Colors.lightBlue));
       bool isInitRedPin = initRedPin && redIndex == -2;
       bool isSelected = (redIndex == index) || isInitRedPin;
       markers.add(
@@ -92,9 +101,10 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
           alpha: isSelected ? 1 : 0.95,
           markerId: MarkerId(post.id),
           position: post.map,
-          icon: BitmapDescriptor.defaultMarkerWithHue(
-            isSelected ? BitmapDescriptor.hueRed : 20.0,
-          ),
+          icon: BitmapDescriptor.fromBytes(bitmap),
+          // icon: BitmapDescriptor.defaultMarkerWithHue(
+          //   isSelected ? BitmapDescriptor.hueRed : 20.0,
+          // ),
           onTap: () {
             setState(() {
               imagePath = post.imageUrls[0];
@@ -108,6 +118,46 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
       );
     }
     return markers;
+  }
+
+  Future<Marker> _generateMarker2(PinModel post) async {
+    final index = posts.indexWhere((post2) => post2.id == post.id);
+    bool initRedPin = false;
+
+    // 投稿からマップに飛んだ時に、その投稿のピンを初期で赤ピンにする
+    // ほんとは[redIndex = index]としたいがここでsetStateがが使えないためこんな感じです。
+    if (widget.latLng == post.map && widget.postInfo != null) {
+      initRedPin = true;
+    }
+    final generator = CachedNetworkMarker(
+      url: post.user.iconImageUrl,
+      dpr: MediaQuery.of(context).devicePixelRatio,
+    );
+
+    // generate bitmap
+    final bitmap = await generator
+        .circleAvatar(CircleAvatarParams(color: Colors.lightBlue));
+    bool isInitRedPin = initRedPin && redIndex == -2;
+    bool isSelected = (redIndex == index) || isInitRedPin;
+
+    return Marker(
+      alpha: isSelected ? 1 : 0.95,
+      markerId: MarkerId(post.id),
+      position: post.map,
+      icon: BitmapDescriptor.fromBytes(bitmap),
+      // icon: BitmapDescriptor.defaultMarkerWithHue(
+      //   isSelected ? BitmapDescriptor.hueRed : 20.0,
+      // ),
+      onTap: () {
+        setState(() {
+          imagePath = post.imageUrls[0];
+          resName = post.restName;
+          postId = post.id;
+          postUser = post.user;
+          redIndex = index;
+        });
+      },
+    );
   }
 
   Future<PinModel> _generatePinModel(
@@ -172,24 +222,46 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
                   myLocationEnabled: true,
                 );
               } else {
-                return GoogleMap(
-                  mapType: MapType.normal,
-                  initialCameraPosition: currentPosition!,
-                  myLocationButtonEnabled: false,
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller.complete(controller);
+                return FutureBuilder(
+                  future: Future.wait(
+                    List.generate(
+                      snapshot.data!.length,
+                      (index) => _generateMarker2(snapshot.data![index]),
+                    ),
+                  ),
+                  builder: (context, AsyncSnapshot<List<Marker>> snapshot2) {
+                    if (snapshot2.hasData) {
+                      final markers = snapshot2.data!;
+                      return GoogleMap(
+                        mapType: MapType.normal,
+                        initialCameraPosition: currentPosition!,
+                        myLocationButtonEnabled: false,
+                        onMapCreated: (GoogleMapController controller) {
+                          _controller.complete(controller);
+                        },
+                        onTap: (_) {
+                          setState(() {
+                            redIndex = -1;
+                            postUser = null;
+                            imagePath = null;
+                            resName = null;
+                            postId = null;
+                          });
+                        },
+                        markers: markers.toSet(),
+                        myLocationEnabled: true,
+                      );
+                    } else {
+                      return GoogleMap(
+                        mapType: MapType.normal,
+                        initialCameraPosition: currentPosition!,
+                        onMapCreated: (GoogleMapController controller) {
+                          _controller.complete(controller);
+                        },
+                        myLocationEnabled: true,
+                      );
+                    }
                   },
-                  onTap: (_) {
-                    setState(() {
-                      redIndex = -1;
-                      postUser = null;
-                      imagePath = null;
-                      resName = null;
-                      postId = null;
-                    });
-                  },
-                  markers: _generateMarker(snapshot.data!).toSet(),
-                  myLocationEnabled: true,
                 );
               }
             },
