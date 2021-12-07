@@ -207,7 +207,7 @@ class _ProfileFieldState extends State<ProfileField> {
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
-        width: 70,
+        width: 68,
         child: Column(
           children: [
             Text(
