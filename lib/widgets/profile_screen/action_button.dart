@@ -100,9 +100,6 @@ class _ActionButtonState extends State<ActionButton> {
                 _setUserType("stranger");
                 _unfollowUser(widget.uid, widget.myUid);
                 print("unfollowed");
-                setState(() {
-                  // フォロー解除処理
-                });
               },
             ),
           );
@@ -131,10 +128,6 @@ class _ActionButtonState extends State<ActionButton> {
                 _setUserType("followed");
                 print("followed");
                 _followUser(widget.uid, widget.myUid);
-
-                setState(() {
-                  // フォロー処理
-                });
               },
             ),
           );
