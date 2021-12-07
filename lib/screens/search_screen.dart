@@ -42,17 +42,17 @@ class _SearchScreenState extends State<SearchScreen> {
               child: TextField(
                 controller: _searchController,
                 keyboardType: TextInputType.text,
+                onSubmitted: (_) async {
+                  await _searchExec();
+                },
                 decoration: InputDecoration(
                   prefixIcon: IconButton(
                     icon: Icon(Icons.search),
                     splashColor: AppColor.kWhiteColor,
                     highlightColor: AppColor.kWhiteColor,
                     onPressed: () async {
-                      print("🔍searching user...");
-                      final result = await _searchUser(_searchController.text);
-                      setState(() {
-                        _searchResult = result;
-                      });
+                      FocusScope.of(context).unfocus();
+                      await _searchExec();
                     },
                   ),
                   suffixIcon: IconButton(
@@ -93,6 +93,14 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _searchExec() async {
+    print("🔍searching user...");
+    final result = await _searchUser(_searchController.text);
+    setState(() {
+      _searchResult = result;
+    });
   }
 
   Future<List<User>> _searchUser(String searchText) async {
