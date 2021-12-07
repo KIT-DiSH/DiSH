@@ -69,7 +69,7 @@ class _ActionButtonState extends State<ActionButton> {
             },
           ),
         );
-      case "stranger":
+      case "followed":
         {
           return Container(
             height: 36,
@@ -103,7 +103,7 @@ class _ActionButtonState extends State<ActionButton> {
             ),
           );
         }
-      case "followed":
+      case "stranger":
         {
           return Container(
             height: 36,
