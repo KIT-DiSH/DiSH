@@ -36,8 +36,19 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
   String? resName;
   String? postId;
   User? postUser;
+  List<Marker> _markers = [];
 
-  Stream<List<PinModel>>? timeline;
+  Future<QuerySnapshot<Map<String, dynamic>>>? timeline;
+
+  @override
+  Future<void> didChangeDependencies() async {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    final tmp = await _generateMarker();
+    setState(() {
+      _markers = tmp;
+    });
+  }
 
   @override
   initState() {
@@ -59,22 +70,25 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
         postUser = widget.postInfo!.postUser;
       });
     }
-    timeline = FirebaseFirestore.instance
-        .collection("USERS")
-        .doc(widget.uid)
-        .collection("/TIMELINE")
-        .orderBy("timestamp", descending: true)
-        .limit(20)
-        .snapshots()
-        .asyncMap(
-          (snapshot) => Future.wait(
-            [for (var doc in snapshot.docs) _generatePinModel(doc)],
-          ),
-        );
+    // timeline = FirebaseFirestore.instance
+    //     .collection("USERS")
+    //     .doc(widget.uid)
+    //     .collection("/TIMELINE")
+    //     .orderBy("timestamp", descending: true)
+    //     .limit(20)
+    //     .get();
+    // .snapshots()
+    // .asyncMap(
+    //   (snapshot) => Future.wait(
+    //     [for (var doc in snapshot.docs) _generatePinModel(doc)],
+    //   ),
+    // );
   }
 
-  List<Marker> _generateMarker(List<PinModel> posts) {
+  Future<List<Marker>> _generateMarker() async {
     List<Marker> markers = [];
+
+    final posts = await _generatePinModels();
 
     for (PinModel post in posts) {
       final index = posts.indexWhere((post2) => post2.id == post.id);
@@ -103,6 +117,7 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
               postUser = post.user;
               redIndex = index;
             });
+            print(isSelected);
           },
         ),
       );
@@ -110,27 +125,38 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
     return markers;
   }
 
-  Future<PinModel> _generatePinModel(
-      QueryDocumentSnapshot<Map<String, dynamic>> doc) async {
-    Map<String, dynamic> data = doc.data();
-    final DocumentReference postRef = data["post_ref"];
-    final Map<String, dynamic> postRawData = await postRef
-        .get()
-        .then((snapshot) => snapshot.data() as Map<String, dynamic>);
+  Future<List<PinModel>> _generatePinModels() async {
+    final timeline = await FirebaseFirestore.instance
+        .collection("USERS")
+        .doc(widget.uid)
+        .collection("/TIMELINE")
+        .orderBy("timestamp", descending: true)
+        .limit(20)
+        .get();
+    final docs = timeline.docs;
+    List<PinModel> postInfos = [];
+    for (var doc in docs) {
+      Map<String, dynamic> data = doc.data();
+      final DocumentReference postRef = data["post_ref"];
+      final Map<String, dynamic> postRawData = await postRef
+          .get()
+          .then((snapshot) => snapshot.data() as Map<String, dynamic>);
 
-    final user = await _getUser(postRawData["uid"]);
+      final user = await _getUser(postRawData["uid"]);
 
-    PinModel postInfo = PinModel(
-      id: postRef.id,
-      restName: postRawData["restaurant_name"],
-      imageUrls: postRawData["image_paths"].cast<String>() as List<String>,
-      map: LatLng(
-        postRawData["location"]["lat"] + 0.0,
-        postRawData["location"]["lng"] + 0.0,
-      ),
-      user: user,
-    );
-    return postInfo;
+      PinModel postInfo = PinModel(
+        id: postRef.id,
+        restName: postRawData["restaurant_name"],
+        imageUrls: postRawData["image_paths"].cast<String>() as List<String>,
+        map: LatLng(
+          postRawData["location"]["lat"] + 0.0,
+          postRawData["location"]["lng"] + 0.0,
+        ),
+        user: user,
+      );
+      postInfos.add(postInfo);
+    }
+    return postInfos;
   }
 
   Future<User> _getUser(String uid) async {
@@ -158,42 +184,66 @@ class CheckPlacesMapState extends State<CheckPlacesMap> {
     return new Scaffold(
       body: Stack(
         children: [
-          StreamBuilder(
-            stream: timeline,
-            builder:
-                (BuildContext context, AsyncSnapshot<List<PinModel>> snapshot) {
-              if (snapshot.data == null) {
-                return GoogleMap(
-                  mapType: MapType.normal,
-                  initialCameraPosition: currentPosition!,
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller.complete(controller);
-                  },
-                  myLocationEnabled: true,
-                );
-              } else {
-                return GoogleMap(
-                  mapType: MapType.normal,
-                  initialCameraPosition: currentPosition!,
-                  myLocationButtonEnabled: false,
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller.complete(controller);
-                  },
-                  onTap: (_) {
-                    setState(() {
-                      redIndex = -1;
-                      postUser = null;
-                      imagePath = null;
-                      resName = null;
-                      postId = null;
-                    });
-                  },
-                  markers: _generateMarker(snapshot.data!).toSet(),
-                  myLocationEnabled: true,
-                );
-              }
+          GoogleMap(
+            mapType: MapType.normal,
+            initialCameraPosition: currentPosition!,
+            myLocationButtonEnabled: false,
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
             },
+            onTap: (_) {
+              setState(() {
+                redIndex = -1;
+                postUser = null;
+                imagePath = null;
+                resName = null;
+                postId = null;
+              });
+            },
+            markers: _markers.toSet(),
+            myLocationEnabled: true,
           ),
+          //   FutureBuilder(
+          //     future: _generateMarker(),
+          //     builder:
+          //         (BuildContext context, AsyncSnapshot<List<Marker>> snapshot) {
+          //       if (snapshot.data == null) {
+          //         return GoogleMap(
+          //           mapType: MapType.normal,
+          //           initialCameraPosition: currentPosition!,
+          //           onMapCreated: (GoogleMapController controller) {
+          //             _controller.complete(controller);
+          //           },
+          //           myLocationEnabled: true,
+          //         );
+          //       } else {
+          //         // final timeline = snapshot.data;
+          //         // final docs = timeline!.docs;
+          //         // final data = docs[0].data();
+          //         // print(data);
+          //         final markers = snapshot.data!;
+          //         return GoogleMap(
+          //           mapType: MapType.normal,
+          //           initialCameraPosition: currentPosition!,
+          //           myLocationButtonEnabled: false,
+          //           onMapCreated: (GoogleMapController controller) {
+          //             _controller.complete(controller);
+          //           },
+          //           onTap: (_) {
+          //             setState(() {
+          //               redIndex = -1;
+          //               postUser = null;
+          //               imagePath = null;
+          //               resName = null;
+          //               postId = null;
+          //             });
+          //           },
+          //           markers: markers.toSet(),
+          //           myLocationEnabled: true,
+          //         );
+          //       }
+          //     },
+          //   ),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
