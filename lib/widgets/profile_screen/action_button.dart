@@ -15,7 +15,7 @@ class ActionButton extends StatefulWidget {
 
   final User user;
   final String uid;
-  final String userType;
+  final String? userType;
   final void Function(String) setUserType;
 
   @override
@@ -26,11 +26,12 @@ class _ActionButtonState extends State<ActionButton> {
   final _myselfLabel = "プロフィールを編集する";
   final _followedLabel = "フォロー解除する";
   final _strangerLabel = "フォローする";
+  final _defaultLabel = "読み込み中";
 
   @override
   Widget build(BuildContext context) {
     final _setUserType = widget.setUserType;
-    String _userType = widget.userType;
+    String? _userType = widget.userType;
 
     switch (_userType) {
       case "myself":
@@ -68,7 +69,7 @@ class _ActionButtonState extends State<ActionButton> {
             },
           ),
         );
-      case "followed":
+      case "stranger":
         {
           return Container(
             height: 36,
@@ -102,7 +103,7 @@ class _ActionButtonState extends State<ActionButton> {
             ),
           );
         }
-      case "stranger":
+      case "followed":
         {
           return Container(
             height: 36,
@@ -133,7 +134,31 @@ class _ActionButtonState extends State<ActionButton> {
           );
         }
       default:
-        return Container();
+        return Container(
+          height: 36,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(3),
+            border: Border.all(color: AppColor.kDefaultBorderColor),
+          ),
+          child: TextButton(
+            child: Text(
+              _defaultLabel,
+              style: TextStyle(
+                fontSize: 12,
+                letterSpacing: 1,
+              ),
+            ),
+            style: TextButton.styleFrom(
+              primary: AppColor.kPrimaryTextColor,
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(3),
+              ),
+            ),
+            onPressed: null,
+          ),
+        );
     }
   }
 }
