@@ -189,6 +189,7 @@ class _ProfileFieldState extends State<ProfileField> {
           // ボタン
           ActionButton(
             uid: uid,
+            myUid: widget.myUid,
             user: user,
             userType: _userType,
             setUserType: setUserType,
