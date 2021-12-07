@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
@@ -11,12 +12,13 @@ class ProfileField extends StatefulWidget {
   ProfileField({
     Key? key,
     required this.uid,
+    required this.myUid,
     required this.user,
     required this.openFooter,
     required this.closeFooter,
   });
 
-  final String uid;
+  final String uid, myUid;
   final User user;
   final VoidCallback openFooter;
   final VoidCallback closeFooter;
@@ -29,7 +31,38 @@ class _ProfileFieldState extends State<ProfileField> {
   final _postLabel = "投稿";
   final _followerLabel = "フォロワー";
   final _followLabel = "フォロー";
-  String _userType = "myself"; // or "followed", "stranger"
+  String? _userType; // or "followed", "stranger"
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.uid == widget.myUid) {
+      setState(() {
+        _userType = "myself";
+      });
+    }
+  }
+
+  @override
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+
+    if (_userType == null) {
+      QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+          .instance
+          .collection("FOLLOW_FOLLOWER")
+          .where("followee_id", isEqualTo: widget.myUid)
+          .where("follower_id", isEqualTo: widget.uid)
+          .get();
+      // ちょっと条件怪しい
+      print(snapshot.docs);
+      if (snapshot.docs.isEmpty) {
+        setUserType("stranger");
+      } else {
+        setUserType("followed");
+      }
+    }
+  }
 
   void setUserType(String userType) {
     setState(() {
@@ -156,6 +189,7 @@ class _ProfileFieldState extends State<ProfileField> {
           // ボタン
           ActionButton(
             uid: uid,
+            myUid: widget.myUid,
             user: user,
             userType: _userType,
             setUserType: setUserType,

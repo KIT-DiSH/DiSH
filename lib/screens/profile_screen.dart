@@ -36,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int _followerCount = 0;
   Stream<User>? userStream;
   Stream<List<Post>>? postsStream;
-  final String _myUid = firebaseAuth.FirebaseAuth.instance.currentUser!.uid;
+  final String myUid = firebaseAuth.FirebaseAuth.instance.currentUser!.uid;
 
   Future<User> _generateUserProfile(
       DocumentSnapshot<Map<String, dynamic>> snapshot) async {
@@ -122,6 +122,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   }
                   return ProfileField(
                     uid: widget.uid,
+                    myUid: myUid,
                     user: user.data!,
                     openFooter: widget.openFooter,
                     closeFooter: widget.closeFooter,
@@ -214,7 +215,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
       actions: [
-        widget.uid == _myUid
+        widget.uid == myUid
             ? GestureDetector(
                 onTap: () async {
                   await showModalBottomSheet(
