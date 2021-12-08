@@ -1,10 +1,11 @@
-import 'package:dish/screens/comment_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rich_text_view/rich_text_view.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import 'package:dish/models/PostModel.dart';
+import 'package:dish/screens/comment_screen.dart';
 import 'package:dish/screens/profile_screen.dart';
 import 'package:dish/screens/check_places_map.dart';
 import 'package:dish/configs/constant_colors.dart';
@@ -30,6 +31,7 @@ class DishPost extends StatefulWidget {
 }
 
 class _DishPostState extends State<DishPost> {
+  final String deviceUid = FirebaseAuth.instance.currentUser!.uid;
   int activeIndex = 0;
   bool favorite = false;
   bool isTextExpanded = false;
@@ -183,7 +185,7 @@ class _DishPostState extends State<DishPost> {
                       MaterialPageRoute(builder: (_) {
                         return CheckPlacesMap(
                           latLng: widget.postInfo.map,
-                          uid: widget.uid,
+                          uid: deviceUid,
                           postInfo: widget.postInfo,
                           openFooter: widget.openFooter,
                           closeFooter: widget.closeFooter,
@@ -250,7 +252,7 @@ class _DishPostState extends State<DishPost> {
               context,
               MaterialPageRoute(
                 builder: (_) => CommentScreen(
-                  myUid: widget.uid,
+                  myUid: deviceUid,
                   postId: widget.postInfo.id,
                   openFooter: widget.openFooter,
                   closeFooter: widget.closeFooter,
