@@ -1,7 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:dish/models/User.dart';
+import 'package:dish/models/User.dart' as Dish;
 import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/common/simple_divider.dart';
 import 'package:dish/widgets/follow_follower_list_screen/user_card.dart';
@@ -36,6 +37,8 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final deviceUid = FirebaseAuth.instance.currentUser!.uid;
+
     return Scaffold(
       appBar: _buildAppBar(context),
       body: SafeArea(
@@ -49,6 +52,7 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
               myselfUid: widget.uid,
               openFooter: widget.openFooter,
               closeFooter: widget.closeFooter,
+              deviceUid: deviceUid,
             );
           },
           separatorBuilder: (_, __) => SimpleDivider(height: 1.0),
@@ -62,7 +66,7 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
     DocumentSnapshot<Map<String, dynamic>> snapshot =
         await FirebaseFirestore.instance.collection("USERS").doc(uid).get();
     final data = snapshot.data() as Map<String, dynamic>;
-    User user = User(
+    Dish.User user = Dish.User(
       uid: uid,
       iconImageUrl: data["icon_path"],
       userId: data["user_id"],

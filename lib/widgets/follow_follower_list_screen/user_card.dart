@@ -14,6 +14,7 @@ class UserCard extends StatefulWidget {
     required this.myselfUid,
     required this.openFooter,
     required this.closeFooter,
+    required this.deviceUid,
   }) : super(key: key);
 
   final User user;
@@ -21,6 +22,7 @@ class UserCard extends StatefulWidget {
   final String myselfUid;
   final VoidCallback openFooter;
   final VoidCallback closeFooter;
+  final String deviceUid;
 
   @override
   _UserCardState createState() => _UserCardState();
@@ -140,11 +142,13 @@ class _UserCardState extends State<UserCard> {
             ],
           ),
           Spacer(),
-          FollowButton(
-            didFollow: widget.didFollow,
-            followUser: followUser,
-            unFollowUser: unFollowUser,
-          ),
+          widget.deviceUid != widget.user.uid
+              ? FollowButton(
+                  didFollow: widget.didFollow,
+                  followUser: followUser,
+                  unFollowUser: unFollowUser,
+                )
+              : Container(),
         ],
       ),
     );
