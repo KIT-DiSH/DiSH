@@ -1,7 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:dish/models/User.dart';
+import 'package:dish/models/User.dart' as Dish;
 import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/common/simple_divider.dart';
 import 'package:dish/widgets/follow_follower_list_screen/user_card.dart';
@@ -23,6 +24,7 @@ class FollowerListScreen extends StatefulWidget {
 }
 
 class _FollowerListScreenState extends State<FollowerListScreen> {
+  final String deviceUid = FirebaseAuth.instance.currentUser!.uid;
   final _title = "フォロワー";
   List<String> _followerIdList = [];
   List<Map> _userList = [];
@@ -46,7 +48,7 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
             return UserCard(
               user: _userList[index]["user"],
               didFollow: _userList[index]["didFollow"],
-              myselfUid: widget.uid,
+              myselfUid: deviceUid,
               openFooter: widget.openFooter,
               closeFooter: widget.closeFooter,
             );
@@ -62,7 +64,7 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
     DocumentSnapshot<Map<String, dynamic>> snapshot =
         await FirebaseFirestore.instance.collection("USERS").doc(uid).get();
     final data = snapshot.data() as Map<String, dynamic>;
-    User user = User(
+    Dish.User user = Dish.User(
       uid: uid,
       iconImageUrl: data["icon_path"],
       userId: data["user_id"],
@@ -74,7 +76,7 @@ class _FollowerListScreenState extends State<FollowerListScreen> {
         .instance
         .collection("FOLLOW_FOLLOWER")
         .where("follower_id", isEqualTo: uid)
-        .where("followee_id", isEqualTo: widget.uid)
+        .where("followee_id", isEqualTo: deviceUid)
         .get();
     final didFollow = querySnapshot.docs.length > 0;
     return {"didFollow": didFollow, "user": user};

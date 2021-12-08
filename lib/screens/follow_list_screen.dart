@@ -1,7 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:dish/models/User.dart';
+import 'package:dish/models/User.dart' as Dish;
 import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/widgets/common/simple_divider.dart';
 import 'package:dish/widgets/follow_follower_list_screen/user_card.dart';
@@ -24,6 +25,7 @@ class FollowListScreen extends StatefulWidget {
 
 class _FollowListScreenState extends State<FollowListScreen> {
   final _title = "フォロー中";
+  final String deviceUid = FirebaseAuth.instance.currentUser!.uid;
   List<String> _followIdList = [];
   List<Map> _userList = [];
 
@@ -46,7 +48,7 @@ class _FollowListScreenState extends State<FollowListScreen> {
             return UserCard(
               user: _userList[index]["user"],
               didFollow: _userList[index]["didFollow"],
-              myselfUid: widget.uid,
+              myselfUid: deviceUid,
               openFooter: widget.openFooter,
               closeFooter: widget.closeFooter,
             );
@@ -62,7 +64,7 @@ class _FollowListScreenState extends State<FollowListScreen> {
     DocumentSnapshot<Map<String, dynamic>> snapshot =
         await FirebaseFirestore.instance.collection("USERS").doc(uid).get();
     final data = snapshot.data() as Map<String, dynamic>;
-    User user = User(
+    Dish.User user = Dish.User(
       uid: uid,
       iconImageUrl: data["icon_path"],
       userId: data["user_id"],
@@ -70,7 +72,15 @@ class _FollowListScreenState extends State<FollowListScreen> {
       profileText: data["profile_text"],
     );
 
-    return {"didFollow": true, "user": user};
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
+        .instance
+        .collection("FOLLOW_FOLLOWER")
+        .where("follower_id", isEqualTo: uid)
+        .where("followee_id", isEqualTo: deviceUid)
+        .get();
+    final didFollow = querySnapshot.docs.length > 0;
+
+    return {"didFollow": didFollow, "user": user};
   }
 
   Future<void> _setUserList(List<String> idList) async {
