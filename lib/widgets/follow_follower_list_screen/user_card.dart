@@ -140,11 +140,13 @@ class _UserCardState extends State<UserCard> {
             ],
           ),
           Spacer(),
-          FollowButton(
-            didFollow: widget.didFollow,
-            followUser: followUser,
-            unFollowUser: unFollowUser,
-          )
+          widget.myselfUid != widget.user.uid
+              ? FollowButton(
+                  didFollow: widget.didFollow,
+                  followUser: followUser,
+                  unFollowUser: unFollowUser,
+                )
+              : Container(),
         ],
       ),
     );
