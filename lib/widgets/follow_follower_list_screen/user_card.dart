@@ -58,15 +58,12 @@ Future<String> _unfollowUser(String followerUid, String followeeUid) async {
 }
 
 class _UserCardState extends State<UserCard> {
-  final _followedLabel = "フォロー中";
-  final _notFollowedLabel = "フォロー";
-
   void followUser() {
     setState(() {
       // フォロー処理
       widget.didFollow = true;
     });
-    // _followUser(widget.user.uid!, widget.myselfUid);
+    _followUser(widget.user.uid!, widget.myselfUid);
   }
 
   void unFollowUser() {
@@ -74,7 +71,7 @@ class _UserCardState extends State<UserCard> {
       // フォロー解除処理
       widget.didFollow = false;
     });
-    // _unfollowUser(widget.user.uid!, widget.myselfUid);
+    _unfollowUser(widget.user.uid!, widget.myselfUid);
   }
 
   @override
@@ -147,7 +144,7 @@ class _UserCardState extends State<UserCard> {
             didFollow: widget.didFollow,
             followUser: followUser,
             unFollowUser: unFollowUser,
-          )
+          ),
         ],
       ),
     );
