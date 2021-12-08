@@ -1,3 +1,4 @@
+import 'package:dish/widgets/follow_follower_list_screen/follow_button.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -59,6 +60,22 @@ Future<String> _unfollowUser(String followerUid, String followeeUid) async {
 class _UserCardState extends State<UserCard> {
   final _followedLabel = "フォロー中";
   final _notFollowedLabel = "フォロー";
+
+  void followUser() {
+    setState(() {
+      // フォロー処理
+      widget.didFollow = true;
+    });
+    // _followUser(widget.user.uid!, widget.myselfUid);
+  }
+
+  void unFollowUser() {
+    setState(() {
+      // フォロー解除処理
+      widget.didFollow = false;
+    });
+    // _unfollowUser(widget.user.uid!, widget.myselfUid);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,62 +143,11 @@ class _UserCardState extends State<UserCard> {
             ],
           ),
           Spacer(),
-          widget.didFollow
-              ? Container(
-                  width: 88,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(3),
-                    border: Border.all(color: AppColor.kDefaultBorderColor),
-                  ),
-                  child: TextButton(
-                    child: Text(
-                      _followedLabel,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppColor.kPrimaryTextColor.withOpacity(0.7),
-                      ),
-                    ),
-                    style: TextButton.styleFrom(
-                      primary: Colors.black12,
-                      backgroundColor: Color(0xFFF5F5F5),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        // フォロー解除処理
-                        widget.didFollow = false;
-                      });
-                      _unfollowUser(widget.user.uid!, widget.myselfUid);
-                    },
-                  ),
-                )
-              : Container(
-                  width: 88,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                  child: TextButton(
-                    child: Text(
-                      _notFollowedLabel,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                      ),
-                    ),
-                    style: TextButton.styleFrom(
-                      primary: Colors.black12,
-                      backgroundColor: AppColor.kPinkColor,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        // フォロー処理
-                        widget.didFollow = true;
-                      });
-                      _followUser(widget.user.uid!, widget.myselfUid);
-                    },
-                  ),
-                ),
+          FollowButton(
+            didFollow: widget.didFollow,
+            followUser: followUser,
+            unFollowUser: unFollowUser,
+          )
         ],
       ),
     );
