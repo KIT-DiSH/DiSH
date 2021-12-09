@@ -27,6 +27,9 @@ class PostCard extends StatelessWidget {
     final _cardHeight = 340.0;
     final _favoLabel = "favorite";
     final _commentLabel = "comment";
+    final _evalAvarage =
+        (post.stars!["cost"]! + post.stars!["mood"]! + post.stars!["taste"]!) /
+            3;
 
     return GestureDetector(
       onTap: () {
@@ -102,7 +105,7 @@ class PostCard extends StatelessWidget {
                       Container(
                         width: 100,
                         child: StarReview(
-                          rate: post.stars!["cost"]!,
+                          rate: _evalAvarage,
                         ),
                       ),
                     ],
