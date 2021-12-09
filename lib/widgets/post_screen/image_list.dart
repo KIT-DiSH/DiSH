@@ -109,7 +109,8 @@ class _ImageListState extends State<ImageList> {
       aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
     );
     if (croppedFile != null) {
-      widget.updateImageFiles(croppedFile);
+      widget.selectedImageFiles[index] = croppedFile;
+      widget.updateImageFiles(widget.selectedImageFiles);
     }
   }
 }
