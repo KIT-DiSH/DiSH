@@ -32,6 +32,7 @@ class DishPost extends StatefulWidget {
 
 class _DishPostState extends State<DishPost> {
   final String deviceUid = FirebaseAuth.instance.currentUser!.uid;
+
   int activeIndex = 0;
   bool favorite = false;
   bool isTextExpanded = false;
@@ -39,6 +40,10 @@ class _DishPostState extends State<DishPost> {
   @override
   Widget build(BuildContext context) {
     final _width = MediaQuery.of(context).size.width;
+    final _evalAvarage = (widget.postInfo.stars["cost"]! +
+            widget.postInfo.stars["mood"]! +
+            widget.postInfo.stars["taste"]!) /
+        3;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -160,7 +165,7 @@ class _DishPostState extends State<DishPost> {
                   Container(
                     width: 100,
                     child: StarReview(
-                      rate: widget.postInfo.stars["cost"]!,
+                      rate: _evalAvarage,
                     ),
                   ),
                 ],

@@ -81,6 +81,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       postedDate: DateFormat("yyyy/MM/dd").format(data["timestamp"].toDate()),
       commentCount: 0,
       favoCount: 0,
+      stars: {
+        "cost": data["evaluation"]["cost"] + 0.0,
+        "mood": data["evaluation"]["mood"] + 0.0,
+        "taste": data["evaluation"]["taste"] + 0.0,
+      },
     );
     return post;
   }
