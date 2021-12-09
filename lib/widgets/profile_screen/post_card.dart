@@ -5,6 +5,7 @@ import 'package:dish/models/User.dart';
 import 'package:dish/models/Post.dart';
 import 'package:dish/configs/constant_colors.dart';
 import 'package:dish/screens/display_posts_screen.dart';
+import 'package:dish/widgets/profile_screen/start.dart';
 
 class PostCard extends StatelessWidget {
   const PostCard({
@@ -98,7 +99,12 @@ class PostCard extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      _buildEvalStars(),
+                      Container(
+                        width: 100,
+                        child: StarReview(
+                          rate: post.stars!["cost"]!,
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -170,27 +176,6 @@ class PostCard extends StatelessWidget {
             fontSize: 11,
           ),
         ),
-      ],
-    );
-  }
-
-  // 星の表示切替方法は後々検討する
-  Row _buildEvalStars() {
-    Icon _getStar(bool isFill) {
-      return Icon(
-        Icons.star,
-        size: 12,
-        color: AppColor.kStarYellowColor,
-      );
-    }
-
-    return Row(
-      children: [
-        _getStar(true),
-        _getStar(true),
-        _getStar(true),
-        _getStar(true),
-        _getStar(true),
       ],
     );
   }
